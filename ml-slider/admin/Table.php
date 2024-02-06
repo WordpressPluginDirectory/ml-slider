@@ -33,6 +33,17 @@ class MetaSlider_Admin_Table extends WP_List_table
         ));
     }
 
+    public function no_items() {
+        printf(
+            esc_html__(
+                'You don\'t have any slideshows yet. Click %shere%s to create a new slideshow.',
+                'ml-slider'
+            ),
+            '<a href="' . esc_url(wp_nonce_url(admin_url("admin-post.php?action=metaslider_create_slider"), "metaslider_create_slider")) . '">','</a>'
+        );
+    }
+    
+
     protected function get_views() {
         global $wpdb;
         $views = array();

@@ -187,6 +187,19 @@
                         ),
                     )
                 ),
+                'fullWidth' => array(
+                    'priority' => 570,
+                    'type' => 'checkbox',
+                    'label' => esc_html__("100% width", "ml-slider"),
+                    'class' => 'option flex nivo responsive',
+                    'checked' => $this->slider->get_setting(
+                        'fullWidth'
+                    ) == 'true' ? 'checked' : '',
+                    'helptext' => esc_html__(
+                        "Stretch the slideshow output to fill it's parent container",
+                        "ml-slider"
+                    )
+                ),
             );
 
             $aFields = apply_filters(
@@ -229,19 +242,6 @@
                     'priority' => 3,
                     'type' => 'highlight',
                     'value' => esc_html__( 'Advanced Options', 'ml-slider' )
-                ),
-                'fullWidth' => array(
-                    'priority' => 5,
-                    'type' => 'checkbox',
-                    'label' => esc_html__("100% width", "ml-slider"),
-                    'class' => 'option flex nivo responsive',
-                    'checked' => $this->slider->get_setting(
-                        'fullWidth'
-                    ) == 'true' ? 'checked' : '',
-                    'helptext' => esc_html__(
-                        "Stretch the slideshow output to fill it's parent container",
-                        "ml-slider"
-                    )
                 ),
                 'center' => array(
                     'priority' => 10,
@@ -429,8 +429,21 @@
                         "ml-slider"
                     )
                 ),
-                'delay' => array(
+                'touch' => array(
                     'priority' => 80,
+                    'type' => 'checkbox',
+                    'label' => esc_html__("Touch Swipe", "ml-slider"),
+                    'class' => 'option flex',
+                    'checked' => 'true' == $this->slider->get_setting(
+                        'touch'
+                    ) ? 'checked' : '',
+                    'helptext' => esc_html__(
+                        "Allow touch swipe navigation of the slider on touch-enabled devices",
+                        "ml-slider"
+                    )
+                ),
+                'delay' => array(
+                    'priority' => 85,
                     'type' => 'number',
                     'size' => 3,
                     'min' => 500,
@@ -460,8 +473,8 @@
                     'label' => esc_html__("Animation speed", "ml-slider"),
                     'class' => 'option flex responsive nivo',
                     'helptext' => esc_html__(
-                        "Set the speed of animations, in milliseconds",
-                        "ml-slider"
+                        'Choose the speed of the animation in milliseconds. You can select the animation in the "Effect" field.',
+                        'ml-slider'
                     ),
                     'after' => esc_html_x(
                         "ms",

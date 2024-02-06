@@ -115,6 +115,7 @@ class MetaSlider
             'direction' => 'horizontal',
             'reverse' => false,
             'keyboard' => false,
+            'touch' => true,
             'animationSpeed' => 600,
             'prevText' => __('Previous', 'ml-slider'),
             'nextText' => __('Next', 'ml-slider'),
@@ -356,7 +357,6 @@ class MetaSlider
     {   
         $custom_js_before = $this->get_custom_javascript_before();
         $custom_js_after = $this->get_custom_javascript_after();
-        $mobile = '';
 
         $identifier = $this->get_identifier();
 
@@ -410,17 +410,7 @@ class MetaSlider
 
         $init = apply_filters("metaslider_timer", $timer, $this->identifier);
         
-        $ms_slider = new MetaSliderPlugin();
-        $global_settings = $ms_slider->get_global_settings();
-        if (
-            isset($global_settings['mobileSettings']) &&
-            true == $global_settings['mobileSettings'] &&
-            $type == "flex"
-        ) {
-            $mobile = $this->manage_responsive();
-        }
-
-        return $script . $init . $mobile;
+        return $script . $init;
     }
 
     /**
@@ -512,6 +502,12 @@ class MetaSlider
         return implode(",\n                ", $pairs);
     }
 
+
+    public function _get_javascript_parameters()
+    {
+        return $this->get_javascript_parameters();
+    }
+
     /**
      * Polyfill to handle the wp_add_inline_script() function.
      *
@@ -600,8 +596,8 @@ class MetaSlider
         $ms_slider = new MetaSliderPlugin();
         $global_settings = $ms_slider->get_global_settings();
         if (
-            isset($global_settings['mobileSettings']) &&
-            true == $global_settings['mobileSettings']
+            !isset($global_settings['mobileSettings']) ||
+            (isset($global_settings['mobileSettings']) && true == $global_settings['mobileSettings'])
         ) {
             $breakpoints = $this->get_breakpoints();
             $smartphone = $breakpoints[0];
@@ -647,6 +643,9 @@ class MetaSlider
         return $slide_list;
     }
 
+    /**
+     * Check if there are mobile settings for slideshows
+     */
     public function check_mobile_settings()
     {
         $screens = array('smartphone', 'tablet', 'laptop', 'desktop');
@@ -662,82 +661,7 @@ class MetaSlider
                 }
             };
         }
-
         return $with_setting;
-    }
-
-    private function print_flex_js($device){
-        $js = '';
-        $hide_slide = $this->get_mobile_slide($device);
-        $identifier = $this->get_identifier();
-        if($hide_slide) {
-            $js_array = json_encode($hide_slide);
-            $js .= "\n var hide_slide = ". $js_array . ";";
-            $js .= "\n liHTML.forEach((slideHTML, index) => {
-                if ( hide_slide.indexOf(index) === -1 ) {
-                    slideshow.data('flexslider').addSlide(slideHTML);
-                }
-            })";
-        } else {
-            $js .= "\n liHTML.forEach((slideHTML, index) => {slideshow.data('flexslider').addSlide(slideHTML);})";
-        }
-        $js .= "\n     $('#" . $identifier . " .slides li').css('opacity', '0');";
-        $js .= "\n     $('#" . $identifier . " .slides li:first').css('opacity', '1');";
-        return $js;
-    }
-
-    /**
-     * Function to show/hide slides per device on FlexSlider
-     */
-    public function manage_responsive()
-    {
-        $js = '';
-        $identifier = $this->get_identifier();
-        if($this->check_mobile_settings() == true) {
-            $js .= "\n jQuery(document).ready(function($){";
-            $js .= "\n     var currentBreakpoint = window.getComputedStyle(document.body, ':after').getPropertyValue('content');";
-            $js .= "\n     var didResize  = true;";
-            $js .= "\n     var slideshow = $('#" . $identifier . "');";
-            $js .= "\n     var liHTML = $('#" . $identifier . " .slides li:not(.clone)').toArray();";
-            $js .= "\n     $(window).resize(function(){";
-            $js .= "\n         didResize = true;";
-            $js .= "\n     });";
-            $js .= "\n     function removeSlides(slider){";
-            $js .= "\n         while (slider.data('flexslider').count > 0) {";
-            $js .= "\n             slider.data('flexslider').removeSlide(0);";
-            $js .= "\n         }";
-            $js .= "\n     }";
-            $js .= "\n setInterval(function(){";
-            $js .= "\n      if(didResize) {";
-            $js .= "\n          didResize = false;";
-            $js .= "\n          var newBreakpoint = window.getComputedStyle(document.body, ':after').getPropertyValue('content');";
-            $js .= '         newBreakpoint = newBreakpoint.replace(/"/g, "");';
-            $js .= "\n          if (currentBreakpoint != newBreakpoint) {";
-            $js .= "\n              removeSlides(slideshow);";
-            $js .= "\n              if (newBreakpoint == 'smartphone') {";
-            $js .= "\n                  currentBreakpoint = 'smartphone';";
-            $js .= $this->print_flex_js('smartphone');
-            $js .= "\n              }";
-            $js .= "\n              if (newBreakpoint == 'tablet') {";
-            $js .= "\n                  currentBreakpoint = 'tablet';";
-            $js .= $this->print_flex_js('tablet');
-            $js .= "\n              }";
-            $js .= "\n              if (newBreakpoint == 'laptop') {";
-            $js .= "\n                  currentBreakpoint = 'laptop';"; 
-            $js .= $this->print_flex_js('laptop');
-            $js .= "\n              }";
-            $js .= "\n              if (newBreakpoint == 'desktop') {";
-            $js .= "\n                  currentBreakpoint = 'desktop';";
-            $js .= $this->print_flex_js('desktop');
-            $js .= "\n              }";
-            $js .= "\n              slideshow.flexslider(0);";
-            $js .= "\n          } ";
-            $js .= "\n      }";
-            $js .= "\n  }, 100);";
-            $js .= "\n });";
-        }
-
-        return $js;
     }
 
     /**

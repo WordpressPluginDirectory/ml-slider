@@ -1,15 +1,15 @@
-# Copyright (C) 2023 MetaSlider
+# Copyright (C) 2024 MetaSlider
 # This file is distributed under the GPL-2.0+.
 msgid ""
 msgstr ""
-"Project-Id-Version: MetaSlider 3.50.0\n"
+"Project-Id-Version: MetaSlider 3.60.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/project\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2023-12-13T14:10:19+00:00\n"
+"POT-Creation-Date: 2024-02-05T18:04:02+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.9.0\n"
 "X-Domain: ml-slider\n"
@@ -26,10 +26,6 @@ msgstr ""
 
 #. Description of the plugin
 msgid "MetaSlider gives you the power to create a beautiful slideshow, carousel, or gallery on your WordPress site."
-msgstr ""
-
-#: admin/lib/callout.php:17
-msgid "Hey there! We just started working on a brand new gallery extension. <a href=\"%s\">Check it out</a> and let us know what you think!"
 msgstr ""
 
 #: admin/Notices.php:95
@@ -87,11 +83,11 @@ msgstr ""
 #: inc/slide/metaslide.class.php:141
 #: inc/slide/metaslide.image.class.php:123
 #: inc/slide/metaslide.image.class.php:227
-#: ml-slider.php:790
-#: ml-slider.php:872
-#: ml-slider.php:984
-#: ml-slider.php:2328
-#: ml-slider.php:2369
+#: ml-slider.php:789
+#: ml-slider.php:871
+#: ml-slider.php:983
+#: ml-slider.php:2327
+#: ml-slider.php:2368
 msgid "The security check failed. Please refresh the page and try again."
 msgstr ""
 
@@ -100,11 +96,11 @@ msgstr ""
 #: inc/slide/metaslide.image.class.php:131
 #: inc/slide/metaslide.image.class.php:150
 #: inc/slide/metaslide.image.class.php:235
-#: ml-slider.php:798
-#: ml-slider.php:880
-#: ml-slider.php:992
-#: ml-slider.php:2336
-#: ml-slider.php:2377
+#: ml-slider.php:797
+#: ml-slider.php:879
+#: ml-slider.php:991
+#: ml-slider.php:2335
+#: ml-slider.php:2376
 msgid "Access denied"
 msgstr ""
 
@@ -112,11 +108,11 @@ msgstr ""
 #: inc/slide/metaslide.class.php:158
 #: inc/slide/metaslide.image.class.php:140
 #: inc/slide/metaslide.image.class.php:244
-#: ml-slider.php:807
-#: ml-slider.php:889
-#: ml-slider.php:1001
-#: ml-slider.php:2345
-#: ml-slider.php:2386
+#: ml-slider.php:806
+#: ml-slider.php:888
+#: ml-slider.php:1000
+#: ml-slider.php:2344
+#: ml-slider.php:2385
 msgid "Bad request"
 msgstr ""
 
@@ -228,13 +224,13 @@ msgstr ""
 msgid "New Slideshow"
 msgstr ""
 
-#: admin/slideshows/Settings.php:81
-#: inc/slider/metaslider.class.php:119
+#: admin/slideshows/Settings.php:82
+#: inc/slider/metaslider.class.php:120
 msgid "Previous"
 msgstr ""
 
-#: admin/slideshows/Settings.php:82
-#: inc/slider/metaslider.class.php:120
+#: admin/slideshows/Settings.php:83
+#: inc/slider/metaslider.class.php:121
 msgid "Next"
 msgstr ""
 
@@ -246,54 +242,58 @@ msgstr ""
 msgid "We removed your selected theme as it could not be found. Was the folder deleted?"
 msgstr ""
 
-#: admin/Table.php:44
+#: admin/Table.php:38
+msgid "You don't have any slideshows yet. Click %shere%s to create a new slideshow."
+msgstr ""
+
+#: admin/Table.php:55
 msgid "Published"
 msgstr ""
 
-#: admin/Table.php:48
-#: admin/Table.php:76
-#: admin/Table.php:328
+#: admin/Table.php:59
+#: admin/Table.php:87
+#: admin/Table.php:339
 msgid "Trash"
 msgstr ""
 
-#: admin/Table.php:58
+#: admin/Table.php:69
 #: admin/views/pages/parts/toolbar.php:44
 #: admin/assets/dist/js/app.js:2
 msgid "Preview"
 msgstr ""
 
-#: admin/Table.php:59
+#: admin/Table.php:70
 #: admin/assets/dist/js/app.js:2
 msgid "Title"
 msgstr ""
 
-#: admin/Table.php:60
+#: admin/Table.php:71
 msgid "Created"
 msgstr ""
 
-#: admin/Table.php:61
-#: admin/views/pages/parts/slider-settings-legacy.php:707
-#: admin/views/pages/parts/slider-settings.php:534
+#: admin/Table.php:72
+#: admin/views/pages/parts/slider-settings-legacy.php:720
+#: admin/views/pages/parts/slider-settings.php:547
 msgid "Shortcode"
 msgstr ""
 
-#: admin/Table.php:71
-#: admin/Table.php:313
+#: admin/Table.php:82
+#: admin/Table.php:324
 #: inc/slide/metaslide.class.php:407
 msgid "Restore"
 msgstr ""
 
-#: admin/Table.php:72
-#: admin/Table.php:314
+#: admin/Table.php:83
+#: admin/Table.php:325
 #: inc/slide/metaslide.class.php:417
 msgid "Delete Permanently"
 msgstr ""
 
-#: admin/Table.php:120
+#: admin/Table.php:131
 msgid "Click to copy shortcode."
 msgstr ""
 
-#: admin/Table.php:327
+#: admin/Table.php:338
 msgid "Edit"
 msgstr ""
 
@@ -344,7 +344,7 @@ msgid "Main Options"
 msgstr ""
 
 #: admin/views/pages/parts/slider-settings-legacy.php:30
-#: admin/views/pages/parts/slider-settings-legacy.php:495
+#: admin/views/pages/parts/slider-settings-legacy.php:508
 #: admin/views/pages/parts/slider-settings.php:34
 msgid "Width"
 msgstr ""
@@ -366,7 +366,7 @@ msgid "px"
 msgstr ""
 
 #: admin/views/pages/parts/slider-settings-legacy.php:43
-#: admin/views/pages/parts/slider-settings-legacy.php:511
+#: admin/views/pages/parts/slider-settings-legacy.php:524
 #: admin/views/pages/parts/slider-settings.php:47
 msgid "Height"
 msgstr ""
@@ -504,24 +504,24 @@ msgstr ""
 msgid "Filmstrip"
 msgstr ""
 
-#: admin/views/pages/parts/slider-settings-legacy.php:207
-#: admin/views/pages/parts/slider-settings.php:137
-msgid "Theme"
-msgstr ""
-
-#: admin/views/pages/parts/slider-settings-legacy.php:231
-#: admin/views/pages/parts/slider-settings.php:160
-msgid "Advanced Options"
-msgstr ""
-
-#: admin/views/pages/parts/slider-settings-legacy.php:236
-#: admin/views/pages/parts/slider-settings.php:165
+#: admin/views/pages/parts/slider-settings-legacy.php:193
+#: admin/views/pages/parts/slider-settings.php:129
 msgid "100% width"
 msgstr ""
 
-#: admin/views/pages/parts/slider-settings-legacy.php:241
-#: admin/views/pages/parts/slider-settings.php:170
+#: admin/views/pages/parts/slider-settings-legacy.php:198
+#: admin/views/pages/parts/slider-settings.php:134
 msgid "Stretch the slideshow output to fill it's parent container"
+msgstr ""
+
+#: admin/views/pages/parts/slider-settings-legacy.php:220
+#: admin/views/pages/parts/slider-settings.php:150
+msgid "Theme"
+msgstr ""
+
+#: admin/views/pages/parts/slider-settings-legacy.php:244
+#: admin/views/pages/parts/slider-settings.php:173
+msgid "Advanced Options"
 msgstr ""
 
 #: admin/views/pages/parts/slider-settings-legacy.php:249
@@ -674,174 +674,184 @@ msgstr ""
 msgid "Use arrow keys to get to the next slide"
 msgstr ""
 
+#: admin/views/pages/parts/slider-settings-legacy.php:435
+#: admin/views/pages/parts/slider-settings.php:364
+msgid "Touch Swipe"
+msgstr ""
+
 #: admin/views/pages/parts/slider-settings-legacy.php:440
 #: admin/views/pages/parts/slider-settings.php:369
+msgid "Allow touch swipe navigation of the slider on touch-enabled devices"
+msgstr ""
+
+#: admin/views/pages/parts/slider-settings-legacy.php:453
+#: admin/views/pages/parts/slider-settings.php:382
 msgid "Slide delay"
 msgstr ""
 
-#: admin/views/pages/parts/slider-settings-legacy.php:442
-#: admin/views/pages/parts/slider-settings.php:371
+#: admin/views/pages/parts/slider-settings-legacy.php:455
+#: admin/views/pages/parts/slider-settings.php:384
 msgid "How long to display each slide, in milliseconds"
 msgstr ""
 
-#: admin/views/pages/parts/slider-settings-legacy.php:446
-#: admin/views/pages/parts/slider-settings-legacy.php:466
-#: admin/views/pages/parts/slider-settings-legacy.php:595
-#: admin/views/pages/parts/slider-settings-legacy.php:627
-#: admin/views/pages/parts/slider-settings.php:375
-#: admin/views/pages/parts/slider-settings.php:395
+#: admin/views/pages/parts/slider-settings-legacy.php:459
+#: admin/views/pages/parts/slider-settings-legacy.php:479
+#: admin/views/pages/parts/slider-settings-legacy.php:608
+#: admin/views/pages/parts/slider-settings-legacy.php:640
+#: admin/views/pages/parts/slider-settings.php:388
+#: admin/views/pages/parts/slider-settings.php:408
 msgctxt "Short for milliseconds"
 msgid "ms"
 msgstr ""
 
-#: admin/views/pages/parts/slider-settings-legacy.php:460
-#: admin/views/pages/parts/slider-settings.php:389
+#: admin/views/pages/parts/slider-settings-legacy.php:473
+#: admin/views/pages/parts/slider-settings.php:402
 msgid "Animation speed"
 msgstr ""
 
-#: admin/views/pages/parts/slider-settings-legacy.php:462
-#: admin/views/pages/parts/slider-settings.php:391
-msgid "Set the speed of animations, in milliseconds"
+#: admin/views/pages/parts/slider-settings-legacy.php:475
+#: admin/views/pages/parts/slider-settings.php:404
+msgid "Choose the speed of the animation in milliseconds. You can select the animation in the \"Effect\" field."
 msgstr ""
 
-#: admin/views/pages/parts/slider-settings-legacy.php:480
-#: admin/views/pages/parts/slider-settings-legacy.php:482
+#: admin/views/pages/parts/slider-settings-legacy.php:493
+#: admin/views/pages/parts/slider-settings-legacy.php:495
 msgid "Number of slices"
 msgstr ""
 
-#: admin/views/pages/parts/slider-settings-legacy.php:492
-#: admin/views/pages/parts/slider-settings-legacy.php:497
-#: admin/views/pages/parts/slider-settings-legacy.php:508
-#: admin/views/pages/parts/slider-settings-legacy.php:513
+#: admin/views/pages/parts/slider-settings-legacy.php:505
+#: admin/views/pages/parts/slider-settings-legacy.php:510
+#: admin/views/pages/parts/slider-settings-legacy.php:521
+#: admin/views/pages/parts/slider-settings-legacy.php:526
 msgid "Number of squares"
 msgstr ""
 
-#: admin/views/pages/parts/slider-settings-legacy.php:519
-#: admin/views/pages/parts/slider-settings.php:404
+#: admin/views/pages/parts/slider-settings-legacy.php:532
+#: admin/views/pages/parts/slider-settings.php:417
 msgid "Slide direction"
 msgstr ""
 
-#: admin/views/pages/parts/slider-settings-legacy.php:521
-#: admin/views/pages/parts/slider-settings.php:406
+#: admin/views/pages/parts/slider-settings-legacy.php:534
+#: admin/views/pages/parts/slider-settings.php:419
 msgid "Select the sliding direction"
 msgstr ""
 
-#: admin/views/pages/parts/slider-settings-legacy.php:528
-#: admin/views/pages/parts/slider-settings.php:413
+#: admin/views/pages/parts/slider-settings-legacy.php:541
+#: admin/views/pages/parts/slider-settings.php:426
 msgid "Horizontal"
-msgstr ""
-
-#: admin/views/pages/parts/slider-settings-legacy.php:535
-#: admin/views/pages/parts/slider-settings.php:420
-msgid "Vertical"
-msgstr ""
-
-#: admin/views/pages/parts/slider-settings-legacy.php:546
-#: admin/views/pages/parts/slider-settings.php:431
-msgid "Easing"
 msgstr ""
 
 #: admin/views/pages/parts/slider-settings-legacy.php:548
 #: admin/views/pages/parts/slider-settings.php:433
+msgid "Vertical"
+msgstr ""
+
+#: admin/views/pages/parts/slider-settings-legacy.php:559
+#: admin/views/pages/parts/slider-settings.php:444
+msgid "Easing"
+msgstr ""
+
+#: admin/views/pages/parts/slider-settings-legacy.php:561
+#: admin/views/pages/parts/slider-settings.php:446
 msgid "Easing enhances the motion dynamics during transitions and is exclusively accessible when the 'Slide' transition setting is chosen."
-msgstr ""
-
-#: admin/views/pages/parts/slider-settings-legacy.php:558
-#: admin/views/pages/parts/slider-settings.php:443
-msgid "Previous text"
-msgstr ""
-
-#: admin/views/pages/parts/slider-settings-legacy.php:560
-#: admin/views/pages/parts/slider-settings.php:445
-msgid "Set the text for the 'previous' direction item"
 msgstr ""
 
 #: admin/views/pages/parts/slider-settings-legacy.php:571
 #: admin/views/pages/parts/slider-settings.php:456
-msgid "Next text"
+msgid "Previous text"
 msgstr ""
 
 #: admin/views/pages/parts/slider-settings-legacy.php:573
 #: admin/views/pages/parts/slider-settings.php:458
+msgid "Set the text for the 'previous' direction item"
+msgstr ""
+
+#: admin/views/pages/parts/slider-settings-legacy.php:584
+#: admin/views/pages/parts/slider-settings.php:469
+msgid "Next text"
+msgstr ""
+
+#: admin/views/pages/parts/slider-settings-legacy.php:586
+#: admin/views/pages/parts/slider-settings.php:471
 msgid "Set the text for the 'next' direction item"
 msgstr ""
 
-#: admin/views/pages/parts/slider-settings-legacy.php:589
+#: admin/views/pages/parts/slider-settings-legacy.php:602
 msgid "Square delay"
 msgstr ""
 
-#: admin/views/pages/parts/slider-settings-legacy.php:591
+#: admin/views/pages/parts/slider-settings-legacy.php:604
 msgid "Delay between squares in ms"
 msgstr ""
 
-#: admin/views/pages/parts/slider-settings-legacy.php:605
+#: admin/views/pages/parts/slider-settings-legacy.php:618
 msgid "Opacity"
 msgstr ""
 
-#: admin/views/pages/parts/slider-settings-legacy.php:607
+#: admin/views/pages/parts/slider-settings-legacy.php:620
 msgid "Opacity of title and navigation, between 0 and 1"
 msgstr ""
 
-#: admin/views/pages/parts/slider-settings-legacy.php:621
+#: admin/views/pages/parts/slider-settings-legacy.php:634
 msgid "Caption speed"
 msgstr ""
 
-#: admin/views/pages/parts/slider-settings-legacy.php:623
+#: admin/views/pages/parts/slider-settings-legacy.php:636
 msgid "Set the fade in speed of the caption"
 msgstr ""
 
-#: admin/views/pages/parts/slider-settings-legacy.php:636
-#: admin/views/pages/parts/slider-settings.php:469
+#: admin/views/pages/parts/slider-settings-legacy.php:649
+#: admin/views/pages/parts/slider-settings.php:482
 msgid "Developer Options"
-msgstr ""
-
-#: admin/views/pages/parts/slider-settings-legacy.php:642
-#: admin/views/pages/parts/slider-settings.php:475
-msgid "CSS classes"
-msgstr ""
-
-#: admin/views/pages/parts/slider-settings-legacy.php:644
-#: admin/views/pages/parts/slider-settings.php:477
-msgid "Enter custom CSS classes to apply to the slider wrapper. Separate multiple classes with a space."
 msgstr ""
 
 #: admin/views/pages/parts/slider-settings-legacy.php:655
 #: admin/views/pages/parts/slider-settings.php:488
-msgid "Print CSS"
+msgid "CSS classes"
 msgstr ""
 
-#: admin/views/pages/parts/slider-settings-legacy.php:660
-#: admin/views/pages/parts/slider-settings.php:493
-msgid "Uncheck this if you would like to include your own CSS"
+#: admin/views/pages/parts/slider-settings-legacy.php:657
+#: admin/views/pages/parts/slider-settings.php:490
+msgid "Enter custom CSS classes to apply to the slider wrapper. Separate multiple classes with a space."
 msgstr ""
 
 #: admin/views/pages/parts/slider-settings-legacy.php:668
 #: admin/views/pages/parts/slider-settings.php:501
-msgid "Print JS"
+msgid "Print CSS"
 msgstr ""
 
 #: admin/views/pages/parts/slider-settings-legacy.php:673
 #: admin/views/pages/parts/slider-settings.php:506
-msgid "Uncheck this if you would like to include your own Javascript"
+msgid "Uncheck this if you would like to include your own CSS"
 msgstr ""
 
 #: admin/views/pages/parts/slider-settings-legacy.php:681
 #: admin/views/pages/parts/slider-settings.php:514
-msgid "No conflict mode"
+msgid "Print JS"
 msgstr ""
 
 #: admin/views/pages/parts/slider-settings-legacy.php:686
 #: admin/views/pages/parts/slider-settings.php:519
+msgid "Uncheck this if you would like to include your own Javascript"
+msgstr ""
+
+#: admin/views/pages/parts/slider-settings-legacy.php:694
+#: admin/views/pages/parts/slider-settings.php:527
+msgid "No conflict mode"
+msgstr ""
+
+#: admin/views/pages/parts/slider-settings-legacy.php:699
+#: admin/views/pages/parts/slider-settings.php:532
 msgid "Delay adding the flexslider class to the slideshow"
 msgstr ""
 
-#: admin/views/pages/parts/slider-settings-legacy.php:730
-#: admin/views/pages/parts/slider-settings.php:556
+#: admin/views/pages/parts/slider-settings-legacy.php:743
+#: admin/views/pages/parts/slider-settings.php:569
 msgid "Trashed slides"
 msgstr ""
 
-#: admin/views/pages/parts/slider-settings-legacy.php:752
-#: admin/views/pages/parts/slider-settings.php:566
+#: admin/views/pages/parts/slider-settings-legacy.php:765
+#: admin/views/pages/parts/slider-settings.php:579
 msgid "View trashed slides"
 msgstr ""
 
@@ -909,7 +919,7 @@ msgid "Save"
 msgstr ""
 
 #: admin/views/pages/parts/toolbar.php:125
-#: ml-slider.php:1689
+#: ml-slider.php:1688
 msgid "Return to Published Slides"
 msgstr ""
 
@@ -995,6 +1005,7 @@ msgstr ""
 
 #: admin/views/pages/upgrade.php:26
 #: admin/views/pages/upgrade.php:145
+#: admin/views/slides/tabs/schedule.php:10
 #: admin/assets/dist/js/app.js:2
 msgid "Upgrade now"
 msgstr ""
@@ -1159,12 +1170,28 @@ msgstr ""
 msgid "Open link in a new window"
 msgstr ""
 
-#: admin/views/slides/tabs/mobile.php:13
+#: admin/views/slides/tabs/mobile.php:27
 msgid "Hide slide on:"
 msgstr ""
 
-#: admin/views/slides/tabs/mobile.php:31
+#: admin/views/slides/tabs/mobile.php:40
+msgid "When enabled this setting will hide the slide on screen widths equal to or greater than %spx"
+msgstr ""
+
+#: admin/views/slides/tabs/mobile.php:50
+msgid "When enabled this setting will hide the slide on screen widths of %1$spx to %2$spx"
+msgstr ""
+
+#: admin/views/slides/tabs/mobile.php:66
 msgid "Hide caption on:"
+msgstr ""
+
+#: admin/views/slides/tabs/mobile.php:79
+msgid "When enabled this setting will hide the caption on screen widths equal to or greater than %spx"
+msgstr ""
+
+#: admin/views/slides/tabs/mobile.php:89
+msgid "When enabled this setting will hide the caption on screen widths of %1$spx to %2$spx"
 msgstr ""
 
 #: admin/views/slides/tabs/schedule.php:6
@@ -1172,11 +1199,11 @@ msgid "Update or activate your MetaSlider Pro now to add a start/end date option
 msgstr ""
 
 #: admin/views/slides/tabs/schedule.php:8
-msgid "Get MetaSlider Pro now to add a start/end date option to your slides"
+msgid "Get MetaSlider Pro"
 msgstr ""
 
 #: admin/views/slides/tabs/schedule.php:9
-msgid "Get it now!"
+msgid "With MetaSlider Pro, you can schedule your slides. You can choose to show your slides on specific dates, days of the week, or times of day."
 msgstr ""
 
 #: admin/views/slides/tabs/seo.php:6
@@ -1224,7 +1251,7 @@ msgid "Select Slider:"
 msgstr ""
 
 #: inc/metaslider.widget.class.php:125
-#: ml-slider.php:1831
+#: ml-slider.php:1830
 #: admin/assets/dist/js/app.js:2
 msgid "No slideshows found"
 msgstr ""
@@ -1250,13 +1277,9 @@ msgid "Trash slide"
 msgstr ""
 
 #: inc/slide/metaslide.class.php:429
-#: inc/slide/metaslide.class.php:671
 #: inc/slide/metaslide.class.php:672
+#: inc/slide/metaslide.class.php:673
 msgid "Update slide image"
-msgstr ""
-
-#: inc/slide/metaslide.image.class.php:85
-msgid "Failed to add slide. Slide is not an image."
 msgstr ""
 
 #: inc/slide/metaslide.image.class.php:87
@@ -1291,236 +1314,233 @@ msgstr ""
 msgid "Schedule"
 msgstr ""
 
-#: inc/slider/metaslider.class.php:268
+#: inc/slider/metaslider.class.php:269
 msgid "Edit Slideshow"
 msgstr ""
 
-#: ml-slider.php:247
+#: ml-slider.php:246
 msgid "MetaSlider Pro is installed but is out of date. You may update it %shere%s. Learn more about this notice %shere%s"
 msgstr ""
 
-#: ml-slider.php:467
+#: ml-slider.php:466
 msgid "Home"
 msgstr ""
 
-#: ml-slider.php:468
+#: ml-slider.php:467
 msgid "Quick Start"
 msgstr ""
 
-#: ml-slider.php:469
+#: ml-slider.php:468
 msgid "Settings & Help"
 msgstr ""
 
-#: ml-slider.php:472
+#: ml-slider.php:471
 msgid "Upgrade to Pro"
 msgstr ""
 
-#: ml-slider.php:509
-#: ml-slider.php:512
+#: ml-slider.php:508
+#: ml-slider.php:511
 msgid "All Slideshows"
 msgstr ""
 
-#: ml-slider.php:520
-#: ml-slider.php:523
+#: ml-slider.php:519
+#: ml-slider.php:522
 msgid "Create Slideshow"
 msgstr ""
 
-#: ml-slider.php:650
+#: ml-slider.php:649
 msgid "Image"
 msgstr ""
 
-#: ml-slider.php:651
+#: ml-slider.php:650
 msgid "Add to slideshow"
 msgstr ""
 
-#: ml-slider.php:691
+#: ml-slider.php:690
 msgid "Post Feed"
 msgstr ""
 
-#: ml-slider.php:692
+#: ml-slider.php:691
 msgid "Vimeo"
 msgstr ""
 
-#: ml-slider.php:693
+#: ml-slider.php:692
 msgid "YouTube"
 msgstr ""
 
-#: ml-slider.php:694
+#: ml-slider.php:693
 msgid "Layer Slide"
 msgstr ""
 
-#: ml-slider.php:695
+#: ml-slider.php:694
 msgid "External URL"
 msgstr ""
 
-#: ml-slider.php:696
+#: ml-slider.php:695
 msgid "Local Video"
 msgstr ""
 
-#: ml-slider.php:697
+#: ml-slider.php:696
 msgid "External Video"
 msgstr ""
 
-#: ml-slider.php:822
+#: ml-slider.php:821
 msgid "The slide was successfully restored"
 msgstr ""
 
-#: ml-slider.php:845
+#: ml-slider.php:844
 msgid "The attempt to restore the slide failed."
 msgstr ""
 
-#: ml-slider.php:904
+#: ml-slider.php:903
 msgid "The slide was successfully trashed"
 msgstr ""
 
-#: ml-slider.php:1016
+#: ml-slider.php:1015
 msgid "The slide was permanently deleted"
 msgstr ""
 
-#: ml-slider.php:1633
+#: ml-slider.php:1632
 msgid "Trashed Slides"
 msgstr ""
 
-#: ml-slider.php:1679
+#: ml-slider.php:1678
 msgid "You are viewing slides that have been trashed, which will be automatically deleted in %s days."
 msgstr ""
 
-#: ml-slider.php:1733
+#: ml-slider.php:1732
 msgid "Move slideshow to trash"
 msgstr ""
 
 #: ml-slider.php:1779
-msgid "Select slideshow to insert into post"
-msgstr ""
-
-#: ml-slider.php:1781
 msgid "Add slideshow"
 msgstr ""
 
-#: ml-slider.php:1810
+#: ml-slider.php:1809
 msgctxt "Keep the plugin name \"MetaSlider\" when possible"
-msgid "Insert MetaSlider"
+msgid "Select slideshow to insert into post"
 msgstr ""
 
-#: ml-slider.php:1816
+#: ml-slider.php:1815
 msgid "Choose slideshow"
 msgstr ""
 
-#: ml-slider.php:1826
+#: ml-slider.php:1825
 msgid "Insert slideshow"
 msgstr ""
 
-#: ml-slider.php:1861
+#: ml-slider.php:1860
 msgid "Create slides by adding text, videos and more to your images"
 msgstr ""
 
-#: ml-slider.php:1865
+#: ml-slider.php:1864
 msgid "With Layer slides, you can create beautiful, stylish layers of different elements."
 msgstr ""
 
-#: ml-slider.php:1869
+#: ml-slider.php:1868
 msgid "You start with an image and then can add text, video, colors, animations, more images, and even shortcodes."
 msgstr ""
 
-#: ml-slider.php:1875
-#: ml-slider.php:1916
-#: ml-slider.php:1957
-#: ml-slider.php:2000
-#: ml-slider.php:2043
-#: ml-slider.php:2086
-#: ml-slider.php:2129
+#: ml-slider.php:1874
+#: ml-slider.php:1915
+#: ml-slider.php:1956
+#: ml-slider.php:1999
+#: ml-slider.php:2042
+#: ml-slider.php:2085
+#: ml-slider.php:2128
+#: admin/assets/dist/js/app.js:2
 msgid "Find out more about MetaSlider Pro"
 msgstr ""
 
-#: ml-slider.php:1904
+#: ml-slider.php:1903
 msgid "Create slideshows with your Vimeo videos"
 msgstr ""
 
-#: ml-slider.php:1908
+#: ml-slider.php:1907
 msgid "With Vimeo slides, you can build beautiful slideshows with your Vimeo videos."
 msgstr ""
 
-#: ml-slider.php:1912
+#: ml-slider.php:1911
 msgid "Vimeo slides will display your videos with auto play, mute, the ability to hide controls, and much more."
 msgstr ""
 
-#: ml-slider.php:1945
+#: ml-slider.php:1944
 msgid "Create slideshows with your YouTube videos"
 msgstr ""
 
-#: ml-slider.php:1949
+#: ml-slider.php:1948
 msgid "With YouTube slides, you can build beautiful slideshows with your YouTube videos."
 msgstr ""
 
-#: ml-slider.php:1953
+#: ml-slider.php:1952
 msgid "YouTube slides will display your videos with auto play, mute, lazy load, the ability to hide controls, and much more."
 msgstr ""
 
-#: ml-slider.php:1986
+#: ml-slider.php:1985
 msgid "Create slideshows with your posts"
 msgstr ""
 
-#: ml-slider.php:1990
+#: ml-slider.php:1989
 msgid "With Post Feed slides, you can build slideshows with your latest posts, events, or WooCommerce products."
 msgstr ""
 
-#: ml-slider.php:1994
+#: ml-slider.php:1993
 msgid "Post Feed slides will automatically display your posts with images, text, custom fields, and much more."
 msgstr ""
 
-#: ml-slider.php:2029
+#: ml-slider.php:2028
 msgid "Create slideshows with images stored outside of WordPress"
 msgstr ""
 
-#: ml-slider.php:2033
+#: ml-slider.php:2032
 msgid "With External URL slides, you can load images directly from non-WordPress sources such as CDNs or image hosts."
 msgstr ""
 
-#: ml-slider.php:2037
+#: ml-slider.php:2036
 msgid "External URL slides give you all the power of MetaSlider, using images stored anywhere you want."
 msgstr ""
 
-#: ml-slider.php:2072
+#: ml-slider.php:2071
 msgid "Create slideshows with videos in your media library"
 msgstr ""
 
-#: ml-slider.php:2076
+#: ml-slider.php:2075
 msgid "With Local Video slides, you can build beautiful slideshows with videos in your WordPress media library."
 msgstr ""
 
-#: ml-slider.php:2080
+#: ml-slider.php:2079
 msgid "Local Video slides will display your MP4, WebM, and MOV videos with cover images, auto play, mute, lazy load, the ability to hide controls, and much more."
 msgstr ""
 
-#: ml-slider.php:2115
+#: ml-slider.php:2114
 msgid "Create slideshows with videos stored outside of WordPress"
 msgstr ""
 
-#: ml-slider.php:2119
+#: ml-slider.php:2118
 msgid "With External Video slides, you can add videos directly from non-WordPress sources."
 msgstr ""
 
-#: ml-slider.php:2123
+#: ml-slider.php:2122
 msgid "External Video Slides will display your MP4, WebM, and MOV videos. Features include text captions, cover images, auto play, mute, lazy load, the ability to hide controls, and much more."
 msgstr ""
 
-#: ml-slider.php:2166
+#: ml-slider.php:2165
 msgid "Premium Support"
 msgstr ""
 
-#: ml-slider.php:2172
+#: ml-slider.php:2171
 msgid "MetaSlider Pro"
 msgstr ""
 
-#: ml-slider.php:2176
+#: ml-slider.php:2175
 msgid "Support"
 msgstr ""
 
-#: ml-slider.php:2181
+#: ml-slider.php:2180
 msgid "Documentation"
 msgstr ""
 
-#: ml-slider.php:2185
+#: ml-slider.php:2184
 msgid "Leave a review"
 msgstr ""
 
@@ -1611,27 +1631,27 @@ msgstr ""
 
 #: admin/assets/dist/js/admin.js:1
 #: admin/assets/js/admin.js:152
-#: admin/assets/js/admin.js:940
+#: admin/assets/js/admin.js:948
 msgid "1 slide added successfully"
 msgstr ""
 
 #: admin/assets/dist/js/admin.js:1
-#: admin/assets/js/admin.js:193
+#: admin/assets/js/admin.js:201
 msgid "Opening add slide UI..."
 msgstr ""
 
 #: admin/assets/dist/js/admin.js:1
-#: admin/assets/js/admin.js:196
+#: admin/assets/js/admin.js:204
 msgid "Closing add slide UI..."
 msgstr ""
 
 #: admin/assets/dist/js/admin.js:1
-#: admin/assets/js/admin.js:285
+#: admin/assets/js/admin.js:293
 msgid "Updating slide..."
 msgstr ""
 
 #: admin/assets/dist/js/admin.js:1
-#: admin/assets/js/admin.js:336
+#: admin/assets/js/admin.js:344
 msgid "Slide updated successfully"
 msgstr ""
 
@@ -1648,7 +1668,7 @@ msgid "CSS Manager"
 msgstr ""
 
 #: admin/assets/dist/js/app.js:2
-msgid "Easily add custom CSS to your slideshows to customize and fit your theme perfectly."
+msgid "Easily add custom CSS to your slideshows to create the perfect design for your sites."
 msgstr ""
 
 #: admin/assets/dist/js/app.js:2
@@ -1661,26 +1681,6 @@ msgstr ""
 
 #: admin/assets/dist/js/app.js:2
 msgid "Includes recipes to solve common scenarios."
-msgstr ""
-
-#: admin/assets/dist/js/app.js:2
-msgid "Upgrade to pro now"
-msgstr ""
-
-#: admin/assets/dist/js/app.js:2
-msgid "Upgrading also includes:"
-msgstr ""
-
-#: admin/assets/dist/js/app.js:2
-msgid "Layer, video and post type slides."
-msgstr ""
-
-#: admin/assets/dist/js/app.js:2
-msgid "Slide scheduling - decide when slides appear."
-msgstr ""
-
-#: admin/assets/dist/js/app.js:2
-msgid "Premium support - ask us anyting!"
 msgstr ""
 
 #: admin/assets/dist/js/app.js:2
@@ -2377,14 +2377,6 @@ msgstr ""
 
 #: admin/assets/dist/js/app.js:2
 msgid "Help Improve MetaSlider"
-msgstr ""
-
-#: admin/assets/dist/js/app.js:2
-msgid "Enable Gallery (Beta)"
-msgstr ""
-
-#: admin/assets/dist/js/app.js:2
-msgid "Fast, SEO-focused, fully WCAG accessible and easy to use galleries."
 msgstr ""
 
 #: admin/assets/dist/js/app.js:2

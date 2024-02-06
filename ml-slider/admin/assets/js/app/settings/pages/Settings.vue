@@ -58,10 +58,6 @@
                     <small v-if="Object.prototype.hasOwnProperty.call(optinInfo, 'id')" class="italic">Activated by user id #{{ optinInfo.id }} ({{ optinInfo.email }}) on {{ new Date(optinInfo.time * 1000).toLocaleDateString() }}</small>
                 </template>
 			</switch-single-input>
-			<switch-single-input v-model="globalSettings.gallery" @change="saveGlobalSettings()">
-				<template slot="header">{{ __('Enable Gallery (Beta)', 'ml-slider') }}</template>
-				<template slot="description">{{ __('Fast, SEO-focused, fully WCAG accessible and easy to use galleries.', 'ml-slider') }}</template>
-			</switch-single-input>
 			<switch-single-input v-model="globalSettings.mobileSettings" @change="saveGlobalSettings()">
 				<template slot="header">{{ __('Enable Mobile Settings (Beta)', 'ml-slider') }}</template>
 				<template slot="description">{{ __('Add option to hide slides and captions per screen size.', 'ml-slider') }}</template>
@@ -175,12 +171,11 @@ export default {
             globalSettings: {
 				license: '',
 				optIn: false,
-				gallery: false,
 				adminBar: true,
 				editLink: false,
 				legacy: true,
 				newSlideOrder: 'last',
-				mobileSettings: false,
+				mobileSettings: true,
 			},
 			legacySlideshows: {}
 

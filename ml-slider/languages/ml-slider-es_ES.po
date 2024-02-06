@@ -5,8 +5,8 @@ msgstr ""
 "Project-Id-Version: Plugins - Slider, Gallery, and Carousel by MetaSlider "
 "&#8211; Responsive WordPress Slideshows - Stable (latest release)\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/project\n"
-"POT-Creation-Date: 2023-12-07T16:26:38+00:00\n"
-"PO-Revision-Date: 2023-12-08 16:42+0100\n"
+"POT-Creation-Date: 2023-12-13T14:10:19+00:00\n"
+"PO-Revision-Date: 2023-12-14 12:53+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es\n"
@@ -18,7 +18,6 @@ msgstr ""
 
 #. Plugin Name of the plugin
 #. Author of the plugin
-#: admin/views/pages/upgrade.php:10 admin/views/pages/upgrade.php:11
 msgid "MetaSlider"
 msgstr "MetaSlider"
 
@@ -107,8 +106,8 @@ msgstr "Leer más"
 
 #: admin/Notices.php:358 admin/support/Analytics.php:66
 #: inc/slide/metaslide.class.php:141 inc/slide/metaslide.image.class.php:123
-#: inc/slide/metaslide.image.class.php:227 ml-slider.php:785 ml-slider.php:867
-#: ml-slider.php:979 ml-slider.php:2339 ml-slider.php:2380
+#: inc/slide/metaslide.image.class.php:227 ml-slider.php:790 ml-slider.php:872
+#: ml-slider.php:984 ml-slider.php:2328 ml-slider.php:2369
 msgid "The security check failed. Please refresh the page and try again."
 msgstr ""
 "La comprobación de seguridad ha fallado. Por favor, actualiza la página e "
@@ -117,15 +116,15 @@ msgstr ""
 #: admin/Notices.php:366 inc/slide/metaslide.class.php:149
 #: inc/slide/metaslide.image.class.php:131
 #: inc/slide/metaslide.image.class.php:150
-#: inc/slide/metaslide.image.class.php:235 ml-slider.php:793 ml-slider.php:875
-#: ml-slider.php:987 ml-slider.php:2347 ml-slider.php:2388
+#: inc/slide/metaslide.image.class.php:235 ml-slider.php:798 ml-slider.php:880
+#: ml-slider.php:992 ml-slider.php:2336 ml-slider.php:2377
 msgid "Access denied"
 msgstr "Acceso denegado"
 
 #: admin/Notices.php:374 inc/slide/metaslide.class.php:158
 #: inc/slide/metaslide.image.class.php:140
-#: inc/slide/metaslide.image.class.php:244 ml-slider.php:802 ml-slider.php:884
-#: ml-slider.php:996 ml-slider.php:2356 ml-slider.php:2397
+#: inc/slide/metaslide.image.class.php:244 ml-slider.php:807 ml-slider.php:889
+#: ml-slider.php:1001 ml-slider.php:2345 ml-slider.php:2386
 msgid "Bad request"
 msgstr "Solicitud incorrecta"
 
@@ -255,7 +254,7 @@ msgstr "Siguiente"
 msgid "No themes found."
 msgstr "No se han encontrado temas."
 
-#: admin/slideshows/Themes.php:265
+#: admin/slideshows/Themes.php:270
 msgid ""
 "We removed your selected theme as it could not be found. Was the folder "
 "deleted?"
@@ -267,7 +266,7 @@ msgstr ""
 msgid "Published"
 msgstr "Publicado"
 
-#: admin/Table.php:48 admin/Table.php:76 admin/Table.php:314
+#: admin/Table.php:48 admin/Table.php:76 admin/Table.php:328
 msgid "Trash"
 msgstr "Papelera"
 
@@ -289,11 +288,11 @@ msgstr "Creado"
 msgid "Shortcode"
 msgstr "Shortcode"
 
-#: admin/Table.php:71 admin/Table.php:299 inc/slide/metaslide.class.php:394
+#: admin/Table.php:71 admin/Table.php:313 inc/slide/metaslide.class.php:407
 msgid "Restore"
 msgstr "Restaurar"
 
-#: admin/Table.php:72 admin/Table.php:300 inc/slide/metaslide.class.php:404
+#: admin/Table.php:72 admin/Table.php:314 inc/slide/metaslide.class.php:417
 msgid "Delete Permanently"
 msgstr "Borrar permanentemente"
 
@@ -301,7 +300,7 @@ msgstr "Borrar permanentemente"
 msgid "Click to copy shortcode."
 msgstr "Haz clic para copiar el shortcode."
 
-#: admin/Table.php:313
+#: admin/Table.php:327
 msgid "Edit"
 msgstr "Editar"
 
@@ -922,7 +921,7 @@ msgstr "Duplica este pase de diapositivas"
 msgid "Duplicate"
 msgstr "Duplicar"
 
-#: admin/views/pages/parts/toolbar.php:86
+#: admin/views/pages/parts/toolbar.php:86 admin/views/pages/upgrade.php:110
 msgid "Add custom CSS"
 msgstr "Añadir CSS personalizado"
 
@@ -942,7 +941,7 @@ msgstr "Guardar presentación de diapositivas"
 msgid "Save"
 msgstr "Guardar"
 
-#: admin/views/pages/parts/toolbar.php:125 ml-slider.php:1704
+#: admin/views/pages/parts/toolbar.php:125 ml-slider.php:1689
 msgid "Return to Published Slides"
 msgstr "Volver a las diapositivas publicadas"
 
@@ -1012,157 +1011,150 @@ msgstr "Carrusel de diapositivas con subtítulos"
 msgid "Create a Slideshow"
 msgstr "Crear una presentación de diapositivas"
 
-#: admin/views/pages/upgrade.php:9
+#: admin/views/pages/upgrade.php:13
 msgid "Comparison Chart"
 msgstr "Gráfico de comparación"
 
-#: admin/views/pages/upgrade.php:10
-msgid "free"
-msgstr "gratis"
+#: admin/views/pages/upgrade.php:20
+msgid "Free"
+msgstr "Gratuito"
 
-#: admin/views/pages/upgrade.php:11
-msgid "pro"
-msgstr "pro"
+#: admin/views/pages/upgrade.php:21
+#| msgid "pro"
+msgid "Pro"
+msgstr "Pro"
 
-#: admin/views/pages/upgrade.php:17 admin/views/pages/upgrade.php:109
+#: admin/views/pages/upgrade.php:25 admin/views/pages/upgrade.php:144
 msgid "Installed"
 msgstr "Instalado"
 
-#: admin/views/pages/upgrade.php:18 admin/views/pages/upgrade.php:110
+#: admin/views/pages/upgrade.php:26 admin/views/pages/upgrade.php:145
 #: admin/assets/dist/js/app.js:2
 msgid "Upgrade now"
 msgstr "Actualizar ahora"
 
-#: admin/views/pages/upgrade.php:22
+#: admin/views/pages/upgrade.php:30
 msgid "Create unlimited slideshows"
 msgstr "Crear ilimitados pases de diapositivas"
 
-#: admin/views/pages/upgrade.php:23
+#: admin/views/pages/upgrade.php:31
 msgid "Create and manage as many slideshows as you need."
 msgstr "Crea y gestiona tantas diapositivas como necesites."
 
-#: admin/views/pages/upgrade.php:24 admin/views/pages/upgrade.php:25
-#: admin/views/pages/upgrade.php:31 admin/views/pages/upgrade.php:32
-#: admin/views/pages/upgrade.php:38 admin/views/pages/upgrade.php:39
-#: admin/views/pages/upgrade.php:45 admin/views/pages/upgrade.php:46
-#: admin/views/pages/upgrade.php:53 admin/views/pages/upgrade.php:60
-#: admin/views/pages/upgrade.php:67 admin/views/pages/upgrade.php:74
-#: admin/views/pages/upgrade.php:81 admin/views/pages/upgrade.php:88
-#: admin/views/pages/upgrade.php:96 admin/views/pages/upgrade.php:103
-msgid "Yes"
-msgstr "Sí"
-
-#: admin/views/pages/upgrade.php:29
-msgid "Multiple slideshow types"
-msgstr "Varios tipos de pases de diapostivas"
-
-#: admin/views/pages/upgrade.php:30
-msgctxt "\"FlexSlider\" and \"Nivo Slider\" are plugin names."
-msgid "Including FlexSlider, Nivo Slider and we will soon be adding more."
-msgstr "Incluyendo FlexSlider, Nivo Slider y pronto añadiremos más."
-
-#: admin/views/pages/upgrade.php:36
+#: admin/views/pages/upgrade.php:38
 msgid "Regular updates"
 msgstr "Actualizaciones periódicas."
 
-#: admin/views/pages/upgrade.php:37
-msgctxt "Keep the plugin name \"MetaSlider\" when possible"
-msgid ""
-"Our word to keep MetaSlider compatible with the latest versions of WordPress."
+#: admin/views/pages/upgrade.php:39
+msgid "We keep MetaSlider compatible with the latest versions of WordPress."
 msgstr ""
-"Nuestra palabra de mantener MetaSlider compatible con las últimas versiones "
-"de WordPress."
+"Mantenemos MetaSlider compatible con las últimas versiones de WordPress."
 
-#: admin/views/pages/upgrade.php:43
+#: admin/views/pages/upgrade.php:46
 msgid "Intelligent image cropping"
 msgstr "Recorte inteligente de la imagen"
 
-#: admin/views/pages/upgrade.php:44
-msgctxt "Keep the branding \"Smart Crop\" together when possible"
+#: admin/views/pages/upgrade.php:47
 msgid ""
 "Unique Smart Crop functionality ensures your slides are perfectly resized."
 msgstr ""
 "La funcionalidad única de recorte inteligente asegura que tus diapositivas "
 "se redimensionen a la perfección."
 
-#: admin/views/pages/upgrade.php:50
+#: admin/views/pages/upgrade.php:54
 msgid "Thumbnail navigation"
 msgstr "Navegación por miniaturas"
 
-#: admin/views/pages/upgrade.php:51
-msgid "Easily allow users to navigate your slideshows by thumbnails."
+#: admin/views/pages/upgrade.php:55
+msgid "Allow users to browse your slideshows using thumbnail navigation."
 msgstr ""
-"Permite navegar a tu usuarios de manera sencilla  por tus pases de "
-"diapositivas con miniaturas."
+"Permite navegar a tu usuarios de manera sencilla por tus pases de "
+"diapositivas usando las miniaturas."
 
-#: admin/views/pages/upgrade.php:52 admin/views/pages/upgrade.php:59
-#: admin/views/pages/upgrade.php:66 admin/views/pages/upgrade.php:73
-#: admin/views/pages/upgrade.php:80 admin/views/pages/upgrade.php:87
-#: admin/views/pages/upgrade.php:95 admin/views/pages/upgrade.php:102
-msgid "No"
-msgstr "No"
+#: admin/views/pages/upgrade.php:62
+msgid "Add YouTube and Vimeo slides"
+msgstr "Añadir diapositivas de vídeo de YouTube y de Vimeo"
 
-#: admin/views/pages/upgrade.php:57
-msgid "Add video slides"
-msgstr "Añadir diapositivas de video"
-
-#: admin/views/pages/upgrade.php:58
-msgctxt "\"YouTube\" and \"Vimeo\" are brand names."
+#: admin/views/pages/upgrade.php:63
 msgid "Easily include responsive high definition YouTube and Vimeo videos."
-msgstr "Incluye fácilmente videos de alta definición en YouTube y Vimeo."
+msgstr ""
+"Incluye fácilmente vídeos adaptables de alta definición de YouTube y de "
+"Vimeo."
 
-#: admin/views/pages/upgrade.php:64
-msgid "HTML overlay slides"
-msgstr "Diapositivas de superposición HTML"
+#: admin/views/pages/upgrade.php:70
+msgid "Add local video slides"
+msgstr "Añadir diapositivas de vídeo local"
 
-#: admin/views/pages/upgrade.php:65
+#: admin/views/pages/upgrade.php:71
+msgid "Create slideshows with videos from your WordPress media library."
+msgstr ""
+"Crea pases de diapositivas con los vídeos de tu bliblioteca de medios de "
+"WordPress."
+
+#: admin/views/pages/upgrade.php:78
+msgid "Add external video slides"
+msgstr "Añadir diapositivas de vídeo externo"
+
+#: admin/views/pages/upgrade.php:79
+msgid "Create slideshows with external videos."
+msgstr "Crea pases de diapositivas con tus vídeos externos"
+
+#: admin/views/pages/upgrade.php:86
+msgid "Add HTML overlay slides"
+msgstr "Añadir diapositivas de superposición HTML"
+
+#: admin/views/pages/upgrade.php:87
 msgid "Create completely customized HTML slides using the inline editor."
 msgstr ""
 "Crea diapositivas HTML completamente personalizadas con el editor integrado."
 
-#: admin/views/pages/upgrade.php:71
+#: admin/views/pages/upgrade.php:94
 msgid "Add slide layers"
 msgstr "Añadir capas a la diapositiva"
 
-#: admin/views/pages/upgrade.php:72
+#: admin/views/pages/upgrade.php:95
 msgid "Add layers to your slides with over 50 available transition effects."
 msgstr ""
 "Agrega capas a tus diapositivas con más de 50 efectos de transición "
 "disponibles."
 
-#: admin/views/pages/upgrade.php:78
-msgid "Post feed slides"
-msgstr "Diapositivas de lista de entradas"
+#: admin/views/pages/upgrade.php:102
+msgid "Add Post Feed slides"
+msgstr "Añadir feed de diapositivas"
 
-#: admin/views/pages/upgrade.php:79
+#: admin/views/pages/upgrade.php:103
 msgid "Easily build slides based on your WordPress posts."
 msgstr "Construye fácilmente diapositivas en base a tus entradas de WordPress."
 
-#: admin/views/pages/upgrade.php:85
+#: admin/views/pages/upgrade.php:111
+msgid "Customize your slideshows to fit with your website."
+msgstr "Personaliza tus pases de diapositivas para adaptarlos a tu web."
+
+#: admin/views/pages/upgrade.php:118
 msgid "Schedule your slides"
 msgstr "Programa tus diapositivas"
 
-#: admin/views/pages/upgrade.php:86
+#: admin/views/pages/upgrade.php:119
 msgid "Add a start/end date to individual slides."
 msgstr "Añade una fecha de inicio/fin a diapositivas individuales."
 
-#: admin/views/pages/upgrade.php:93
+#: admin/views/pages/upgrade.php:126
 msgid "Toggle your slide's visibility"
 msgstr "Cambia la visibilidad de tu diapositiva"
 
-#: admin/views/pages/upgrade.php:94
-msgid "Allows you to hide any slide, without having to delete them."
-msgstr "Te permite oculta cualquier diapositiva, sin tener que borrarla."
+#: admin/views/pages/upgrade.php:127
+msgid "Hide any slide, without having to delete them."
+msgstr "Oculta cualquier diapositiva, sin tener que borrarla."
 
-#: admin/views/pages/upgrade.php:100
+#: admin/views/pages/upgrade.php:134
 msgid "Premium support"
 msgstr "Soporte Premium"
 
-#: admin/views/pages/upgrade.php:101
-msgid "Have your specific queries addressed directly by our experts"
+#: admin/views/pages/upgrade.php:135
+msgid "Have your specific queries addressed directly by our experts."
 msgstr ""
 "Haz que tus consultas específicas sean tratadas directamente por nuestros "
-"expertos"
+"expertos."
 
 #: admin/views/slides/tabs/crop.php:5
 msgid "Crop Position"
@@ -1293,7 +1285,7 @@ msgstr "Titulo:"
 msgid "Select Slider:"
 msgstr "Seleccionar pase"
 
-#: inc/metaslider.widget.class.php:125 ml-slider.php:1842
+#: inc/metaslider.widget.class.php:125 ml-slider.php:1831
 #: admin/assets/dist/js/app.js:2
 msgid "No slideshows found"
 msgstr "No se han encontrado presentaciones de diapositivas"
@@ -1317,12 +1309,12 @@ msgstr ""
 "Ha habido un error al actualizar la base de datos. Por favor, inténtalo de "
 "nuevo."
 
-#: inc/slide/metaslide.class.php:384
+#: inc/slide/metaslide.class.php:397
 msgid "Trash slide"
 msgstr "Mover la diapositiva a la basura"
 
-#: inc/slide/metaslide.class.php:416 inc/slide/metaslide.class.php:658
-#: inc/slide/metaslide.class.php:659
+#: inc/slide/metaslide.class.php:429 inc/slide/metaslide.class.php:671
+#: inc/slide/metaslide.class.php:672
 msgid "Update slide image"
 msgstr "Actualizar imagen de la diapositiva"
 
@@ -1343,23 +1335,23 @@ msgid "Warning: The image data does not exist. Please re-upload the image."
 msgstr ""
 "Advertencia: No existen datos de la imagen. Vuelve a subirla, por favor."
 
-#: inc/slide/metaslide.image.class.php:405
+#: inc/slide/metaslide.image.class.php:403
 msgid "General"
 msgstr "General"
 
-#: inc/slide/metaslide.image.class.php:409
+#: inc/slide/metaslide.image.class.php:407
 msgid "SEO"
 msgstr "SEO"
 
-#: inc/slide/metaslide.image.class.php:413
+#: inc/slide/metaslide.image.class.php:423
 msgid "Mobile"
 msgstr "Móvil"
 
-#: inc/slide/metaslide.image.class.php:430
+#: inc/slide/metaslide.image.class.php:440
 msgid "Crop"
 msgstr "Recortar"
 
-#: inc/slide/metaslide.image.class.php:442
+#: inc/slide/metaslide.image.class.php:452
 msgid "Schedule"
 msgstr "Programar"
 
@@ -1375,87 +1367,87 @@ msgstr ""
 "MetaSlider Pro está instalado pero no está actualizado. Puedes actualizarlo "
 "%saquí%s. Leer más sobre este aviso %saquí%s"
 
-#: ml-slider.php:462
+#: ml-slider.php:467
 msgid "Home"
 msgstr "Inicio"
 
-#: ml-slider.php:463
+#: ml-slider.php:468
 msgid "Quick Start"
 msgstr "Inicio rápido"
 
-#: ml-slider.php:464
+#: ml-slider.php:469
 msgid "Settings & Help"
 msgstr "Ajustes y ayuda"
 
-#: ml-slider.php:467
+#: ml-slider.php:472
 msgid "Upgrade to Pro"
 msgstr "Actualizar a Pro"
 
-#: ml-slider.php:504 ml-slider.php:507
+#: ml-slider.php:509 ml-slider.php:512
 msgid "All Slideshows"
 msgstr "Todos pases de diapositivas"
 
-#: ml-slider.php:515 ml-slider.php:518
+#: ml-slider.php:520 ml-slider.php:523
 msgid "Create Slideshow"
 msgstr "Crear una presentación de diapositivas"
 
-#: ml-slider.php:645
+#: ml-slider.php:650
 msgid "Image"
 msgstr "Imagen"
 
-#: ml-slider.php:646
+#: ml-slider.php:651
 msgid "Add to slideshow"
 msgstr "Añadir a la presentación de diapositivas"
 
-#: ml-slider.php:686
+#: ml-slider.php:691
 msgid "Post Feed"
 msgstr "Feed de la entrada"
 
-#: ml-slider.php:687
+#: ml-slider.php:692
 msgid "Vimeo"
 msgstr "Vimeo"
 
-#: ml-slider.php:688
+#: ml-slider.php:693
 msgid "YouTube"
 msgstr "YouTube"
 
-#: ml-slider.php:689
+#: ml-slider.php:694
 msgid "Layer Slide"
 msgstr "Capa de corte"
 
-#: ml-slider.php:690
+#: ml-slider.php:695
 msgid "External URL"
 msgstr "URL externa"
 
-#: ml-slider.php:691
+#: ml-slider.php:696
 msgid "Local Video"
 msgstr "Vídeo local"
 
-#: ml-slider.php:692
+#: ml-slider.php:697
 msgid "External Video"
 msgstr "Vídeo externo"
 
-#: ml-slider.php:817
+#: ml-slider.php:822
 msgid "The slide was successfully restored"
 msgstr "La diapositiva se ha restaurado correctamente"
 
-#: ml-slider.php:840
+#: ml-slider.php:845
 msgid "The attempt to restore the slide failed."
 msgstr "El intento de recuperar la diapositiva ha fallado."
 
-#: ml-slider.php:899
+#: ml-slider.php:904
 msgid "The slide was successfully trashed"
 msgstr "La diapositiva se ha eliminado correctamente"
 
-#: ml-slider.php:1011
+#: ml-slider.php:1016
 msgid "The slide was permanently deleted"
 msgstr "La diapositiva ha sido borrado permanentemente"
 
-#: ml-slider.php:1648
+#: ml-slider.php:1633
 msgid "Trashed Slides"
 msgstr "Diapositivas eliminadas"
 
-#: ml-slider.php:1694
+#: ml-slider.php:1679
 msgid ""
 "You are viewing slides that have been trashed, which will be automatically "
 "deleted in %s days."
@@ -1463,36 +1455,36 @@ msgstr ""
 "Estás viendo diapositivas que se han movido a la papelera, que se borrarán "
 "automáticamente en %s días."
 
-#: ml-slider.php:1744
+#: ml-slider.php:1733
 msgid "Move slideshow to trash"
 msgstr "Mover el pase de diapositivas a la papelera"
 
-#: ml-slider.php:1790
+#: ml-slider.php:1779
 msgid "Select slideshow to insert into post"
 msgstr "Selecciona presentación de diapositivas para insertar en la entrada"
 
-#: ml-slider.php:1792
+#: ml-slider.php:1781
 msgid "Add slideshow"
 msgstr "Añadir presentación de diapositivas"
 
-#: ml-slider.php:1821
+#: ml-slider.php:1810
 msgctxt "Keep the plugin name \"MetaSlider\" when possible"
 msgid "Insert MetaSlider"
 msgstr "Insertar MetaSlider"
 
-#: ml-slider.php:1827
+#: ml-slider.php:1816
 msgid "Choose slideshow"
 msgstr "Elige presentación de diapositivas"
 
-#: ml-slider.php:1837
+#: ml-slider.php:1826
 msgid "Insert slideshow"
 msgstr "Insertar presentación de diapositivas"
 
-#: ml-slider.php:1872
+#: ml-slider.php:1861
 msgid "Create slides by adding text, videos and more to your images"
 msgstr "Crea diapositivas añadiendo texto, vídeos y mucho más a tus imágenes"
 
-#: ml-slider.php:1876
+#: ml-slider.php:1865
 msgid ""
 "With Layer slides, you can create beautiful, stylish layers of different "
 "elements."
@@ -1500,7 +1492,7 @@ msgstr ""
 "Con las diapositivas de capas, puede crear capas hermosas y elegantes de "
 "diferentes elementos."
 
-#: ml-slider.php:1880
+#: ml-slider.php:1869
 msgid ""
 "You start with an image and then can add text, video, colors, animations, "
 "more images, and even shortcodes."
@@ -1508,23 +1500,23 @@ msgstr ""
 "Empiezas con una imagen y luego puedes añadir texto, vídeo, colores, "
 "animaciones, más imágenes e incluso shortcodes."
 
-#: ml-slider.php:1886 ml-slider.php:1927 ml-slider.php:1968 ml-slider.php:2011
-#: ml-slider.php:2054 ml-slider.php:2097 ml-slider.php:2140
+#: ml-slider.php:1875 ml-slider.php:1916 ml-slider.php:1957 ml-slider.php:2000
+#: ml-slider.php:2043 ml-slider.php:2086 ml-slider.php:2129
 msgid "Find out more about MetaSlider Pro"
 msgstr "Más información acerca de MetaSlider Pro"
 
-#: ml-slider.php:1915
+#: ml-slider.php:1904
 msgid "Create slideshows with your Vimeo videos"
 msgstr "Crea pases de diapositivas con tus vídeos de Vimeo"
 
-#: ml-slider.php:1919
+#: ml-slider.php:1908
 msgid ""
 "With Vimeo slides, you can build beautiful slideshows with your Vimeo videos."
 msgstr ""
 "Con las diapositivas de Vimeo, puedes crear hermosas presentaciones con tus "
 "vídeos de Vimeo."
 
-#: ml-slider.php:1923
+#: ml-slider.php:1912
 msgid ""
 "Vimeo slides will display your videos with auto play, mute, the ability to "
 "hide controls, and much more."
@@ -1532,11 +1524,11 @@ msgstr ""
 "Las diapositivas de Vimeo mostrarán tus vídeos con reproducción automática, "
 "silencio, posibilidad de ocultar controles y mucho más."
 
-#: ml-slider.php:1956
+#: ml-slider.php:1945
 msgid "Create slideshows with your YouTube videos"
 msgstr "Crea pases de diapositivas con tus vídeos de YouTube"
 
-#: ml-slider.php:1960
+#: ml-slider.php:1949
 msgid ""
 "With YouTube slides, you can build beautiful slideshows with your YouTube "
 "videos."
@@ -1544,7 +1536,7 @@ msgstr ""
 "Con las diapositivas de YouTube, puedes crear hermosas presentaciones con "
 "tus vídeos de YouTube."
 
-#: ml-slider.php:1964
+#: ml-slider.php:1953
 msgid ""
 "YouTube slides will display your videos with auto play, mute, lazy load, the "
 "ability to hide controls, and much more."
@@ -1552,11 +1544,11 @@ msgstr ""
 "Las diapositivas de YouTube mostrarán tus vídeos con reproducción "
 "automática, silencio, posibilidad de ocultar controles y mucho más."
 
-#: ml-slider.php:1997
+#: ml-slider.php:1986
 msgid "Create slideshows with your posts"
 msgstr "Crea pases de diapositivas con tus entradas"
 
-#: ml-slider.php:2001
+#: ml-slider.php:1990
 msgid ""
 "With Post Feed slides, you can build slideshows with your latest posts, "
 "events, or WooCommerce products."
@@ -1564,7 +1556,7 @@ msgstr ""
 "Con las diapositivas de feed de entradas, puedes crear presentaciones con "
 "tus últimas entradas, eventos o productos de WooCommerce."
 
-#: ml-slider.php:2005
+#: ml-slider.php:1994
 msgid ""
 "Post Feed slides will automatically display your posts with images, text, "
 "custom fields, and much more."
@@ -1572,11 +1564,11 @@ msgstr ""
 "Las diapositivas de feed de entradas mostrarán automáticamente tus entradas "
 "con imágenes, texto, campos personalizados y mucho más."
 
-#: ml-slider.php:2040
+#: ml-slider.php:2029
 msgid "Create slideshows with images stored outside of WordPress"
 msgstr "Crea pases de diapositivas con imágenes almacenadas fuera de WordPress"
 
-#: ml-slider.php:2044
+#: ml-slider.php:2033
 msgid ""
 "With External URL slides, you can load images directly from non-WordPress "
 "sources such as CDNs or image hosts."
@@ -1584,7 +1576,7 @@ msgstr ""
 "Con las diapositivas URL externas, puedes cargar imágenes directamente desde "
 "fuentes ajenas a WordPress, como CDN o hosts de imágenes."
 
-#: ml-slider.php:2048
+#: ml-slider.php:2037
 msgid ""
 "External URL slides give you all the power of MetaSlider, using images "
 "stored anywhere you want."
@@ -1592,11 +1584,11 @@ msgstr ""
 "Las diapositivas URL externas te ofrecen toda la potencia de MetaSlider, "
 "utilizando imágenes almacenadas en cualquier lugar que desees."
 
-#: ml-slider.php:2083
+#: ml-slider.php:2072
 msgid "Create slideshows with videos in your media library"
 msgstr "Crea pases de diapositivas con los videos de tu bliblioteca de medios"
 
-#: ml-slider.php:2087
+#: ml-slider.php:2076
 msgid ""
 "With Local Video slides, you can build beautiful slideshows with videos in "
 "your WordPress media library."
@@ -1604,7 +1596,7 @@ msgstr ""
 "Con las diapositivas de vídeo locales, puedes crear hermosos pases de "
 "diapositivas con los vídeos de tu biblioteca de medios de WordPress."
 
-#: ml-slider.php:2091
+#: ml-slider.php:2080
 msgid ""
 "Local Video slides will display your MP4, WebM, and MOV videos with cover "
 "images, auto play, mute, lazy load, the ability to hide controls, and much "
@@ -1614,11 +1606,11 @@ msgstr ""
 "imágenes de portada, reproducción automática, silencio, carga lenta, "
 "posibilidad de ocultar controles y mucho más."
 
-#: ml-slider.php:2126
+#: ml-slider.php:2115
 msgid "Create slideshows with videos stored outside of WordPress"
 msgstr "Crea pases de diapositivas con vídeos almacenados fuera de WordPress"
 
-#: ml-slider.php:2130
+#: ml-slider.php:2119
 msgid ""
 "With External Video slides, you can add videos directly from non-WordPress "
 "sources."
@@ -1626,7 +1618,7 @@ msgstr ""
 "Con las diapositivas de vídeo externas, puedes añadir vídeos directamente "
 "desde fuentes ajenas a WordPress."
 
-#: ml-slider.php:2134
+#: ml-slider.php:2123
 msgid ""
 "External Video Slides will display your MP4, WebM, and MOV videos. Features "
 "include text captions, cover images, auto play, mute, lazy load, the ability "
@@ -1636,23 +1628,23 @@ msgstr ""
 "leyendas de texto, imágenes de portada, reproducción automática, silencio, "
 "carga lenta, posibilidad de ocultar controles y mucho más."
 
-#: ml-slider.php:2177
+#: ml-slider.php:2166
 msgid "Premium Support"
 msgstr "Soporte premium"
 
-#: ml-slider.php:2183
+#: ml-slider.php:2172
 msgid "MetaSlider Pro"
 msgstr "MetaSlider Pro"
 
-#: ml-slider.php:2187
+#: ml-slider.php:2176
 msgid "Support"
 msgstr "Soporte"
 
-#: ml-slider.php:2192
+#: ml-slider.php:2181
 msgid "Documentation"
 msgstr "Documentación"
 
-#: ml-slider.php:2196
+#: ml-slider.php:2185
 msgid "Leave a review"
 msgstr "Deja una valoración"
 
@@ -1934,8 +1926,6 @@ msgid "Are you sure?"
 msgstr "¿Estás seguro?"
 
 #: admin/assets/dist/js/app.js:2
-#| msgid "%d slideshow moved to the Trash."
-#| msgid_plural "%d slideshows moved to the Trash."
 msgid "This slideshow will be moved to the \"Trash\" area."
 msgstr "Este pase de diapositivas se moverá a la área «Papelera»."
 
@@ -2604,14 +2594,6 @@ msgstr ""
 "consecuencia."
 
 #: admin/assets/dist/js/app.js:2
-msgid "Mobile Settings"
-msgstr "Ajustes para los móviles"
-
-#: admin/assets/dist/js/app.js:2
-msgid "Set breakpoints for different screen sizes"
-msgstr "Establece puntos de ruptura para diferentes tamaños de pantalla"
-
-#: admin/assets/dist/js/app.js:2
 msgid "100% Width"
 msgstr "Ancho 100%"
 
@@ -2658,6 +2640,23 @@ msgid "Fast, SEO-focused, fully WCAG accessible and easy to use galleries."
 msgstr ""
 "Galerías rápidas, optimizadas para SEO, totalmente accesibles para WCAG y "
 "fáciles de usar."
+
+#: admin/assets/dist/js/app.js:2
+msgid "Enable Mobile Settings (Beta)"
+msgstr "Activa los ajustes para los móviles (beta)"
+
+#: admin/assets/dist/js/app.js:2
+msgid "Add option to hide slides and captions per screen size."
+msgstr ""
+"Añadir la opción de ocultar diapositivas y leyendas por tamaño de pantalla."
+
+#: admin/assets/dist/js/app.js:2
+msgid "Mobile Settings"
+msgstr "Ajustes para los móviles"
+
+#: admin/assets/dist/js/app.js:2
+msgid "Set breakpoints for different screen sizes"
+msgstr "Establece puntos de ruptura para diferentes tamaños de pantalla"
 
 #: admin/assets/dist/js/app.js:2
 msgid "Disable Legacy Libraries (Beta)"
@@ -2720,7 +2719,6 @@ msgid "First"
 msgstr "Primero"
 
 #: admin/assets/dist/js/app.js:2
-#| msgid "No slides found"
 msgid "New slides order"
 msgstr "Nuevo orden de diapositivas"
 
@@ -3104,6 +3102,25 @@ msgstr "pase de diapositivas"
 #: admin/assets/js/gutenberg/editor-block.js:82
 msgid "gallery"
 msgstr "galería"
+
+#~ msgid "free"
+#~ msgstr "gratis"
+
+#~ msgid "Yes"
+#~ msgstr "Sí"
+
+#~ msgid "Multiple slideshow types"
+#~ msgstr "Varios tipos de pases de diapostivas"
+
+#~ msgctxt "\"FlexSlider\" and \"Nivo Slider\" are plugin names."
+#~ msgid "Including FlexSlider, Nivo Slider and we will soon be adding more."
+#~ msgstr "Incluyendo FlexSlider, Nivo Slider y pronto añadiremos más."
+
+#~ msgid "No"
+#~ msgstr "No"
+
+#~ msgid "Post feed slides"
+#~ msgstr "Diapositivas de lista de entradas"
 
 #~ msgid "Easing is only available with the 'Slide' transition setting"
 #~ msgstr ""

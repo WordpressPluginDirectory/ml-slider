@@ -603,7 +603,7 @@ class MetaSlide
     {
         /* If the post type is 'attachment', we return get_thumb() 
          * for possible backward compatibility */
-        if ( get_post_type( $this->slide->ID ) == 'attachment' ) {
+        if ( isset( $this->slide->ID ) && get_post_type( $this->slide->ID ) == 'attachment' ) {
             return $this->get_thumb();
         }
 
@@ -767,6 +767,22 @@ class MetaSlide
         if ($settings = get_option('metaslider_global_settings')) {
             return $settings;
         }
+    }
+
+    /**
+     * Get mobile CSS on al slide types
+     */
+    public function get_mobile_css_class($slide_id)
+    {
+        $device = array('smartphone', 'tablet', 'laptop', 'desktop');
+        $mobile_class = '';
+        foreach ($device as $value) {
+            $hidden_slide = get_post_meta( $slide_id , 'ml-slider_hide_slide_' . $value, true );
+            if(!empty($hidden_slide)) {
+              $mobile_class .= 'hidden_' . $value . ' ';
+            }
+        }
+        return $mobile_class;
     }
 
 }

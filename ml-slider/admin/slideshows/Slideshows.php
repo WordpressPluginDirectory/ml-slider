@@ -127,7 +127,7 @@ class MetaSlider_Slideshows
         $old_settings = get_post_meta($slideshow_id, 'ml-slider_settings', true);
 
         // convert submitted checkbox values from 'on' or 'off' to boolean values
-        $checkboxes = apply_filters("metaslider_checkbox_settings", array('noConflict', 'fullWidth', 'hoverPause', 'links', 'reverse', 'random', 'printCss', 'printJs', 'smoothHeight', 'center', 'carouselMode', 'autoPlay', 'firstSlideFadeIn', 'responsive_thumbs'));
+        $checkboxes = apply_filters("metaslider_checkbox_settings", array('noConflict', 'fullWidth', 'hoverPause', 'links', 'reverse', 'random', 'printCss', 'printJs', 'smoothHeight', 'center', 'carouselMode', 'autoPlay', 'firstSlideFadeIn', 'responsive_thumbs', 'keyboard', 'touch'));
 
         foreach ($checkboxes as $checkbox) {
             $new_settings[$checkbox] = (isset($new_settings[$checkbox]) && 'on' == $new_settings[$checkbox]) ? 'true' : 'false';

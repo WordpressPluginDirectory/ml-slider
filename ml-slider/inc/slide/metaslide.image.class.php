@@ -82,7 +82,7 @@ class MetaImageSlide extends MetaSlide
         if (!wp_attachment_is_image($data['id'])) {
             // TODO this is the old way to handle errors
             // Remove this later and handle errors using data returns
-            echo '<tr><td colspan="2">ID: ' . esc_html($data['id']) . ' "' . esc_html(get_the_title($data['id'])) . '" - ' . esc_html__("Failed to add slide. Slide is not an image.", 'ml-slider') . "</td></tr>";
+            //echo '<tr><td colspan="2">ID: ' . esc_html($data['id']) . ' "' . esc_html(get_the_title($data['id'])) . '" - ' . esc_html__("Failed to add slide. Slide is not an image.", 'ml-slider') . "</td></tr>";
 
             return new WP_Error('create_failed', __('This isn\'t an accepted image. Please try again.', 'ml-slider'), array('status' => 409));
         }
@@ -412,8 +412,8 @@ class MetaImageSlide extends MetaSlide
         $ms_slider = new MetaSliderPlugin();
         $global_settings = $ms_slider->get_global_settings();
         if (
-            isset($global_settings['mobileSettings']) &&
-            true == $global_settings['mobileSettings']
+            !isset($global_settings['mobileSettings']) ||
+            (isset($global_settings['mobileSettings']) && true == $global_settings['mobileSettings'])
         ) {
             ob_start();
             include METASLIDER_PATH . 'admin/views/slides/tabs/mobile.php';
@@ -680,6 +680,16 @@ class MetaImageSlide extends MetaSlide
             $html = $this->build_anchor_tag($anchor_attributes, $html);
         }
 
+        //add class for mobile setting
+        $device = array('smartphone', 'tablet', 'laptop', 'desktop');
+        $mobile_class = '';
+        foreach ($device as $value) {
+            $hidden_slide = get_post_meta( $this->slide->ID , 'ml-slider_hide_slide_' . $value, true );
+            if(!empty($hidden_slide)) {
+              $mobile_class .= 'hidden_' . $value . ' ';
+            }
+        }
+        
         // add caption
         if (strlen($slide['caption'])) {
             $html .= '<div class="caption-wrap"><div class="caption">' . apply_shortcodes($slide['caption']) . '</div></div>';
@@ -688,7 +698,7 @@ class MetaImageSlide extends MetaSlide
         $attributes = apply_filters('metaslider_flex_slider_list_item_attributes', array(
                 'data-thumb' => isset($slide['data-thumb']) ? $slide['data-thumb'] : "",
                 'style' => "display: none; width: 100%;",
-                'class' => "slide-{$this->slide->ID} ms-image",
+                'class' => "slide-{$this->slide->ID} ms-image {$mobile_class}",
                 'aria-roledescription' => "slide",
                 'aria-label' =>"slide-{$this->slide->ID}"
             ), $slide, $this->slider->ID);

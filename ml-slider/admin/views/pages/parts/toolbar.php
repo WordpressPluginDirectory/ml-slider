@@ -17,8 +17,8 @@
 				<?php if ($this->slider) : ?>
 				<div class="flex-grow h-full px-4">
 					<div class="-mx-4 items-center flex h-full">
-						<div class="flex items-center flex-grow px-4 h-full"></div>
-						<div class="px-4 h-full">
+						<div class="flex items-center flex-grow px-4 h-full toolbar-separator"></div>
+						<div class="px-4 h-full toolbar-actions">
 							<div class="flex justify-end items-center h-full text-gray">
 
                             <?php if (  ! metaslider_viewing_trashed_slides( $this->slider->id ) ) : ?>

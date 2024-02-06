@@ -1620,7 +1620,74 @@ td .dot.available {
 	background: #dd6923;
 }
 
+/* CSS Manager Upsell */
+.css-manager-ad-container {
+	background-color: #F0F0F1;
+	padding: 30px 0;
+}
+.css-manager-ad-container .probutton, .schedule_placeholder .probutton{
+	color: #fff;
+	background: #dd6923;
+	padding: 12px 30px !important;
+	border-radius: 5px;
+	text-decoration: none;
+	display: inline-block;
+	border: none;
+	font-size: 17px !important;
+	margin-top: 15px;
+	min-height: 46px !important;
+	line-height: 1.8 !important;
+	white-space: unset;
+}
+.schedule_placeholder .probutton {
+	margin-top: 0!important;
+	margin-bottom: 15px;
+}
+.css-manager-ad-container .dashicons.dashicons-external,
+.schedule_placeholder .dashicons.dashicons-external{
+	margin-top: 5px;
+}
+.css-manager-ad-container h1, .schedule_placeholder h1 {
+	color: #29375b;
+	font-size: 28px;
+	line-height: 1.2;
+	font-weight: 600 !important;
+}
+.schedule_placeholder h1 {
+    margin-bottom: 5px!important;
+}
+.css-manager-ad-container li,
+.css-manager-ad-container p,
+.schedule_placeholder p {
+	font-size: 16px !important;
+	font-style: normal !important;
+	color: #3c434a !important;
+}
+.css-manager-ad-container img {
+	width: 80%;
+	margin: 5% auto;
+	box-shadow: 0px 5px 5px 0px silver;
+}
+
+@media only screen and (min-width : 320px) {
+    .toolbar-separator, .toolbar-actions{
+        padding: 0!important;
+    }
+    .ms-toolbar-button {
+        padding-left: 4px!important;
+        padding-right: 4px!important;
+    }
+}
+
 @media (min-width : 768px) {
+    .toolbar-separator, .toolbar-actions{
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
+    .ms-toolbar-button {
+        padding-left: .5rem!important;
+        padding-right: .5rem!important;
+    }
     /* Quick Start */
     .metaslider-welcome .ms-panel-container > div:nth-child(2) {
         padding-left: 1rem;

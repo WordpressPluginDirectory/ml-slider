@@ -106,14 +106,14 @@ window.jQuery(function ($) {
             url: metaslider.ajaxurl,
             data: data,
             type: 'POST',
-            error: function (error) {
-                APP && APP.notifyError('metaslider/slide-create-failed', error, true)
+            error: function (xhr, status, error) {
+                var err = JSON.parse(xhr.responseText);
+                APP && APP.notifyError('metaslider/slide-create-failed', err.data.messages[1]['errors']['create_failed'][0], true)
             },
             success: function (response) {
                 if(window.location.href.indexOf('metaslider-start') > -1) {
                     window.location.href = 'admin.php?page=metaslider&id=' + response.data;
                 } else {
-                    console.log(response.data);
                     // Mount and render each new slide
                     response.data.forEach(function (slide) {
                         // TODO: Eventually move the creation to the slideshow or slide vue component
@@ -174,6 +174,11 @@ window.jQuery(function ($) {
         }
     })
 
+    create_slides.on('content:activate', function () {
+        // Remove filters to don't allow to insert other media type different to images
+        $('#media-attachment-filters').remove();
+    })
+
     /**
      * Fire events when the modal is opened
      * Available events: create_slides.on('all', function (e) { console.log(e) })
@@ -188,6 +193,9 @@ window.jQuery(function ($) {
         unwanted_media_menu_items.forEach(function (item) {
             $('#menu-item-' + item.id).remove();
         })
+
+        // Remove filters to don't allow to insert other media type different to images
+        $('#media-attachment-filters').remove();
     })
     APP && create_slides.on('open', function () {
         APP.notifyInfo('metaslider/add-slide-opening-ui', APP.__('Opening add slide UI...', 'ml-slider'))

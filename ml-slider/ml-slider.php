@@ -5,7 +5,7 @@
  * Plugin Name: MetaSlider
  * Plugin URI:  https://www.metaslider.com
  * Description: MetaSlider gives you the power to create a beautiful slideshow, carousel, or gallery on your WordPress site.
- * Version:     3.60.1
+ * Version:     3.61.0
  * Author:      MetaSlider
  * Author URI:  https://www.metaslider.com
  * License:     GPL-2.0+
@@ -42,7 +42,7 @@ if (! class_exists('MetaSliderPlugin')) {
          *
          * @var string
          */
-        public $version = '3.60.1';
+        public $version = '3.61.0';
 
         /**
          * Pro installed version number
@@ -156,7 +156,6 @@ if (! class_exists('MetaSliderPlugin')) {
             }
 
             // require_once(METASLIDER_PATH . 'admin/lib/temporary.php');
-            // require_once(METASLIDER_PATH . 'admin/lib/callout.php');
         }
 
         /**
@@ -1773,11 +1772,10 @@ if (! class_exists('MetaSliderPlugin')) {
 
             printf(
                 '
-                <a href="#TB_inline?&inlineId=choose-meta-slider" class="thickbox button" title="%s">
+                <a href="#TB_inline?&width=783&inlineId=choose-meta-slider" class="thickbox button">
                     <span class="wp-media-buttons-icon"
-                        style="background:url(%s/metaslider/matchalabs.png);background-repeat:no-repeat;background-position:left bottom;position: relative;top:-2px;right:-2px"></span>%s</a>',
-                esc_html__("Select slideshow to insert into post", "ml-slider"),
-                esc_url(METASLIDER_ASSETS_URL),
+                        style="background:url(%simages/metaslider_logo.png);background-repeat:no-repeat;background-position:left -2px;background-size: 20px;position: relative;margin-left:0;"></span>%s</a>',
+                esc_url(METASLIDER_ADMIN_URL),
                 esc_html__("Add slideshow", "ml-slider")
             );
         }
@@ -1807,12 +1805,13 @@ if (! class_exists('MetaSliderPlugin')) {
                     <div class="wrap">
                         <?php
                         if (count($sliders)) {
-                            echo "<h3 style='margin-bottom: 20px;'>" . esc_html_x(
-                                    "Insert MetaSlider",
+                            echo "<img src='" . esc_url(METASLIDER_ADMIN_URL .'images/metaslider_logo3.png' ) . "' style='width: 200px;display: block;margin: 0 auto;'>";
+                            echo "<p style='color:#29375b; font-size: 16px;text-align: center;'>" . esc_html_x(
+                                    "Select slideshow to insert into post",
                                     'Keep the plugin name "MetaSlider" when possible',
                                     "ml-slider"
-                                ) . "</h3>";
-                            echo "<select id='metaslider-select'>";
+                                ) . "</p>";
+                            echo "<div style='margin:0 15%;width:70%;'><select id='metaslider-select' style='width:70%; height: 35px;'>";
                             echo "<option disabled=disabled>" . esc_html__(
                                     "Choose slideshow",
                                     "ml-slider"
@@ -1823,10 +1822,10 @@ if (! class_exists('MetaSliderPlugin')) {
                                     ) . '</option>';
                             }
                             echo "</select>";
-                            echo '<button class="button primary" id="insertMetaSlider">' . esc_html__(
+                            echo '<button class="button button-primary button-large" id="insertMetaSlider" style="height: 35px;">' . esc_html__(
                                     "Insert slideshow",
                                     "ml-slider"
-                                ) . '</button>';
+                                ) . '</button></div>';
                         } else {
                             esc_html_e("No slideshows found", "ml-slider");
                         } ?>
@@ -2439,27 +2438,6 @@ if (! class_exists('MetaSliderPlugin')) {
 
     if (! class_exists('MetaSlider_Settings')) {
         require_once __DIR__ . '/admin/support/Settings.php';
-    }
-
-    // Load in MetaGallery unless the user wants to use the dev version
-    if (! defined('METAGALLERY_ENABLE_DEV')) {
-        define('METAGALLERY_ENABLE_DEV', false);
-    }
-
-    $global_settings = get_option( 'metaslider_global_settings' );
-
-    if ( file_exists(__DIR__ . '/metagallery/metagallery.php') 
-        && ! METAGALLERY_ENABLE_DEV 
-        && isset( $global_settings['gallery'] )
-        && (bool) $global_settings['gallery']
-    ) {
-        if (! defined('METAGALLERY_TEXTDOMAIN')) {
-            define('METAGALLERY_SIDELOAD_FROM', 'metaslider');
-            define('METAGALLERY_TEXTDOMAIN', 'ml-slider');
-            define('METAGALLERY_PATH', plugin_dir_path(__FILE__) . 'metagallery/');
-            define('METAGALLERY_BASE_URL', plugin_dir_url(__FILE__) . 'metagallery/');
-            require plugin_dir_path(__FILE__) . 'metagallery/metagallery.php';
-        }
     }
 }
 

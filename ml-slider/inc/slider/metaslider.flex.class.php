@@ -34,9 +34,25 @@ class MetaFlexSlider extends MetaSlider
         if(metaslider_pro_is_active() == false) {
             add_filter('metaslider_flex_slider_parameters', array( $this, 'metaslider_flex_loop'), 99, 3);
         }
+
+        if( metaslider_pro_is_active() ) {
+            add_filter( 'metaslider_flex_slider_parameters', array( $this, 'custom_delay_per_slide' ), 10, 3 );
+        }
         
         add_filter('metaslider_css', array( $this, 'get_carousel_css' ), 11, 3);
+        add_filter('metaslider_css', array( $this, 'hide_for_mobile' ), 11, 3);
         add_filter('metaslider_css_classes', array( $this, 'remove_bottom_margin' ), 11, 3);
+
+        $global_settings = get_option( 'metaslider_global_settings' );
+        if (
+            !isset($global_settings['mobileSettings']) ||
+            (isset($global_settings['mobileSettings']) && true == $global_settings['mobileSettings'])
+        ) {
+            if($this->check_mobile_settings() == true) {
+                add_filter("metaslider_flex_slider_javascript_before", array( $this, 'manage_responsive' ), 10, 3);
+            }
+        }
+        
     }
 
     /**
@@ -87,6 +103,27 @@ class MetaFlexSlider extends MetaSlider
 
         // we don't want this filter hanging around if there's more than one slideshow on the page
         remove_filter('metaslider_flex_slider_parameters', array( $this, 'manage_easing' ), 10, 2);
+
+        return $options;
+    }
+
+    /**
+     * Add optional custom delay per slide
+     * 
+     * @since 3.61
+     */
+    public function custom_delay_per_slide( $options, $slider_id, $settings )
+    {
+        if ( class_exists( 'MetaSliderAdvancedSettings' ) ) {
+            $get_slides = $this->get_slides();
+            $advancedSettings = new MetaSliderAdvancedSettings;
+
+            $options = $advancedSettings->build_custom_delay_js(
+                $options,
+                $settings,
+                $get_slides->posts
+            );
+        }
 
         return $options;
     }
@@ -157,6 +194,22 @@ class MetaFlexSlider extends MetaSlider
     }
 
     /**
+     * Hide slideshow with mobile settings on first load
+     */
+    public function hide_for_mobile($css, $settings, $slider_id)
+    {
+        $global_settings = get_option( 'metaslider_global_settings' );
+        if ( isset($global_settings['mobileSettings']) && true == $global_settings['mobileSettings']
+        ){
+            if($this->check_mobile_settings() == true) {
+                $css .= "\n        #metaslider_{$slider_id}.flexslider {display: none;}";
+            }
+        }
+        remove_filter('metaslider_css', array( $this, 'hide_for_mobile' ), 11, 3);
+        return $css;
+    }
+
+    /**
      * Enable the parameters that are accepted by the slider
      *
      * @param  string $param Parameters
@@ -174,6 +227,7 @@ class MetaFlexSlider extends MetaSlider
             'hoverPause' => 'pauseOnHover',
             'reverse' => 'reverse',
             'keyboard' => 'keyboard',
+            'touch' => 'touch',
             'navigation' => 'controlNav',
             'links' => 'directionNav',
             'carouselMode' => 'carouselMode',
@@ -205,8 +259,12 @@ class MetaFlexSlider extends MetaSlider
     protected function get_html()
     {
         $class = $this->get_setting('noConflict') == 'true' ? "" : ' class="flexslider"';
-
-        $return_value = '<div id="' . $this->get_identifier() . '"' . $class . '>';
+        $return_value = '';
+        if($this->check_mobile_settings() == true) {
+            $return_value .= '<div id="temp_' . $this->get_identifier() . '" class="flexslider">';
+            $return_value .= "<ul aria-live=\"polite\" class=\"slides\"></ul></div>";
+        }
+        $return_value .= '<div id="' . $this->get_identifier() . '"' . $class . '>';
         $return_value .= "\n            <ul aria-live=\"polite\" class=\"slides\">";
 
         foreach ($this->slides as $slide) {
@@ -216,7 +274,7 @@ class MetaFlexSlider extends MetaSlider
             if (strpos($slide, '<li') === 0) {
                 $return_value .= "\n                " . $slide;
             } else {
-                $return_value .= "\n                <li style=\"display: none;\">" . $slide . "</li>";
+                $return_value .= "\n                <li style=\"display: none;\" >" . $slide . "</li>";
             }
         }
 
@@ -229,5 +287,61 @@ class MetaFlexSlider extends MetaSlider
         }
 
         return apply_filters('metaslider_flex_slider_get_html', $return_value, $this->id, $this->settings);
+    }
+
+
+    private function print_flex_js($device){
+        $js = '';
+        $identifier = $this->get_identifier();
+        $js .= "\n liHTML.forEach((slideHTML, index) => {
+            $('#temp_" . $identifier . " .slides').append(slideHTML);
+        })";
+        return $js;
+    }
+
+    /**
+     * Function to show/hide slides per device on FlexSlider
+     */
+    public function manage_responsive($javascript)
+    {
+        $js = $javascript;
+        $identifier = $this->get_identifier();
+        $global_settings = get_option( 'metaslider_global_settings' );
+        if (
+            !isset($global_settings['mobileSettings']) ||
+            (isset($global_settings['mobileSettings']) && true == $global_settings['mobileSettings'])
+        ) {
+            if($this->check_mobile_settings() == true) {
+                $js .= "\n jQuery(document).ready(function($){";
+                $js .= "\n     var newBreakpoint = window.getComputedStyle(document.body, ':after').getPropertyValue('content');";
+                $js .= '         newBreakpoint = newBreakpoint.replace(/"/g, "");';
+                $js .= "\n       if (newBreakpoint == 'smartphone') {";
+                $js .= "\n     var liHTML = $('#" . $identifier . " .slides li:not(.clone, .hidden_smartphone)').removeAttr('style').toArray();";
+                $js .= $this->print_flex_js('smartphone');
+                $js .= "\n       }";
+                $js .= "\n       if (newBreakpoint == 'tablet') {";
+                $js .= "\n     var liHTML = $('#" . $identifier . " .slides li:not(.clone, .hidden_tablet)').removeAttr('style').toArray();";
+                $js .= $this->print_flex_js('tablet');
+                $js .= "\n       }";
+                $js .= "\n       if (newBreakpoint == 'laptop') {";
+                $js .= "\n     var liHTML = $('#" . $identifier . " .slides li:not(.clone, .hidden_laptop)').removeAttr('style').toArray();";
+                $js .= $this->print_flex_js('laptop');
+                $js .= "\n       }";
+                $js .= "\n       if (newBreakpoint == 'desktop') {";
+                $js .= "\n     var liHTML = $('#" . $identifier . " .slides li:not(.clone, .hidden_desktop)').removeAttr('style').toArray();";
+                $js .= $this->print_flex_js('desktop');
+                $js .= "\n       }";
+                $js .= "\n     $('#" . $identifier . "').remove();";
+                $js .= "\n     $('#temp_" . $identifier . "')." . $this->js_function . "({ ";
+                $js .= "\n        " . $this->_get_javascript_parameters();
+                $js .= "\n     });";
+                $js .= "\n     $('#temp_" . $identifier . "').attr('id', '" . $identifier . "');";
+                $js .= "\n     $(document).trigger('metaslider/initialized', '#" . $identifier . "');";
+                $js .= "\n     $('#" . $identifier . "').show();";
+                $js .= "\n });";
+            }
+        }
+
+        return $js;
     }
 }

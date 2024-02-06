@@ -121,6 +121,19 @@
                         'label' => __("Filmstrip (Pro)", "ml-slider"),
                         'addon_required' => true
                     ),
+                ),
+            ),
+            'fullWidth' => array(
+                'priority' => 70,
+                'type' => 'checkbox',
+                'label' => esc_html__("100% width", "ml-slider"),
+                'class' => 'option flex nivo responsive',
+                'checked' => $this->slider->get_setting(
+                    'fullWidth'
+                ) == 'true' ? 'checked' : '',
+                'helptext' => esc_html__(
+                    "Stretch the slideshow output to fill it's parent container",
+                    "ml-slider"
                 )
             ),
         );
@@ -158,19 +171,6 @@
             'priority' => 3,
             'type' => 'highlight',
             'value' => esc_html__( 'Advanced Options', 'ml-slider' )
-        ),
-        'fullWidth' => array(
-            'priority' => 5,
-            'type' => 'checkbox',
-            'label' => esc_html__("100% width", "ml-slider"),
-            'class' => 'option flex',
-            'checked' => $this->slider->get_setting(
-                'fullWidth'
-            ) == 'true' ? 'checked' : '',
-            'helptext' => esc_html__(
-                "Stretch the slideshow output to fill it's parent container",
-                "ml-slider"
-            )
         ),
         'center' => array(
             'priority' => 10,
@@ -358,6 +358,19 @@
                 "ml-slider"
             )
         ),
+        'touch' => array(
+            'priority' => 80,
+            'type' => 'checkbox',
+            'label' => esc_html__("Touch Swipe", "ml-slider"),
+            'class' => 'option flex',
+            'checked' => 'true' == $this->slider->get_setting(
+                'touch'
+            ) ? 'checked' : '',
+            'helptext' => esc_html__(
+                "Allow touch swipe navigation of the slider on touch-enabled devices",
+                "ml-slider"
+            )
+        ),
         'delay' => array(
             'priority' => 80,
             'type' => 'number',
@@ -389,7 +402,7 @@
             'label' => esc_html__("Animation speed", "ml-slider"),
             'class' => 'option flex',
             'helptext' => esc_html__(
-                "Set the speed of animations, in milliseconds",
+                'Choose the speed of the animation in milliseconds. You can select the animation in the "Effect" field.',
                 "ml-slider"
             ),
             'after' => esc_html_x(
