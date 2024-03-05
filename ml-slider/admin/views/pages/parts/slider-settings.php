@@ -274,7 +274,7 @@
                 'carouselMode'
             ) == 'true' ? 'checked' : '',
             'helptext' => esc_html__(
-                "Display multiple slides at once. Slideshow output will be 100% wide.",
+                "Display multiple slides at once. Slideshow output will be 100% wide. Carousel Mode only uses the 'Slide' Effect.",
                 "ml-slider"
             )
         ),
@@ -417,8 +417,8 @@
             'label' => esc_html__("Slide direction", "ml-slider"),
             'class' => 'option flex',
             'helptext' => esc_html__(
-                "Select the sliding direction",
-                "ml-slider"
+                'Select the direction that slides will move. Vertical will not work if "Carousel mode" is enabled or "Effect" is set to "Fade".',
+                'ml-slider'
             ),
             'value' => $this->slider->get_setting('direction'),
             'options' => array(
@@ -449,32 +449,6 @@
             ),
             'value' => $this->slider->get_setting('easing'),
             'options' => $this->get_easing_options()
-        ),
-        'prevText' => array(
-            'priority' => 150,
-            'type' => 'text',
-            'label' => esc_html__("Previous text", "ml-slider"),
-            'class' => 'option flex',
-            'helptext' => esc_html__(
-                "Set the text for the 'previous' direction item",
-                "ml-slider"
-            ),
-            'value' => $this->slider->get_setting(
-                'prevText'
-            ) == 'false' ? '' : $this->slider->get_setting('prevText')
-        ),
-        'nextText' => array(
-            'priority' => 160,
-            'type' => 'text',
-            'label' => esc_html__("Next text", "ml-slider"),
-            'class' => 'option flex',
-            'helptext' => esc_html__(
-                "Set the text for the 'next' direction item",
-                "ml-slider"
-            ),
-            'value' => $this->slider->get_setting(
-                'nextText'
-            ) == 'false' ? '' : $this->slider->get_setting('nextText')
         ),
         'developerOptions' => array(
             'priority' => 195,

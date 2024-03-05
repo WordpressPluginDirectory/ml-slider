@@ -49,11 +49,6 @@
 							:src="themeDirectoryUrl + current.theme.folder + '/screenshot.png'"
 							:alt="current.theme.title">
 					</div>
-					<div class="theme-hover-text">
-						<span>
-							{{ __('Click to edit or update', 'ml-slider') }}
-						</span>
-					</div>
 				</button>
 				<button
 					type="button"

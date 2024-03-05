@@ -77,6 +77,7 @@ class MetaSlider_Slideshow_Settings
             'theme' => 'none',
             'direction' => 'horizontal',
             'reverse' => false,
+            'keyboard' => true,
             'touch' => true,
             'animationSpeed' => 600,
             'prevText' => __('Previous', 'ml-slider'),

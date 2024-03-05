@@ -362,3 +362,39 @@ div.metaslider .slider-wrapper .nivo-controlNav a {
 #preview-container .ms-edit-frontend{
     display: none;
 }
+
+
+/* Precognition Theme */
+.ms-theme-precognition .flex-control-nav {
+	display: table !important;
+	width: 100% !important;
+	margin-top: 0 !important;
+}
+.metaslider.ms-theme-precognition .flex-control-nav li {
+	display: table-cell !important;
+	width: auto;
+	text-align: center;
+	border-left: 1px solid;
+	border-bottom: 1px solid;
+}
+.metaslider.ms-theme-precognition .flex-control-nav li:last-child {
+	border-right: 1px solid;
+}
+.metaslider.ms-theme-precognition .flex-control-nav li a {
+	text-indent: 0 !important;
+	width: auto !important;
+	display: block !important;
+	height: auto !important;
+	padding: 10px !important;
+	margin: 0 !important;
+}
+@media only screen and (max-width : 767px) {
+    .metaslider.ms-theme-precognition .flex-control-nav li a {
+        text-indent: -9999px !important;
+    }
+}
+@media only screen and (min-width : 768px) {
+    .metaslider.ms-theme-precognition .flex-control-nav li a {
+        text-indent: 0 !important;
+    }
+}

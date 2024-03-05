@@ -88,6 +88,18 @@ class MetaSlider_Slideshows
 
         $overrides = get_option('metaslider_default_settings');
         $last_modified_settings = is_array($overrides) ? array_merge($last_modified_settings, $overrides) : $last_modified_settings;
+
+        $last_modified_settings['keyboard'] = true;
+        
+        /* Make sure we set a default theme if available - Pro set '_theme_default' 
+         * to bypass $last_modified_settings['theme'] that takes the last saved theme configuration 
+         * 
+         * @since 3.62 */
+        $default_theme = apply_filters( 'metaslider_default_theme', '' );
+        if ( $default_theme ) {
+            $last_modified_settings['theme'] = $default_theme;
+        }
+        
         add_post_meta($new_id, 'ml-slider_settings', $last_modified_settings, true);
 
         // TODO: next branch, refactor to slideshow object and extract controller type methods.
@@ -96,9 +108,9 @@ class MetaSlider_Slideshows
         $theme = get_post_meta($last_modified, 'metaslider_slideshow_theme', true);
 
         // Lets users set their own default theme
-        if (apply_filters('metaslider_default_theme', '')) {
+        if ( $default_theme ) {
             $themes = MetaSlider_Themes::get_instance();
-            $theme = $themes->get_theme_object(null, apply_filters('metaslider_default_theme', ''));
+            $theme = $themes->get_theme_object( null, $default_theme );
         }
 
         // Set the theme if we found something

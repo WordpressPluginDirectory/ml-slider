@@ -9,10 +9,16 @@
     if ($settings = get_option('metaslider_default_settings')) {
         $slideshow_defaults = $settings;
     }
-    if (count($slideshow_defaults) === 0) {
+    if(!isset($slideshow_defaults['smartphone'])){
         $slideshow_defaults['smartphone'] = 320;
+    }
+    if(!isset($slideshow_defaults['tablet'])){
         $slideshow_defaults['tablet'] = 768;
+    }
+    if(!isset($slideshow_defaults['laptop'])){
         $slideshow_defaults['laptop'] = 1024;
+    }
+    if(!isset($slideshow_defaults['desktop'])){
         $slideshow_defaults['desktop'] = 1440;
     }
     $screen = array('smartphone', 'tablet', 'laptop', 'desktop');

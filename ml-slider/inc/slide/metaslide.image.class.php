@@ -26,6 +26,7 @@ class MetaImageSlide extends MetaSlide
         add_action('metaslider_save_image_slide', array($this, 'save_slide' ), 5, 3);
         add_action('wp_ajax_create_image_slide', array($this, 'ajax_create_image_slides'));
         add_action('wp_ajax_resize_image_slide', array($this, 'ajax_resize_slide'));
+        add_action('wp_ajax_duplicate_slide', array( $this, 'ajax_duplicate_slide' ));
     }
 
     /**
@@ -84,7 +85,7 @@ class MetaImageSlide extends MetaSlide
             // Remove this later and handle errors using data returns
             //echo '<tr><td colspan="2">ID: ' . esc_html($data['id']) . ' "' . esc_html(get_the_title($data['id'])) . '" - ' . esc_html__("Failed to add slide. Slide is not an image.", 'ml-slider') . "</td></tr>";
 
-            return new WP_Error('create_failed', __('This isn\'t an accepted image. Please try again.', 'ml-slider'), array('status' => 409));
+            return new WP_Error('create_failed', __('This isn\'t a valid image format. Please try again.', 'ml-slider'), array('status' => 409));
         }
 
         $slide_id = $this->insert_slide($data['id'], $data['type'], $slideshow_id);
@@ -128,7 +129,7 @@ class MetaImageSlide extends MetaSlide
         if (! current_user_can($capability)) {
             wp_send_json_error(
                 [
-                    'message' => __('Access denied', 'ml-slider')
+                    'message' => __('Access denied. Sorry, you do have permission to complete this task.', 'ml-slider')
                 ],
                 403
             );
@@ -147,7 +148,7 @@ class MetaImageSlide extends MetaSlide
         if (! current_user_can($capability)) {
             wp_send_json_error(
                 [
-                    'message' => __('Access denied', 'ml-slider')
+                    'message' => __('Access denied. Sorry, you do have permission to complete this task.', 'ml-slider')
                 ],
                 403
             );
@@ -232,7 +233,7 @@ class MetaImageSlide extends MetaSlide
         if (! current_user_can($capability)) {
             wp_send_json_error(
                 [
-                    'message' => __('Access denied', 'ml-slider')
+                    'message' => __('Access denied. Sorry, you do have permission to complete this task.', 'ml-slider')
                 ],
                 403
             );
@@ -304,6 +305,79 @@ class MetaImageSlide extends MetaSlide
         return array('img_url' => $url);
     }
 
+    public function duplicate_slide($slideshow_id, $slide_id)
+    {
+        $old_slide = get_post($slide_id);
+        if (!$old_slide) {
+            return 0;
+        }
+        $title = $old_slide->post_title;
+        $post_excerpt = '';
+        if(isset($old_slide->post_excerpt)){
+            $post_excerpt = $old_slide->post_excerpt;
+        }
+        $new_slide = [
+            'post_title'  => $title,
+            'post_name'   => sanitize_title($title),
+            'post_status' => 'publish',
+            'post_type'   => $old_slide->post_type,
+            'post_excerpt'   => $post_excerpt
+        ];
+        $new_slide_id = wp_insert_post($new_slide);
+        $slide_meta = get_post_custom($slide_id);
+        foreach ($slide_meta as $key => $values) {
+            foreach ($values as $value) {
+                add_post_meta($new_slide_id, $key, maybe_unserialize($value));
+            }
+        }
+        $taxonomies = get_post_taxonomies($slide_id);
+        foreach ($taxonomies as $taxonomy) {
+            $term_ids = wp_get_object_terms($slide_id, $taxonomy, ['fields' => 'ids']);
+            wp_set_object_terms($new_slide_id, $term_ids, $taxonomy);
+        }
+
+        $this->set_slide($new_slide_id);
+        $this->set_slider($slideshow_id);
+
+        return array('slide_id' => $new_slide_id, 'html' => $this->get_admin_slide());
+    }
+
+    public function ajax_duplicate_slide()
+    {
+        if (! isset($_REQUEST['_wpnonce']) || ! wp_verify_nonce(sanitize_key($_REQUEST['_wpnonce']), 'metaslider_duplicate_slide')) {
+            wp_send_json_error(array(
+                'message' => __('The security check failed. Please refresh the page and try again.', 'ml-slider')
+            ), 401);
+        }
+
+        $capability = apply_filters('metaslider_capability', MetaSliderPlugin::DEFAULT_CAPABILITY_EDIT_SLIDES);
+        if (! current_user_can($capability)) {
+            wp_send_json_error(
+                [
+                    'message' => __('Access denied', 'ml-slider')
+                ],
+                403
+            );
+        }
+
+
+        if (! isset($_POST['slide_id']) || ! isset($_POST['slider_id'])) {
+            wp_send_json_error(
+                [
+                    'message' => __('Bad request', 'ml-slider'),
+                ],
+                400
+            );
+        }
+
+        $result = $this->duplicate_slide(
+            absint($_POST['slider_id']),
+            absint($_POST['slide_id'])
+        );
+
+        wp_send_json_success($result, 200);
+    }
+
     /**
      * Return the HTML used to display this slide in the admin screen
      *
@@ -319,6 +393,7 @@ class MetaImageSlide extends MetaSlide
         ob_start();
         echo $this->get_delete_button_html(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
         echo $this->get_update_image_button_html(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+        echo $this->get_duplicate_slide_button_html(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
         do_action('metaslider-slide-edit-buttons', 'image', $this->slide->ID, $attachment_id);
         $edit_buttons = ob_get_clean();
 

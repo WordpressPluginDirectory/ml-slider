@@ -114,7 +114,7 @@ class MetaSlider
             'theme' => 'default',
             'direction' => 'horizontal',
             'reverse' => false,
-            'keyboard' => false,
+            'keyboard' => true,
             'touch' => true,
             'animationSpeed' => 600,
             'prevText' => __('Previous', 'ml-slider'),

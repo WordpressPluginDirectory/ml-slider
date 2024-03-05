@@ -2,7 +2,7 @@
 Contributors: andergmartins, htmgarcia, publishpress, stevejburge, rochdesigns
 Tags: slideshow, slider, image slider, carousel, gallery, flex slider, wordpress slider, nivoslider, rotating banner, image sliders, slide show, responsive slideshow, seo slideshow, unsplash, post sliders, video sliders, YouTube sliders, Vimeo sliders, HTML sliders, external URL sliders, layer sliders, best WordPress slider, best slider, best slideshow, best carousel, easy slider, easy slideshow, flex slider, woocommerce slider, woocommerce slideshow, video slider, video captions, video subtitles
 Requires at least: 5.0
-Stable tag: 3.61.0
+Stable tag: 3.62.0
 Requires PHP: 7.0
 Tested up to: 6.4.3
 License: GPLv2 or later
@@ -14,7 +14,7 @@ The best slider, gallery, and carousel plugin for WordPress. Responsive and easy
 
 With MetaSlider, you can create a powerful, SEO-optimized slider, slideshow, carousel, or gallery in minutes. MetaSlider is world’s #1 responsive WordPress slider plugin. MetaSlider is the best choice for image, photo, video (YouTube, Vimeo, local, and external), layer, HTML, WooCommerce product, and post feed sliders!
 
-[vimeo https://vimeo.com/393891282]
+[youtube https://www.youtube.com/watch?v=yuRh0FsanaY]
 
 ### Overview
 
@@ -398,6 +398,21 @@ Yes, you can build Elementor slides and Beaver Builder slideshows. You can creat
 
 The format is based on [Keep a Changelog recommendations](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
+
+= [3.62.0] - 04 Mar, 2024 =
+
+* ADDED: Duplicate Slide function, #385;
+* ADDED: WYSIWYG editor support to custom image captions, #908;
+* ADDED: Better error reporting, #541
+* FIXED: Precognition Theme CSS, #917;
+* FIXED: Odd output in our Gutenberg block, #861;
+* FIXED: Undefined Array Key error on mobile setting, #890;
+* CHANGED: Updated Architekt Theme description, #917; 
+* CHANGED: Moved Previous and Next fields to legacy settings, #902; 
+* CHANGED: Updated tooltip text for Carousel, Effect and Vertical Direction fields, #802, #864; 
+* CHANGED: Remove Beta Labels, #872; 
+* CHANGED: Update Theme Box, #916;
+* CHANGED: Enable keyboard controls for new slideshows, #875;
 
 = [3.61.0] - 05 Feb, 2024 =
 

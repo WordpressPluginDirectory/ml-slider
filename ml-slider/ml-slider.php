@@ -5,7 +5,7 @@
  * Plugin Name: MetaSlider
  * Plugin URI:  https://www.metaslider.com
  * Description: MetaSlider gives you the power to create a beautiful slideshow, carousel, or gallery on your WordPress site.
- * Version:     3.61.0
+ * Version:     3.62.0
  * Author:      MetaSlider
  * Author URI:  https://www.metaslider.com
  * License:     GPL-2.0+
@@ -42,7 +42,7 @@ if (! class_exists('MetaSliderPlugin')) {
          *
          * @var string
          */
-        public $version = '3.61.0';
+        public $version = '3.62.0';
 
         /**
          * Pro installed version number
@@ -794,7 +794,7 @@ if (! class_exists('MetaSliderPlugin')) {
             if (! current_user_can($capability)) {
                 wp_send_json_error(
                     [
-                        'message' => __('Access denied', 'ml-slider')
+                        'message' => __('Access denied. Sorry, you do have permission to complete this task.', 'ml-slider')
                     ],
                     403
                 );
@@ -876,7 +876,7 @@ if (! class_exists('MetaSliderPlugin')) {
             if (! current_user_can($capability)) {
                 wp_send_json_error(
                     [
-                        'message' => __('Access denied', 'ml-slider')
+                        'message' => __('Access denied. Sorry, you do have permission to complete this task.', 'ml-slider')
                     ],
                     403
                 );
@@ -988,7 +988,7 @@ if (! class_exists('MetaSliderPlugin')) {
             if (! current_user_can($capability)) {
                 wp_send_json_error(
                     [
-                        'message' => __('Access denied', 'ml-slider')
+                        'message' => __('Access denied. Sorry, you do have permission to complete this task.', 'ml-slider')
                     ],
                     403
                 );
@@ -2332,7 +2332,7 @@ if (! class_exists('MetaSliderPlugin')) {
             if (! current_user_can($capability)) {
                 wp_send_json_error(
                     [
-                        'message' => __('Access denied', 'ml-slider')
+                        'message' => __('Access denied. Sorry, you do have permission to complete this task.', 'ml-slider')
                     ],
                     403
                 );
@@ -2373,7 +2373,7 @@ if (! class_exists('MetaSliderPlugin')) {
             if (! current_user_can($capability)) {
                 wp_send_json_error(
                     [
-                        'message' => __('Access denied', 'ml-slider')
+                        'message' => __('Access denied. Sorry, you do have permission to complete this task.', 'ml-slider')
                     ],
                     403
                 );

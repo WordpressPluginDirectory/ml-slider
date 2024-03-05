@@ -345,7 +345,7 @@
                         'carouselMode'
                     ) == 'true' ? 'checked' : '',
                     'helptext' => esc_html__(
-                        "Display multiple slides at once. Slideshow output will be 100% wide.",
+                        "Display multiple slides at once. Slideshow output will be 100% wide. Carousel Mode only uses the 'Slide' Effect.",
                         "ml-slider"
                     )
                 ),
@@ -532,8 +532,8 @@
                     'label' => esc_html__("Slide direction", "ml-slider"),
                     'class' => 'option flex',
                     'helptext' => esc_html__(
-                        "Select the sliding direction",
-                        "ml-slider"
+                        'Select the direction that slides will move. Vertical will not work if "Carousel mode" is enabled or "Effect" is set to "Fade".',
+                        'ml-slider'
                     ),
                     'value' => $this->slider->get_setting('direction'),
                     'options' => array(

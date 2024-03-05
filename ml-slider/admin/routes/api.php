@@ -99,6 +99,12 @@ class MetaSlider_Api
         // Other
         add_action('wp_ajax_set_tour_status', array(self::$instance, 'set_tour_status'));
         add_action('wp_ajax_ms_get_image_ids_from_filenames', array(self::$instance, 'get_image_ids_from_file_name'));
+
+        /* Pro settings
+         * @since 3.62
+         */
+        add_action('wp_ajax_ms_get_pro_settings', array(self::$instance, 'get_pro_settings'));
+        add_action('wp_ajax_ms_update_pro_settings', array(self::$instance, 'save_pro_settings'));
     }
 
     /**
@@ -129,7 +135,7 @@ class MetaSlider_Api
     public function deny_access()
     {
         wp_send_json_error(array(
-            'message' => __('You do not have access to this resource.', 'ml-slider')
+            'message' => __('Access denied. Sorry, you do have permission to complete this task.', 'ml-slider')
         ), 401);
     }
 
@@ -612,7 +618,7 @@ class MetaSlider_Api
         }
 
         if (isset($fields['post_excerpt'])) {
-            $fields['post_excerpt'] = wp_filter_post_kses($fields['post_excerpt']);
+            $fields['post_excerpt'] = $this->cleanup_content_kses( $fields['post_excerpt'] );
         }
 
         if (isset($fields['url'])) {
@@ -684,6 +690,42 @@ class MetaSlider_Api
         }
         
         return $fields;
+    }
+
+    /**
+     * Sanitize HTML and avoid rgb() color being stripped by wp_filter_post_kses
+     * 
+     * @since 3.62
+     * 
+     * @param html $content
+     * 
+     * @return html
+     */
+    public function cleanup_content_kses( $content ) {
+        $rgbColors = array();
+    
+        // Extract RGB colors and temporarily replace with "rgb_placeholder_${index}"
+        $content = preg_replace_callback('/rgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)/i',
+            function ( $matches ) use ( &$rgbColors ) {
+                $rgbColors[] = "rgb({$matches[1]}, {$matches[2]}, {$matches[3]})";
+                return 'rgb_placeholder_' . ( count( $rgbColors ) - 1);
+            },
+            $content
+        );
+    
+        // Sanitize HTML
+        $content = wp_filter_post_kses( $content );
+    
+        // Add back rgb()
+        $content = str_replace(
+            array_map( function ( $index ) {
+                return 'rgb_placeholder_' . $index;
+            }, array_keys($rgbColors)),
+            $rgbColors,
+            $content
+        );
+    
+        return $content;
     }
 
     /**
@@ -985,6 +1027,68 @@ class MetaSlider_Api
     }
 
     /**
+     * Get pro settings whether multisite or not
+     * 
+     * @since 3.62
+     */
+    public function get_pro_settings()
+    {
+        if (!$this->can_access()) {
+            $this->deny_access();
+        }
+
+        if (is_multisite() && $settings = get_site_option('metaslider_pro_settings')) {
+            return wp_send_json_success($settings, 200);
+        }
+
+        if ($settings = get_option('metaslider_pro_settings')) {
+            return wp_send_json_success($settings, 200);
+        }
+
+        wp_send_json_success(array(), 200);
+    }
+
+    /**
+     * Save pro settings whether multisite or other
+     *
+     * @since 3.62
+     * 
+     * @param object $request The request
+     */
+    public function save_pro_settings($request)
+    {
+        if ( ! $this->can_access() ) {
+            $this->deny_access();
+        }
+
+        $data = $this->get_request_data( $request, array( 'settings' ) );
+        $settings = json_decode( $data['settings'], true );
+
+        // Supported types: 'number' (int), 'text' (string)
+        $fields_label = array(
+            'postFeedFields' => __( 'Maximum Number of Custom Field in Post Feed Sliders', 'ml-slider' )
+        );
+
+        // These settings should not be empty and be the type defined in $fields_check
+        foreach ($settings as $key => $value) {
+
+            if ( $value === '' ) {
+                wp_send_json_error(
+                    array(
+                        'message' => sprintf(
+                        __( 'The field (%s) cannot be empty', 'ml-slider' ), 
+                        $fields_label[$key]  
+                    )
+                ), 422 );
+            }
+        }
+
+        update_option('metaslider_pro_settings', $settings, true);
+
+        wp_send_json_success($settings, 200);
+    }
+
+    /**
      * Import theme images
      *
      * @param object $request The request
@@ -1274,6 +1378,19 @@ if (class_exists('WP_REST_Controller')) :
             register_rest_route($this->namespace, '/images/ids-from-filenames', array(array(
                 'methods' => 'POST',
                 'callback' => array($this->api, 'get_image_ids_from_file_name'),
+                'permission_callback' => array($this->api, 'can_access')
+            )));
+
+            // Pro
+            register_rest_route($this->namespace, '/settings/pro', array(array(
+                'methods' => 'GET',
+                'callback' => array($this->api, 'get_pro_settings'),
+                'permission_callback' => array($this->api, 'can_access')
+            )));
+
+            register_rest_route($this->namespace, '/settings/pro/save', array(array(
+                'methods' => 'POST',
+                'callback' => array($this->api, 'save_pro_settings'),
                 'permission_callback' => array($this->api, 'can_access')
             )));
         }

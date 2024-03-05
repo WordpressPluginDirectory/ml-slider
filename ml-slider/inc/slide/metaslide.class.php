@@ -146,7 +146,7 @@ class MetaSlide
         if (! current_user_can($capability)) {
             wp_send_json_error(
                 [
-                    'message' => __('Access denied', 'ml-slider')
+                    'message' => __('Access denied. Sorry, you do have permission to complete this task.', 'ml-slider')
                 ],
                 403
             );
@@ -174,7 +174,6 @@ class MetaSlide
         }
         wp_send_json_success($result, 200);
     }
-
 
     /**
      * Return the correct slide HTML based on whether we're viewing the slides in the
@@ -427,6 +426,18 @@ class MetaSlide
         $attachment_id = $this->get_attachment_id();
         $slide_type = get_post_meta($this->slide->ID, 'ml-slider_type', true);
         return "<button class='toolbar-button update-image alignright tipsy-tooltip-top' data-slide-type='" . esc_attr($slide_type) . "' data-button-text='" . esc_attr__("Update slide image", "ml-slider") . "' title='" . esc_attr__("Update slide image", "ml-slider") . "' data-slide-id='" . esc_attr($this->slide->ID) . "' data-attachment-id='" . esc_attr($attachment_id) . "'><i><svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-edit-2'><polygon points='16 3 21 8 8 21 3 21 3 16 16 3'/></svg></i></button>";
+    }
+
+    /**
+     * Generates the HTML for the duplicate slide button
+     *
+     * @return string The html for the duplicate button
+     */
+    public function get_duplicate_slide_button_html()
+    {
+        $attachment_id = $this->get_attachment_id();
+        $slide_type = get_post_meta($this->slide->ID, 'ml-slider_type', true);
+        return "<button class='toolbar-button duplicate-slide duplicate-slide-" . $slide_type . " alignright tipsy-tooltip-top' data-slide-type='" . esc_attr($slide_type) . "' data-button-text='" . esc_attr__("Duplicate slide", "ml-slider") . "' title='" . esc_attr__("Duplicate slide", "ml-slider") . "' data-slide-id='" . esc_attr($this->slide->ID) . "' data-attachment-id='" . esc_attr($attachment_id) . "'><i><svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-copy'><rect x='9' y='9' width='13' height='13' rx='2' ry='2'></rect><path d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'></path></svg></i></button>";
     }
 
     /**
@@ -785,4 +796,40 @@ class MetaSlide
         return $mobile_class;
     }
 
+    /**
+     * Sanitize HTML and avoid rgb() color being stripped by wp_filter_post_kses
+     * 
+     * @since 3.62
+     * 
+     * @param html $content
+     * 
+     * @return html
+     */
+    public function cleanup_content_kses( $content ) {
+        $rgbColors = array();
+    
+        // Extract RGB colors and temporarily replace with "rgb_placeholder_${index}"
+        $content = preg_replace_callback('/rgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)/i',
+            function ( $matches ) use ( &$rgbColors ) {
+                $rgbColors[] = "rgb({$matches[1]}, {$matches[2]}, {$matches[3]})";
+                return 'rgb_placeholder_' . ( count( $rgbColors ) - 1);
+            },
+            $content
+        );
+    
+        // Sanitize HTML
+        $content = wp_filter_post_kses( $content );
+    
+        // Add back rgb()
+        $content = str_replace(
+            array_map( function ( $index ) {
+                return 'rgb_placeholder_' . $index;
+            }, array_keys($rgbColors)),
+            $rgbColors,
+            $content
+        );
+    
+        return $content;
+    }
+    
 }

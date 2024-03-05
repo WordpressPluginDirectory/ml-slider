@@ -60,6 +60,23 @@ class MetaSlider_Admin_Pages extends MetaSliderPlugin
     }
 
     /**
+     * Loads TinyMCE
+     * 
+     * @since 3.62
+     * 
+     * @return void
+     */
+    public function load_wysiwyg()
+    {
+        wp_enqueue_script(
+            'metaslider-tinymce-script',
+            METASLIDER_ADMIN_URL . 'assets/vendor/tinymce/js/tinymce/tinymce.min.js',
+            array(),
+            METASLIDER_ASSETS_VERSION
+        );
+    }
+
+    /**
      * Loads in custom javascript
      */
     public function load_javascript()
@@ -90,13 +107,15 @@ class MetaSlider_Admin_Pages extends MetaSliderPlugin
             'undelete_slide_nonce' => wp_create_nonce('metaslider_undelete_slide'),
             'permanent_delete_slide_nonce' => wp_create_nonce('metaslider_permanent_delete_slide'),
             'update_slide_image_nonce' => wp_create_nonce('metaslider_update_slide_image'),
+            'duplicate_slide_nonce' => wp_create_nonce('metaslider_duplicate_slide'),
             'quickstart_slideshow_nonce' => wp_create_nonce('metaslider_quickstart_slideshow'),
             'legacy_notification_nonce' => wp_create_nonce('metaslider_legacy_notification'),
             'useWithCaution' => esc_html__("Caution: This setting is for advanced developers only. If you're unsure, leave it checked.", "ml-slider"),
             'locale' => preg_replace('/[^a-z]/', '', get_locale()),
             'newSlideOrder' => isset( $global_settings['newSlideOrder'] ) 
                 && $global_settings['newSlideOrder'] === 'first' 
-                ? esc_html( $global_settings['newSlideOrder'] ) : 'last'
+                ? esc_html( $global_settings['newSlideOrder'] ) : 'last',
+            'tinymce' => array() // Just initialize to add values later through JS files
         ));
         wp_enqueue_script('metaslider-admin-script');
         do_action('metaslider_register_admin_scripts');
@@ -189,6 +208,9 @@ class MetaSlider_Admin_Pages extends MetaSliderPlugin
         add_action('load-' . $page, array($this, 'load_tooltips'));
         add_action('load-' . $page, array($this, 'load_javascript'));
         add_action('load-' . $page, array($this, 'load_styles'));
+
+        // TinyMCE is only required in edit sldieshow page
+        add_action('load-toplevel_page_metaslider', array($this, 'load_wysiwyg'));
     }
 
     /**

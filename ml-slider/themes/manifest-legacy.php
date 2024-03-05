@@ -147,7 +147,7 @@ return array(
         'type' => 'free',
         'supports' => array('flex', 'responsive', 'nivo'),
         'tags' => array('light', 'minimalist'),
-        'description' => __('A minimalist theme that gets out of the way so you can showcasing your beautiful pictures.', 'ml-slider'),
+        'description' => __('A minimalist theme that gets out of the way so you can showcasing your beautiful pictures. Best used with Image Slides.', 'ml-slider'),
         'images' => array('danny-howe-361436-unsplash.jpg', 'etienne-beauregard-riverin-48305-unsplash.jpg', 'luca-bravo-198062-unsplash.jpg', 'fabio-mangione-236846-unsplash.jpg', 'olav-ahrens-rotne-1087667-unsplash.jpg')
     ),
     'nivo-light' => array(

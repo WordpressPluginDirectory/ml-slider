@@ -205,22 +205,6 @@ eventually be removed/refactored */
     position: relative;
     margin-bottom: 7px;
 }
-.theme-select-module .theme-hover-text {
-    position: absolute;
-    top: 0;
-    background: rgba(34,113,177,0.7);
-    color: #fff;
-    box-sizing: border-box;
-    padding: 20px;
-    height: 100%;
-    width: 100%;
-    display: none;
-}
-.theme-select-module .change-theme-img-button:hover .theme-hover-text {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
 .theme-select-module .button-link {
     text-decoration: none;
 }
@@ -847,7 +831,8 @@ eventually be removed/refactored */
 .metaslider-ui .metaslider-slides-container .toolbar-button,
 .metaslider-ui .metaslider-slides-container .update-image,
 .metaslider-ui .metaslider-slides-container .delete-slide,
-.metaslider-ui .metaslider-slides-container .undo-delete-slide {
+.metaslider-ui .metaslider-slides-container .undo-delete-slide, 
+.metaslider-ui .metaslider-slides-container .duplicate-slide {
     color: #50575e;
     outline: 0;
     cursor: pointer;
@@ -858,15 +843,18 @@ eventually be removed/refactored */
     height: 30px;
 }
 .metaslider-ui .metaslider-slides-container .metaslider-ui-controls .update-image,
-.metaslider-ui .metaslider-slides-container .metaslider-ui-controls .update-video {
+.metaslider-ui .metaslider-slides-container .metaslider-ui-controls .update-video,
+.metaslider-ui .metaslider-slides-container .metaslider-ui-controls .duplicate-slide {
     padding: 0 0 0 6px;
 }
 .metaslider-ui .metaslider-slides-container .metaslider-ui-controls .update-image svg,
-.metaslider-ui .metaslider-slides-container .metaslider-ui-controls .update-video svg {
+.metaslider-ui .metaslider-slides-container .metaslider-ui-controls .update-video svg,
+.metaslider-ui .metaslider-slides-container .metaslider-ui-controls .duplicate-slide svg {
     width: 18px;
 }
 .metaslider-ui .metaslider-slides-container .update-image.image-button,
-.metaslider-ui .metaslider-slides-container .update-video.image-button {
+.metaslider-ui .metaslider-slides-container .update-video.image-button,
+.metaslider-ui .metaslider-slides-container .duplicate-slide.image-button {
     padding: 0;
     margin: 0;
     display: block;
@@ -977,6 +965,11 @@ input[type="radio"] {
     content: "";
     display: table;
     clear: both;
+}
+
+/* TinyMCE */
+.tox.tox-tinymce-aux {
+    z-index: 9999;
 }
 
  /* Spin an svg */

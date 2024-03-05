@@ -311,14 +311,15 @@ window.jQuery(function ($) {
                 data: data,
                 type: 'POST',
                 error: function (error) {
-                    APP && APP.notifyError('metaslider/slide-update-failed', error, true)
+                    var err = JSON.parse(error.responseText);
+                    APP && APP.notifyError('metaslider/slide-update-failed', err.data.message, true)
                 },
                 success: function (response) {
                     /**
                      * Updates the image on success
                      */
                     var new_image = $('#slide-' + $this.data('slideId') + ' .thumb').find('img');
-                    new_image.attr(
+                    new_image.attr( 
                         'srcset',
                         `${response.data.thumbnail_url_large} 1024w, ${response.data.thumbnail_url_medium} 768w, ${response.data.thumbnail_url_small} 240w`
                     );
@@ -372,7 +373,66 @@ window.jQuery(function ($) {
                     .addClass('button-primary');
             }
         });
-    })
+    });
+
+    /**
+     * Handles duplicating slides
+     */
+    $('.metaslider').on('click', '.duplicate-slide-image', function (event) {
+        event.preventDefault();
+        var $this = $(this);
+        var data = {
+            action: 'duplicate_slide',
+            _wpnonce: metaslider.duplicate_slide_nonce,
+            slide_id: $this.data('slide-id'),
+            slider_id: window.parent.metaslider_slider_id
+        };
+
+        $.ajax({
+            url: metaslider.ajaxurl,
+            data: data,
+            type: 'POST',
+            error: function (error) {
+                APP && APP.notifyError('metaslider/slide-duplicate-failed', error, true)
+            },
+            success: function (response) {
+
+                var res = window.metaslider.app.Vue.compile(response.data.html)
+
+                // Mount the slide to the beginning or end of the list
+                const cont_ = (new window.metaslider.app.Vue({
+                    render: res.render,
+                    staticRenderFns: res.staticRenderFns
+                }).$mount()).$el;
+
+                if (metaslider.newSlideOrder === 'last') {
+                    $('#metaslider-slides-list > tbody').append(cont_);
+                } else {
+                    $('#metaslider-slides-list > tbody').prepend(cont_);
+                }
+
+                // Display image (is hidden by default)
+                var thumb = $("#slide-" + response.data.slide_id).find('.update-image .thumb img');
+                fit_one_thumb(thumb);
+
+                //Icon for mobile settings
+                show_mobile_icon('slide-' + response.data.slide_id);
+
+                //scroll to new slide
+                $([document.documentElement, document.body]).animate({
+                    scrollTop: metaslider.newSlideOrder === 'last' ? $("#slide-"+response.data.slide_id).offset().top : 0
+                }, 2000);
+
+                // Add timeouts to give some breating room to the notice animations
+                setTimeout(function () {
+                    setTimeout(function () {
+                        APP && APP.triggerEvent('metaslider/save')
+                    }, 1000);
+                }, 1000);
+            }
+        });
+        
+    });
 
     /**
      * Add all the image APIs. Add events everytime the modal is open
@@ -731,10 +791,30 @@ window.jQuery(function ($) {
     });
 
     // helptext tooltips
-    $('.tipsy-tooltip').tipsy({className: 'msTipsy', live: false, delayIn: 500, html: true, gravity: 'e'})
-    $('.tipsy-tooltip-top').tipsy({live: false, delayIn: 500, html: true, gravity: 's'})
-    $('.tipsy-tooltip-bottom').tipsy({live: false, delayIn: 500, html: true, gravity: 'n'})
-    $('.tipsy-tooltip-bottom-toolbar').tipsy({live: false, delayIn: 500, html: true, gravity: 'n', offset: 2})
+    var addTooltips = function () {
+        $('.tipsy-tooltip').tipsy({className: 'msTipsy', live: false, delayIn: 500, html: true, gravity: 'e'});
+        $('.tipsy-tooltip-top').tipsy({live: false, delayIn: 500, html: true, gravity: 's'});
+        $('.tipsy-tooltip-bottom').tipsy({live: false, delayIn: 500, html: true, gravity: 'n'});
+        $('.tipsy-tooltip-bottom-toolbar').tipsy({live: false, delayIn: 500, html: true, gravity: 'n', offset: 2});
+    }
+    addTooltips();
+
+    // Add tooltips when a new slide (<tr>) is added (to <table>)
+    const slidesTable = $('#metaslider-slides-list');
+    if (slidesTable.length) {
+        const observer = new MutationObserver(
+            function (mutationsList, observer) {
+                for (const mutation of mutationsList) {
+                    if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+                        addTooltips();
+                    }
+                }
+            }
+        );
+    
+        const observerConfig = { childList: true, subtree: true };
+        observer.observe(slidesTable[0], observerConfig);
+    }
 
     // welcome screen dropdown
     $('#sampleslider-btn').on('click', function () {
