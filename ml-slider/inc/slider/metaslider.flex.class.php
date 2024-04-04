@@ -64,21 +64,31 @@ class MetaFlexSlider extends MetaSlider
      */
     public function enable_carousel_mode($options, $slider_id)
     {
-        if (isset($options["carouselMode"])) {
+        if (isset($options["carouselMode"])) {  
             if ($options["carouselMode"] == "true") {
                 $options["itemWidth"] = $this->get_setting('width');
                 $options["animation"] = "'slide'";
                 $options["direction"] = "'horizontal'";
                 $options["minItems"] = 1;
+                $options["move"] = 1;
                 $options["itemMargin"] = apply_filters('metaslider_carousel_margin', $this->get_setting('carouselMargin'), $slider_id);
+                //activate infinite loop when carousel is set to 'continously' and 'autoplay'
+                if($this->get_setting('infiniteLoop') == 'true'){
+                    $options["controlNav"] = "false";
+                    $options["directionNav"] = "false";
+                    $options["slideshow"] = "false";
+                    $options['start'] = isset($options['start']) ? $options['start'] : array();
+                    $options['start'] = array_merge($options['start'], array("
+                        var ul = $('#metaslider_" . $slider_id . " .slides');
+                        ul.find('li').clone(true).appendTo(ul);
+                    "));
+                }                
             }
-
             unset($options["carouselMode"]);
         }
 
         // we don't want this filter hanging around if there's more than one slideshow on the page
         remove_filter('metaslider_flex_slider_parameters', array( $this, 'enable_carousel_mode' ), 10, 2);
-
         return $options;
     }
 
@@ -91,7 +101,6 @@ class MetaFlexSlider extends MetaSlider
      */
     public function manage_easing($options, $slider_id)
     {
-
         if ($options["animation"] == '"fade"') {
             unset($options['easing']);
         }
@@ -99,9 +108,6 @@ class MetaFlexSlider extends MetaSlider
         if (isset($options["easing"]) && $options["easing"] != '"linear"') {
             $options['useCSS'] = 'false';
         }
-
-
-        // we don't want this filter hanging around if there's more than one slideshow on the page
         remove_filter('metaslider_flex_slider_parameters', array( $this, 'manage_easing' ), 10, 2);
 
         return $options;
@@ -182,9 +188,39 @@ class MetaFlexSlider extends MetaSlider
      */
     public function get_carousel_css($css, $settings, $slider_id)
     {
-        if (isset($settings["carouselMode"]) && $settings['carouselMode'] == 'true') {
+        if (isset($settings['carouselMode']) && $settings['carouselMode'] == 'true') {
             $margin = apply_filters('metaslider_carousel_margin', $this->get_setting('carouselMargin'), $slider_id);
             $css .= "\n        #metaslider_{$slider_id}.flexslider .slides li {margin-right: {$margin}px !important;}";
+            if(isset($settings['infiniteLoop']) && $settings['infiniteLoop'] == 'true'){
+                //check if theres mobile setting to subtract from the slide count
+                if($this->check_mobile_settings() == true) {
+                    $slides = count($this->slides) - 1;
+                } else {
+                    $slides = count($this->slides);
+                }
+                $double = $slides * 2;
+                $animationtime = ($settings['animationSpeed'] * $slides) + ($settings['delay'] * $slides);
+
+                $css .= "
+                    @keyframes infiniteloop_" . $slider_id . " {
+                        0% {
+                            transform: translateX(0);
+                        }
+                        100% {
+                            transform: translateX(calc(-" . $settings["width"] . "px * " . $slides . "));
+                        }
+                    }
+                    #metaslider_{$slider_id}.flexslider .slides {
+                        -webkit-animation: infiniteloop_" . $slider_id . " " . $animationtime . "ms linear infinite;
+                                animation: infiniteloop_" . $slider_id . " " . $animationtime . "ms linear infinite;
+                        display: flex;
+                        width: calc(" . $settings["width"] . "px * " . $double . ");
+                    }
+                    #metaslider_{$slider_id}.flexslider .slides:hover{
+                        animation-play-state: paused;
+                    }
+                ";
+            }
         }
 
         // we don't want this filter hanging around if there's more than one slideshow on the page

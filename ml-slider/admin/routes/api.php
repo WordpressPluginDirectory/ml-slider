@@ -81,6 +81,7 @@ class MetaSlider_Api
 
         // Slides
         add_action('wp_ajax_ms_import_images', array(self::$instance, 'import_images'));
+        add_action( 'wp_ajax_ms_import_others', array( self::$instance, 'import_others' ) );
 
         // Settings
         add_action('wp_ajax_ms_update_user_setting', array(self::$instance, 'save_user_setting'));
@@ -135,7 +136,7 @@ class MetaSlider_Api
     public function deny_access()
     {
         wp_send_json_error(array(
-            'message' => __('Access denied. Sorry, you do have permission to complete this task.', 'ml-slider')
+            'message' => __('Access denied. Sorry, you do not have permission to complete this task.', 'ml-slider')
         ), 401);
     }
 
@@ -702,28 +703,9 @@ class MetaSlider_Api
      * @return html
      */
     public function cleanup_content_kses( $content ) {
-        $rgbColors = array();
-    
-        // Extract RGB colors and temporarily replace with "rgb_placeholder_${index}"
-        $content = preg_replace_callback('/rgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)/i',
-            function ( $matches ) use ( &$rgbColors ) {
-                $rgbColors[] = "rgb({$matches[1]}, {$matches[2]}, {$matches[3]})";
-                return 'rgb_placeholder_' . ( count( $rgbColors ) - 1);
-            },
-            $content
-        );
-    
-        // Sanitize HTML
-        $content = wp_filter_post_kses( $content );
-    
-        // Add back rgb()
-        $content = str_replace(
-            array_map( function ( $index ) {
-                return 'rgb_placeholder_' . $index;
-            }, array_keys($rgbColors)),
-            $rgbColors,
-            $content
-        );
+
+        // Remove any script tag instance
+        $content = preg_replace( '/<script[^>]*>.*?<\/script>/', '', $content );
     
         return $content;
     }
@@ -1150,6 +1132,56 @@ class MetaSlider_Api
     }
 
     /**
+     * Import others (aka Local videos, YouTube videos, Vimeo videos, etc.)
+     *
+     * @since 3.70
+     * 
+     * @param object $request The request
+     */
+    public function import_others( $request )
+    {
+        if ( ! $this->can_access() ) {
+            $this->deny_access();
+        }
+
+        $data = $this->get_request_data(
+            $request, 
+            array( 
+                'slideshow_id',
+                'slug'
+            )
+        );
+
+        if ( empty( $data['slug'] ) || empty( $data['slideshow_id'] ) ) {
+            wp_send_json_error( 
+                array( 'message' => __('Import slug not found', 'ml-slider') ), 
+                404 
+            );
+        }
+
+        $slider_id  = intval( $data['slideshow_id'] );
+        $slug       = (string) $data['slug'];
+        $new_slides = array();
+
+        if ( class_exists( 'MetaSliderPro_Quickstart' ) ) {
+            $quickstart = new MetaSliderPro_Quickstart();
+            $new_slides = $quickstart->import_slides( $slug, $slider_id );
+        }
+
+        if ( ! count( $new_slides ) ) {
+            wp_send_json_error( 
+                array( 'message' => __('Import data could not be processed', 'ml-slider') ), 
+                404 
+            );
+        }
+
+        wp_send_json_success(
+            $data, 
+            200
+        );
+    }
+
+    /**
      * Verify uploads are useful and return an array with metadata
      * For now only handles images.
      *
@@ -1308,6 +1340,14 @@ if (class_exists('WP_REST_Controller')) :
                 'callback' => array($this->api, 'import_images'),
                 'permission_callback' => array($this->api, 'can_access')
             )));
+
+            register_rest_route($this->namespace, '/import/others', array(
+                array(
+                    'methods' => 'POST',
+                    'callback' => array($this->api, 'import_others'),
+                    'permission_callback' => array($this->api, 'can_access')
+                )
+            ));
 
             register_rest_route($this->namespace, '/tour/status', array(array(
                 'methods' => 'POST',

@@ -87,6 +87,7 @@ class MetaSlider_Slideshow_Settings
             'smartCrop' => true,
             'smoothHeight' => false,
             'carouselMode' => false,
+            'infiniteLoop' => false,
             'carouselMargin' => 5,
             'firstSlideFadeIn' => false,
             'easing' => 'linear',
@@ -96,7 +97,15 @@ class MetaSlider_Slideshow_Settings
             'responsive_thumbs' => true,
             'thumb_min_width' => 100,
             'fullWidth' => true,
-            'noConflict' => true
+            'noConflict' => true,
+            'mobileArrows_smartphone' => false,
+            'mobileArrows_tablet' => false,
+            'mobileArrows_laptop' => false,
+            'mobileArrows_desktop' => false,
+            'mobileNavigation_smartphone' => false,
+            'mobileNavigation_tablet' => false,
+            'mobileNavigation_laptop' => false,
+            'mobileNavigation_desktop' => false,
         );
         $defaults = apply_filters('metaslider_default_parameters', $defaults);
         $overrides = get_option('metaslider_default_settings');

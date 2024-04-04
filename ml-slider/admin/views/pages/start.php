@@ -1,4 +1,18 @@
-<?php if (!defined('ABSPATH')) die('No direct access.'); ?>
+<?php if (!defined('ABSPATH')) die('No direct access.'); 
+$demo_options = array(
+	array(
+		'slug' => 'carousel',
+		'label' => esc_html__( 'Carousel Slideshow', 'ml-slider' )
+	),
+	array(
+		'slug' => 'withcaption',
+		'label' => esc_html__( 'Carousel Slideshow with Captions', 'ml-slider' )
+	)
+);
+
+// Allow to add new options
+$demo_options = apply_filters( 'metaslider_quickstart_options', $demo_options );
+?>
 <div id="metaslider-ui">
 <div class="metaslider-start mt-16">
 	<div class="metaslider-welcome">
@@ -43,8 +57,18 @@
 						<select id="sampleslider-options">
 							<option value="<?php echo esc_url(wp_nonce_url(admin_url("admin-post.php?action=metaslider_create_slider"), "metaslider_create_slider")); ?>"><?php esc_html_e('Blank Slideshow', 'ml-slider'); ?></option>
 							<option value="<?php echo esc_url(wp_nonce_url(admin_url("admin-post.php?action=metaslider_create_slider&metaslider_add_sample_slides"), "metaslider_create_slider")); ?>"><?php esc_html_e('Image Slideshow', 'ml-slider'); ?></option>
-							<option value="<?php echo esc_url(wp_nonce_url(admin_url("admin-post.php?action=metaslider_create_slider&metaslider_add_sample_slides=carousel"), "metaslider_create_slider")); ?>"><?php esc_html_e('Carousel Slideshow', 'ml-slider'); ?></option>
-							<option value="<?php echo esc_url(wp_nonce_url(admin_url("admin-post.php?action=metaslider_create_slider&metaslider_add_sample_slides=withcaption"), "metaslider_create_slider")); ?>"><?php esc_html_e('Carousel Slideshow with Captions', 'ml-slider'); ?></option>
+							<?php foreach ( $demo_options as $item ) : ?>
+								<option value="<?php 
+									echo esc_url( 
+										wp_nonce_url( 
+											admin_url( 
+												'admin-post.php?action=metaslider_create_slider&metaslider_add_sample_slides=' . $item['slug'] ), 
+												'metaslider_create_slider' 
+											) 
+										) ?>">
+									<?php echo esc_html( $item['label'] ) ?>
+								</option>
+							<?php endforeach; ?>
 						</select>
 						<button id="sampleslider-btn" class="button button-primary"><?php esc_html_e('Create a Slideshow', 'ml-slider'); ?></button>
 					</div>

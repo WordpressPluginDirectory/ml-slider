@@ -273,6 +273,8 @@ class MetaSlider_Admin_Table extends WP_List_table
         $slides = get_posts(array(
             'post_type' => array('ml-slide'),
             'post_status' => array($status),
+            'orderby' => 'menu_order',
+            'order' => 'ASC',
             'lang' => '',
             'suppress_filters' => 1,
             'posts_per_page' => -1,
@@ -293,20 +295,16 @@ class MetaSlider_Admin_Table extends WP_List_table
         $slides = $this->get_slides($slideshowId, 'publish');
         $numberOfSlides = count($slides);
         $logo = 'data:image/svg+xml;base64,' . base64_encode(file_get_contents(dirname(__FILE__) . '/assets/metaslider.svg'));
-        $thumbHtml = "<div class='w-16 h-16 bg-gray-light'>";
+        $thumbHtml = "<div class='w-16 h-16 bg-gray-light slidethumb'>";
         if ($numberOfSlides === 0) {
             $thumbHtml .= "<img src='". $logo ."' class='thumb-logo'>";
         } else {
             if ($numberOfSlides === 1){
                 $thumbHtml .= $this->getslide_thumb($slides[0]->ID);
             } else {
-                $thumbHtml .= "<div class='relative w-16 h-16 image-wrap'>";
                 foreach ($slides as $key => $slide) {
-                    $thumbHtml .= "<div class='bg-gray-light absolute block inset-0 transition-all duration-1000 ease-linear autoplay'>";
                     $thumbHtml .= $this->getslide_thumb($slide->ID);
-                    $thumbHtml .= "</div>";
                 }
-                $thumbHtml .= "</div>";
             }        
         }
         $thumbHtml .= "</div>";

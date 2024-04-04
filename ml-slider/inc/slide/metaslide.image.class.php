@@ -129,7 +129,7 @@ class MetaImageSlide extends MetaSlide
         if (! current_user_can($capability)) {
             wp_send_json_error(
                 [
-                    'message' => __('Access denied. Sorry, you do have permission to complete this task.', 'ml-slider')
+                    'message' => __('Access denied. Sorry, you do not have permission to complete this task.', 'ml-slider')
                 ],
                 403
             );
@@ -148,7 +148,7 @@ class MetaImageSlide extends MetaSlide
         if (! current_user_can($capability)) {
             wp_send_json_error(
                 [
-                    'message' => __('Access denied. Sorry, you do have permission to complete this task.', 'ml-slider')
+                    'message' => __('Access denied. Sorry, you do not have permission to complete this task.', 'ml-slider')
                 ],
                 403
             );
@@ -233,7 +233,7 @@ class MetaImageSlide extends MetaSlide
         if (! current_user_can($capability)) {
             wp_send_json_error(
                 [
-                    'message' => __('Access denied. Sorry, you do have permission to complete this task.', 'ml-slider')
+                    'message' => __('Access denied. Sorry, you do not have permission to complete this task.', 'ml-slider')
                 ],
                 403
             );

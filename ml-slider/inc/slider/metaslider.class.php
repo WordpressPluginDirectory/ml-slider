@@ -133,7 +133,15 @@ class MetaSlider
             'responsive_thumbs' => true,
             'thumb_min_width' => 100,
             'fullWidth' => true,
-            'noConflict' => true
+            'noConflict' => true,
+            'mobileArrows_smartphone' => false,
+            'mobileArrows_tablet' => false,
+            'mobileArrows_laptop' => false,
+            'mobileArrows_desktop' => false,
+            'mobileNavigation_smartphone' => false,
+            'mobileNavigation_tablet' => false,
+            'mobileNavigation_laptop' => false,
+            'mobileNavigation_desktop' => false
         );
         return apply_filters('metaslider_default_parameters', $params);
     }
@@ -308,6 +316,32 @@ class MetaSlider
         // when passed in the shortcode, the attribute names are lowercased.
         if ('false' != $this->get_setting('cssclass')) {
             $class .= " " . $this->get_setting('cssclass');
+        }
+
+        //add mobile settings class
+        if ('false' != $this->get_setting('mobileArrows_smartphone')) {
+            $class .= ' hide-arrows-smartphone';
+        }
+        if ('false' != $this->get_setting('mobileArrows_tablet')) {
+            $class .= ' hide-arrows-tablet';
+        }
+        if ('false' != $this->get_setting('mobileArrows_laptop')) {
+            $class .= ' hide-arrows-laptop';
+        }
+        if ('false' != $this->get_setting('mobileArrows_desktop')) {
+            $class .= ' hide-arrows-desktop';
+        }
+        if ('false' != $this->get_setting('mobileNavigation_smartphone')) {
+            $class .= ' hide-navigation-smartphone';
+        }
+        if ('false' != $this->get_setting('mobileNavigation_tablet')) {
+            $class .= ' hide-navigation-tablet';
+        }
+        if ('false' != $this->get_setting('mobileNavigation_laptop')) {
+            $class .= ' hide-navigation-laptop';
+        }
+        if ('false' != $this->get_setting('mobileNavigation_desktop')) {
+            $class .= ' hide-navigation-desktop';
         }
 
         // handle any custom classes
@@ -580,11 +614,22 @@ class MetaSlider
             if($hidden_caption != false) {
                 $class .= '.slide-' . $slide->ID . ' .caption-wrap,';
             }
+
+            $hidden_arrows = get_post_meta( $slide->ID , 'ml-slider_hide_arrows_' . $device );
+            if($hidden_arrows != false) {
+                $class .= '.slide-' . $slide->ID . ' .caption-wrap,';
+            }
         };
 
+        //navigation and arrows
+        $class .= ' .hide-arrows-' . $device . ' .flex-direction-nav,';
+        $class .= ' .hide-navigation-' . $device . ' .flex-control-paging,';
+        $class .= ' .hide-navigation-' . $device . ' .flex-control-nav,';
+        $class .= ' .hide-navigation-' . $device . ' .filmstrip,';
+        
         if(!empty($class)) {
             $class = rtrim($class, ',');
-            $class .= '{ display: none; }';
+            $class .= '{ display: none!important; }';
         }
 
         return $class;
@@ -608,6 +653,7 @@ class MetaSlider
             $css .= '@media only screen and (max-width: ' . ($tablet - 1) . 'px) {'; 
             $css .= 'body:after { display: none; content: "smartphone"; }';
             $css .= $this->build_mobile_css('smartphone');
+
             $css .= '}';
 
             $css .= '@media only screen and (min-width : ' . $tablet . 'px) and (max-width: ' .( $laptop - 1) . 'px) {';

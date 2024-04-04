@@ -1,7 +1,10 @@
 <template>
 	<div class="row caption">
 		<div class="flex justify-between">
-			<label class="mr-4 caption-label">{{ __("Caption", "ml-slider") }}</label>
+			<label class="mr-4 caption-label">
+				{{ __("Caption", "ml-slider") }}
+				<span class="dashicons dashicons-info tipsy-tooltip-top" :title="__('Enter text that will appear with your image slide.', 'ml-slider')" style="line-height: 1.2em;"></span>
+			</label>
 			<div
 				:aria-labelledby="'caption_source_' + $parent.id"
 				role="radiogroup"
@@ -133,6 +136,7 @@ export default {
 								branding: false,
 								promotion: false,
 								height: 240,
+								preview_styles: false,
 								forced_root_block: 'div',
 								setup: function (editor) {
 									editor.on('input', function () {

@@ -1305,17 +1305,6 @@ input.no_last_pass {
 	color: green;
 }
 
-@keyframes autoplaythumb {
-    0% {opacity: 0.0}
-    4% {opacity: 1.0}
-    33.33% {opacity: 1.0}
-    37.33% {opacity: 0.0}
-    100% {opacity: 0.0}
-}
-.column-slides .image-wrap > *:nth-child(1) {animation-delay: 0s}
-.column-slides .image-wrap > *:nth-child(2) {animation-delay: 4s}
-.column-slides .image-wrap > *:nth-child(3) {animation-delay: 8s}
-
 /* Quick Start Page */
 .metaslider_page_metaslider-start #wpbody-content,
 .metaslider-pro_page_metaslider-start #wpbody-content {
@@ -1474,6 +1463,12 @@ input.no_last_pass {
     font-size: 13px;
 }
 
+.slidethumb {
+    overflow: hidden;
+    width: 150px;
+    height: 150px;
+}
+
 /* Force CSS properties overriden by core for .form-select class */
 .form-select--forced {
     background-color: #fff !important;
@@ -1526,6 +1521,11 @@ input.no_last_pass {
 	width: 18px;
 	margin-top: -2px;
 	color: rgb(70, 180, 80);
+}
+
+.ms-settings-table .mobile-checkbox-wrap {
+	margin-right: 5px;
+	padding: 5px 8px !important;
 }
 
 /* Settngs & Help Page */
@@ -1660,6 +1660,23 @@ td .dot.available {
 	width: 80%;
 	margin: 5% auto;
 	box-shadow: 0px 5px 5px 0px silver;
+}
+
+#loading-add-sample-slides-notice {
+    height: 200px;
+    text-align: center;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #f1f1f1;
+    font-size: 1.2em;
+    background: #fff;
+}
+
+#loading-add-sample-slides-notice span {
+    padding-left: 30px;
+    background-repeat: no-repeat;
+    background-size: contain;
 }
 
 @media only screen and (min-width : 320px) {

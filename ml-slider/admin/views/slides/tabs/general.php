@@ -37,6 +37,7 @@
 		<div class="row mb-2">
 			<label>
 				<?php esc_html_e( 'Link URL', 'ml-slider' ) ?>
+				<span class="dashicons dashicons-info tipsy-tooltip-top" title="<?php esc_attr_e('When visitors click on your image slide, they will be taken to this URL.', 'ml-slider') ?>" style="line-height: 1.2em;"></span>
 			</label>
 		</div>
 		<div class="row has-right-checkbox">

@@ -88,6 +88,31 @@ class MetaSlider_Admin_Pages extends MetaSliderPlugin
         
         $global_settings = get_option( 'metaslider_global_settings' );
 
+        // @TODO - Move the logic below and MetaSlider->get_breakpoints() to a single place to avoid duplication
+        $default_settings   = get_site_option( 'metaslider_default_settings' );
+        $global_settings    = $this->get_global_settings();
+        
+        if ( $default_settings 
+            && ! isset( $global_settings['mobileSettings'] ) 
+            || ( isset( $global_settings['mobileSettings'] ) 
+                && true == $global_settings['mobileSettings'] 
+            )  
+        ) {
+            $breakpoints = array(
+                'smartphone' => isset( $default_settings['smartphone'] ) ? (int) $default_settings['smartphone'] : 480,
+                'tablet' => isset( $default_settings['tablet'] ) ? (int) $default_settings['tablet'] : 768,
+                'laptop' => isset( $default_settings['laptop'] ) ? (int) $default_settings['laptop'] : 1024,
+                'desktop' => isset( $default_settings['desktop'] ) ? (int) $default_settings['desktop'] : 1440,
+            );
+        } else {
+            $breakpoints = array(
+                'smartphone' => 480,
+                'tablet' => 768,
+                'laptop' => 1024,
+                'desktop' => 1440
+            );
+        }
+        
         wp_localize_script('metaslider-admin-script', 'metaslider', array(
             'url' => esc_html__("URL", "ml-slider"),
             'caption' => esc_html__("Caption", "ml-slider"),
@@ -115,7 +140,9 @@ class MetaSlider_Admin_Pages extends MetaSliderPlugin
             'newSlideOrder' => isset( $global_settings['newSlideOrder'] ) 
                 && $global_settings['newSlideOrder'] === 'first' 
                 ? esc_html( $global_settings['newSlideOrder'] ) : 'last',
-            'tinymce' => array() // Just initialize to add values later through JS files
+            'tinymce' => array(), // Just initialize to add values later through JS files
+            'quickstart_slugs' => $this->quickstart_slugs(),
+            'breakpoints' => $breakpoints
         ));
         wp_enqueue_script('metaslider-admin-script');
         do_action('metaslider_register_admin_scripts');

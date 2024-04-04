@@ -76,18 +76,16 @@ class MetaSlider_Themes
             (isset($new_install)  && 'new' == $new_install)
         ) {
             $themes = (include METASLIDER_THEMES_PATH . 'manifest.php');
-            $manifest_file = 'manifest.php';
         } else {
             $themes = (include METASLIDER_THEMES_PATH . 'manifest-legacy.php');
-            $manifest_file = 'manifest-legacy.php';
         }
         
         // Let theme developers or others define a folder to check for themes
         $extra_themes = apply_filters('metaslider_extra_themes', array());
         foreach ($extra_themes as $location) {
             // Make sure there is a manifest
-            if (file_exists(trailingslashit($location) . $manifest_file)) {
-                $manifest = include(trailingslashit($location) . $manifest_file);
+            if (file_exists(trailingslashit($location) . 'manifest.php')) {
+                $manifest = include(trailingslashit($location) . 'manifest.php');
 
                 // Make sure each theme has an existing folder, title, description
                 foreach ($manifest as $data) {

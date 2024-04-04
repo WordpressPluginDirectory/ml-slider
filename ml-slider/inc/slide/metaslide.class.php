@@ -146,7 +146,7 @@ class MetaSlide
         if (! current_user_can($capability)) {
             wp_send_json_error(
                 [
-                    'message' => __('Access denied. Sorry, you do have permission to complete this task.', 'ml-slider')
+                    'message' => __('Access denied. Sorry, you do not have permission to complete this task.', 'ml-slider')
                 ],
                 403
             );
@@ -806,28 +806,9 @@ class MetaSlide
      * @return html
      */
     public function cleanup_content_kses( $content ) {
-        $rgbColors = array();
-    
-        // Extract RGB colors and temporarily replace with "rgb_placeholder_${index}"
-        $content = preg_replace_callback('/rgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)/i',
-            function ( $matches ) use ( &$rgbColors ) {
-                $rgbColors[] = "rgb({$matches[1]}, {$matches[2]}, {$matches[3]})";
-                return 'rgb_placeholder_' . ( count( $rgbColors ) - 1);
-            },
-            $content
-        );
-    
-        // Sanitize HTML
-        $content = wp_filter_post_kses( $content );
-    
-        // Add back rgb()
-        $content = str_replace(
-            array_map( function ( $index ) {
-                return 'rgb_placeholder_' . $index;
-            }, array_keys($rgbColors)),
-            $rgbColors,
-            $content
-        );
+        
+        // Remove any script tag instance
+        $content = preg_replace( '/<script[^>]*>.*?<\/script>/', '', $content );
     
         return $content;
     }
