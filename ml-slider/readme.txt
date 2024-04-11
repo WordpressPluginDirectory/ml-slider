@@ -2,7 +2,7 @@
 Contributors: andergmartins, htmgarcia, publishpress, stevejburge, rochdesigns
 Tags: slideshow, slider, image slider, carousel, gallery, flex slider, wordpress slider, nivoslider, rotating banner, image sliders, slide show, responsive slideshow, seo slideshow, unsplash, post sliders, video sliders, YouTube sliders, Vimeo sliders, HTML sliders, external URL sliders, layer sliders, best WordPress slider, best slider, best slideshow, best carousel, easy slider, easy slideshow, flex slider, woocommerce slider, woocommerce slideshow, video slider, video captions, video subtitles
 Requires at least: 5.0
-Stable tag: 3.70.0
+Stable tag: 3.70.2
 Requires PHP: 7.0
 Tested up to: 6.5
 License: GPLv2 or later
@@ -317,7 +317,17 @@ Yes, you can build Elementor slides and Beaver Builder slideshows. You can creat
 The format is based on [Keep a Changelog recommendations](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
- [3.70.0] - 03 Apr, 2024 =
+= [3.70.2] - 10 Apr, 2024 =
+
+* FIXED: Bug introduced in 3.70.1, #1006;
+
+= [3.70.1] - 09 Apr, 2024 =
+
+* FIXED: Cast shortcode id attribute to number, #992;
+* FIXED: Redirect to Quick Start Page after plugin activation not working, #996;
+* FIXED: Italian, Spanish and French translation updates, #991;
+
+= [3.70.0] - 03 Apr, 2024 =
 
 * ADDED: Loading screen when creating slideshows, #976;
 * ADDED: Tooltips for main area of editing screen, #813;

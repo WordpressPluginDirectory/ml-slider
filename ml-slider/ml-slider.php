@@ -5,7 +5,7 @@
  * Plugin Name: MetaSlider
  * Plugin URI:  https://www.metaslider.com
  * Description: MetaSlider gives you the power to create a beautiful slideshow, carousel, or gallery on your WordPress site.
- * Version:     3.70.0
+ * Version:     3.70.2
  * Author:      MetaSlider
  * Author URI:  https://www.metaslider.com
  * License:     GPL-2.0+
@@ -42,7 +42,7 @@ if (! class_exists('MetaSliderPlugin')) {
          *
          * @var string
          */
-        public $version = '3.70.0';
+        public $version = '3.70.2';
 
         /**
          * Pro installed version number
@@ -295,7 +295,7 @@ if (! class_exists('MetaSliderPlugin')) {
             add_action('init', array($this, 'register_post_types'));
             add_action('init', array($this, 'register_taxonomy'));
             add_action('init', array($this, 'load_plugin_textdomain'));
-            add_action('init', array($this, 'redirect_on_activate'));
+            add_action('admin_init', array($this, 'redirect_on_activate'));
             add_action('admin_footer', array($this, 'admin_footer'), 11);
             add_action('admin_footer', array($this, 'quickstart_params'), 11);
             add_action('widgets_init', array($this, 'register_metaslider_widget'));
@@ -545,6 +545,13 @@ if (! class_exists('MetaSliderPlugin')) {
                 'metaslider'
             );
 
+            // Sanitize id attribute
+            foreach ( $atts as $key => $value ) {
+                if ( $key == 'id' ) {
+                    // Make sure id is a number
+                    $atts[$key] = (int) $value;
+                }
+            }
 
             // If no id and no title, exit here
             if (! $atts['id'] && ! $atts['title']) {
