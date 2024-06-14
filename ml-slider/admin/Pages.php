@@ -84,7 +84,20 @@ class MetaSlider_Admin_Pages extends MetaSliderPlugin
         wp_enqueue_media();
         wp_enqueue_script('jquery-ui-core');
         wp_enqueue_script('jquery-ui-sortable');
-        wp_register_script('metaslider-admin-script', METASLIDER_ADMIN_URL . 'assets/dist/js/admin.js', array('jquery', 'plupload-all'), METASLIDER_ASSETS_VERSION, true);
+        wp_enqueue_style( 'wp-color-picker' );
+        wp_register_script(
+            'metaslider-admin-script', 
+            METASLIDER_ADMIN_URL . 'assets/dist/js/admin.js', 
+            array('jquery', 'plupload-all', 'metaslider-wp-color-picker'), 
+            METASLIDER_ASSETS_VERSION, 
+            true
+        );
+        wp_register_script(
+            'metaslider-wp-color-picker',
+            METASLIDER_ADMIN_URL . 'assets/vendor/wp-color-picker-alpha/wp-color-picker-alpha.min.js',
+            array( 'wp-color-picker' ),
+            METASLIDER_VERSION
+        );
         
         $global_settings = get_option( 'metaslider_global_settings' );
 

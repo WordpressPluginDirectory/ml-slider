@@ -166,7 +166,8 @@ const mutations = {
                             slideshow_id: slideshows[key].id,
                             slug: slug
                         })).then(response => {
-                            window.location.reload(true)
+                            // This will trigger sampleSlidesWereAdded()
+                            window.location.href = window.location.href.replace('metaslider_add_sample_slides', 'metaslider_add_sample_slides_after');
                         }).catch(error => {
                             console.log(error)
                         })
@@ -177,7 +178,8 @@ const mutations = {
                             action: 'ms_import_images',
                             slideshow_id: slideshows[key].id,
                         })).then(response => {
-                            window.location.reload(true)
+                            // This will trigger sampleSlidesWereAdded()
+                            window.location.href = window.location.href.replace('metaslider_add_sample_slides', 'metaslider_add_sample_slides_after');
                         }).catch(error => {
                             console.log(error)
                         })

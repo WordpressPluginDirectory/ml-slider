@@ -50,7 +50,11 @@ $demo_options = apply_filters( 'metaslider_quickstart_options', $demo_options );
 
 					<div>
 						<h3 class="ms-heading"><?php esc_html_e('Create a slideshow with sample images', 'ml-slider'); ?></h3>
-						<p><?php esc_html_e('Choose one of our demos with sample images, or a blank slideshow with no images.', 'ml-slider'); ?></p>
+						<p>
+							<?php 
+								echo apply_filters( 'metaslider_quickstart_description', esc_html__('Create a demo slideshow.', 'ml-slider'));  //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+							?>
+						</p>
 					</div>
 
 					<div class="try-gutenberg-action">

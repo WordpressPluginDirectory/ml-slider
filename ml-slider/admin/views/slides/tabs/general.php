@@ -29,43 +29,5 @@
 			image-description="<?php echo esc_attr($image_description); ?>"
 			override="<?php echo esc_attr($slide_caption); ?>"
 			caption-source="<?php echo esc_attr($caption_source); ?>"></metaslider-caption>
-
-		<?php // Handle URL and target
-			$url = get_post_meta($slide_id, 'ml-slider_url', true);
-			$target = get_post_meta($slide_id, 'ml-slider_new_window', true);
-		?>
-		<div class="row mb-2">
-			<label>
-				<?php esc_html_e( 'Link URL', 'ml-slider' ) ?>
-				<span class="dashicons dashicons-info tipsy-tooltip-top" title="<?php esc_attr_e('When visitors click on your image slide, they will be taken to this URL.', 'ml-slider') ?>" style="line-height: 1.2em;"></span>
-			</label>
-		</div>
-		<div class="row has-right-checkbox">
-			<div>
-				<input class="url" data-lpignore="true" type="text" name="attachment[<?php echo esc_attr($slide_id); ?>][url]" placeholder="<?php echo esc_attr("URL", "ml-slider"); ?>" value="<?php echo esc_url($url); ?>" />
-			</div>
-			<div class="input-label">
-				<label>
-					<?php 
-					esc_html_e( 'New window', 'ml-slider' ); 
-					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-					echo $this->info_tooltip( __(
-						'Open link in a new window', 
-						'ml-slider'
-					) );
-					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-					echo $this->switch_button( 
-						'attachment[' . esc_attr( $slide_id ) . '][new_window]', 
-						(bool) $target,
-						array(
-							'autocomplete' => 'off',
-							'tabindex' => '0' 
-						),
-						'mr-0 ml-2'
-					);
-					?>
-				</label>
-			</div>
-		</div>
 	</div>
 </div>

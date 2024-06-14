@@ -1,6 +1,7 @@
 window.jQuery(function ($) {
 
     const APP = window.metaslider.app ? window.metaslider.app.MetaSlider : null
+
     /**
      * Event listening to media library edits
      */
@@ -132,10 +133,6 @@ window.jQuery(function ($) {
                         } else {
                             $('#metaslider-slides-list > tbody').prepend(cont_);
                         }
-
-                        // Display image (is hidden by default)
-                        var thumb = $("#slide-"+slide.slide_id).find('.update-image .thumb img');
-                        fit_one_thumb(thumb);
                     })
 
                     /* Get the last added slide to avoid multiple scrollTo calls 
@@ -411,10 +408,6 @@ window.jQuery(function ($) {
                     $('#metaslider-slides-list > tbody').prepend(cont_);
                 }
 
-                // Display image (is hidden by default)
-                var thumb = $("#slide-" + response.data.slide_id).find('.update-image .thumb img');
-                fit_one_thumb(thumb);
-
                 //Icon for mobile settings
                 show_mobile_icon('slide-' + response.data.slide_id);
 
@@ -433,6 +426,74 @@ window.jQuery(function ($) {
         });
         
     });
+
+    /**
+     * When Carousel mode or Loop continuously changes
+     * 
+     * @since 3.90
+     */
+    $('.metaslider').on('change', '.ms-settings-table input[name="settings[autoPlay]"], .ms-settings-table input[name="settings[carouselMode]"], .ms-settings-table input[name="settings[infiniteLoop]"]', function () {
+        showHideAutoPlay();
+    });
+
+    /**
+     * Show/hide Auto play and Play / pause if Carousel mode and Loop continuously are both enabled
+     * 
+     * @since 3.90
+     */
+    var showHideAutoPlay = function () {
+        var carouselMode = $('.ms-settings-table input[name="settings[carouselMode]"]');
+        var infiniteLoop = $('.ms-settings-table input[name="settings[infiniteLoop]"]');
+        var autoPlay = $('.ms-settings-table input[name="settings[autoPlay]"]');
+        var pausePlay = $('.ms-settings-table input[name="settings[pausePlay]"]');
+
+        if (carouselMode.is(':checked') && infiniteLoop.is(':checked')) {
+            // Hide "Auto play" and "Play / pause" if "Carousel mode" AND "Loop carousel continuously" are enabled
+            autoPlay.parents('tr').hide();
+            pausePlay.parents('tr').hide();
+        } else {
+            // Show "Auto play" if "Carousel mode" OR "Loop carousel continuously" are disabled
+            autoPlay.parents('tr').show();
+
+            if (autoPlay.is(':checked')) {
+                // Show "Play / pause" if "Auto play" is enabled
+                pausePlay.parents('tr').show();
+            } else {
+                pausePlay.parents('tr').hide();
+            }
+        }
+    }
+    showHideAutoPlay();
+
+    /**
+     * When Auto play or Loop changes
+     * 
+     * @since 3.90
+     */
+    $('.metaslider').on('change', '.ms-settings-table input[name="settings[autoPlay]"], .ms-settings-table select[name="settings[loop]"]', function () {
+        adjustLoop();
+    });
+
+    /**
+     * Add/remove 'Stop on first slide' option for Loop setting
+     * 
+     * @since 3.90
+     */
+    var adjustLoop = function () {
+        var autoPlay = $('.ms-settings-table input[name="settings[autoPlay]"]');
+        var loop = $('.ms-settings-table select[name="settings[loop]"]');
+
+        if (autoPlay.is(':checked')) {
+            // Add 'Stop on first slide' option if doesn't exists
+            if (loop.find('option[value="stopOnFirst"]').length === 0) {
+                loop.append(`<option value="stopOnFirst">${APP.__('Stop on first slide', 'ml-slider')}</option>`);
+            }
+        } else {
+            // Remove 'Stop on first slide' option
+            loop.find('option[value="stopOnFirst"]').remove();
+        }
+    }
+    adjustLoop();
 
     /**
      * Add all the image APIs. Add events everytime the modal is open
@@ -790,6 +851,15 @@ window.jQuery(function ($) {
         });
     });
 
+    /**
+     * Hide 'Click the "Add Slide" button to create your slideshow' notice
+     * 
+     * @since 3.80
+     */
+    var hideNoSlidesNotice = function () {
+        $('#add-first-slide-notice').hide();
+    }
+
     // helptext tooltips
     var addTooltips = function () {
         $('.tipsy-tooltip').tipsy({className: 'msTipsy', live: false, delayIn: 500, html: true, gravity: 'e'});
@@ -807,6 +877,7 @@ window.jQuery(function ($) {
                 for (const mutation of mutationsList) {
                     if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
                         addTooltips();
+                        hideNoSlidesNotice();
                     }
                 }
             }
@@ -895,96 +966,6 @@ window.jQuery(function ($) {
         $(this).next('.copy-message').fadeIn().delay(1000).fadeOut();
     });
 
-    var fitThumbsTimer;
-    
-    /**
-     * Resize all slide thumbnails to fill its container
-     * 
-     * @return void
-     */ 
-    var fit_all_thumbs = function() {
-        $('.update-image .thumb img').each(function() {
-            fit_one_thumb($(this));
-            fit_one_thumb_on_change($(this));
-        });
-    }
-
-    /**
-     * Resize a single slide thumbnails to fill its container
-     * 
-     * @param {object} img <img> element
-     * 
-     * @return void
-     */
-    var fit_one_thumb = window.metaslider.fit_one_thumb = function (img) {
-        var wrapper = img.parent();
-
-        if(typeof img === 'undefined' || typeof wrapper === 'undefined') {
-            console.error('MetaSlider: Image and wrapper thumbnails are not defined!');
-            return;
-        }
-
-        // Image Aspect Ratio is bigger than its container?
-        var imgBiggerAR = img[0].naturalWidth / img[0].naturalHeight > wrapper.width() / wrapper.height();
-        
-        if(imgBiggerAR && (!img[0].style.width.length || img[0].style.width === '100%')) {
-            img.fadeOut(300, function() {
-                img.css({ width: 'auto', height: '100%' }).fadeIn(300);
-            });
-        } else if(!imgBiggerAR && (!img[0].style.width.length || img[0].style.width === 'auto')) {
-            img.fadeOut(300, function() {
-                img.css({ width: '100%', height: 'auto' }).fadeIn(300);
-            });
-        } else {
-            // Default to be sure thumbnail is at least visible
-            if (imgBiggerAR) {
-                img.css({ width: 'auto', height: '100%' });
-            } else {
-                img.css({ width: '100%', height: 'auto' });
-            }
-            img.show();
-        }
-    }
-
-    /**
-     * Detect when src attribute for a thumbnail changes 
-     * and adapt to its parent if needed through fit_one_thumb()
-     * 
-     * @param {object} img <img> element
-     * 
-     * @retun void
-     */
-    var fit_one_thumb_on_change = function (img) {
-        var currentSrc = img.attr('src');
-        setInterval( function() {
-            if (img.attr('src') !== currentSrc) {
-                img.trigger('change'); 
-                currentSrc = img.attr('src');
-                window.metaslider.fit_one_thumb(img);
-            }
-        }, 300);
-    }
-
-    /**
-     * Make sure fit_all_thumbs() is not triggered multiple times at once
-     * 
-     * @return void
-     */
-    var debounce_fit_all_thumbs = function () {
-        clearTimeout(fitThumbsTimer);
-        fitThumbsTimer = setTimeout(function() {
-            fit_all_thumbs();
-        }, 100);
-    }
-
-    /* Resize thumbnails on load */
-    fit_all_thumbs();
-
-    /* Resize thumbnails on screen resize */
-    $(window).resize( function() {
-        debounce_fit_all_thumbs();
-    });
-
     /**
      * Fallback after adding a new slide
      * 
@@ -1002,13 +983,6 @@ window.jQuery(function ($) {
             table.append(data.html);
         } else {
             table.prepend(data.html);
-        }
-
-        // Display image (is hidden by default)
-        var thumb = $("#slide-"+data.slide_id).find('.update-image .thumb img');
-
-        if (thumb.length) {
-            window.metaslider.fit_one_thumb(thumb);
         }
 
         $('html, body').animate({
@@ -1082,7 +1056,20 @@ window.jQuery(function ($) {
             console.log(container.find(":nth-child(" + count + ")"));
         }, 2000);
     });
-    
+
+    /**
+     * Trigger slideshow save after a quickstart has been created
+     * 
+     * @since 3.90
+     */
+    var sampleSlidesWereAdded = function () {
+        if (window.location.href.indexOf('metaslider_add_sample_slides_after') !== -1) {
+            setTimeout(function () {
+                APP && APP.triggerEvent('metaslider/save')
+            }, 1000);
+        }
+    }
+    sampleSlidesWereAdded();
 });
 
 /**

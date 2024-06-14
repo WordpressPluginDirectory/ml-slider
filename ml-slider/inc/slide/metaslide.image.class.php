@@ -457,6 +457,13 @@ class MetaImageSlide extends MetaSlide
             $inherit_image_title_class = ' inherit-from-image';
         }
 
+        // alt link
+        $link_alt = get_post_meta($slide_id, 'ml-slider_link-alt', true);
+
+        // URL and target
+        $url    = get_post_meta( $slide_id, 'ml-slider_url', true );
+        $target = get_post_meta( $slide_id, 'ml-slider_new_window', true );
+
         ob_start();
         include METASLIDER_PATH . 'admin/views/slides/tabs/general.php';
         $general_tab = ob_get_clean();
@@ -468,15 +475,21 @@ class MetaImageSlide extends MetaSlide
         }
 
         ob_start();
+        include METASLIDER_PATH . 'admin/views/slides/tabs/link.php';
+        $link_tab = ob_get_clean();
+
+        ob_start();
         include METASLIDER_PATH . 'admin/views/slides/tabs/seo.php';
         $seo_tab = ob_get_clean();
-
-        
 
         $tabs = array(
             'general' => array(
                 'title' => __("General", "ml-slider"),
                 'content' => $general_tab
+            ),
+            'link' => array(
+                'title' => __( "Link", "ml-slider" ),
+                'content' => $link_tab
             ),
             'seo' => array(
                 'title' => __("SEO", "ml-slider"),
@@ -622,6 +635,7 @@ class MetaImageSlide extends MetaSlide
             $alt = get_post_meta($this->slide->ID, '_wp_attachment_image_alt', true);
         }
 
+        $link_alt = get_post_meta($this->slide->ID, 'ml-slider_link-alt', true);
 
 
         // store the slide details
@@ -635,6 +649,7 @@ class MetaImageSlide extends MetaSlide
             'width' => $this->settings['width'],
             'height' => $this->settings['height'],
             'alt' => $alt,
+            'link-alt' => $link_alt,
             'caption' => html_entity_decode(do_shortcode($caption), ENT_NOQUOTES, 'UTF-8'),
             'caption_raw' => do_shortcode($caption),
             'class' => "slider-{$this->slider->ID} slide-{$this->slide->ID}",
@@ -698,7 +713,7 @@ class MetaImageSlide extends MetaSlide
                 'src' => $slide['src'],
                 'height' => $slide['height'],
                 'width' => $slide['width'],
-                'data-caption' => htmlentities($slide['caption_raw'], ENT_QUOTES, 'UTF-8'),
+                'data-caption' => htmlentities( apply_filters( 'metaslider_image_caption', $slide['caption_raw'] ), ENT_QUOTES, 'UTF-8'),
                 'data-thumb' => $slide['data-thumb'],
                 'title' => $slide['title'],
                 'alt' => $slide['alt'],
@@ -748,7 +763,8 @@ class MetaImageSlide extends MetaSlide
 
         $anchor_attributes = apply_filters('metaslider_flex_slider_anchor_attributes', array(
                 'href' => $slide['url'],
-                'target' => $slide['target']
+                'target' => $slide['target'],
+                'aria-label' => $slide['link-alt']
             ), $slide, $this->slider->ID);
 
         if (strlen($anchor_attributes['href'])) {
@@ -767,7 +783,9 @@ class MetaImageSlide extends MetaSlide
         
         // add caption
         if (strlen($slide['caption'])) {
-            $html .= '<div class="caption-wrap"><div class="caption">' . apply_shortcodes($slide['caption']) . '</div></div>';
+            $html .= '<div class="caption-wrap"><div class="caption">' . 
+                apply_filters( 'metaslider_image_caption', apply_shortcodes( $slide['caption'] ) )  . 
+            '</div></div>';
         }
 
         $attributes = apply_filters('metaslider_flex_slider_list_item_attributes', array(
@@ -867,7 +885,9 @@ class MetaImageSlide extends MetaSlide
         $html = $this->build_image_tag($attributes);
 
         if (strlen($slide['caption'])) {
-            $html .= "<span>". apply_shortcodes($slide['caption']) ."</span>";
+            $html .= "<span>". 
+                apply_filters( 'metaslider_image_caption', apply_shortcodes( $slide['caption'] ) )  .
+            "</span>";
         }
 
         $attributes = apply_filters('metaslider_coin_slider_anchor_attributes', array(
@@ -901,7 +921,9 @@ class MetaImageSlide extends MetaSlide
         $html = $this->build_image_tag($attributes);
 
         if (strlen($slide['caption'])) {
-            $html .= '<div class="caption-wrap"><div class="caption">' . apply_shortcodes($slide['caption']) . '</div></div>';
+            $html .= '<div class="caption-wrap"><div class="caption">' . 
+                apply_filters( 'metaslider_image_caption', apply_shortcodes( $slide['caption'] ) )  . 
+            '</div></div>';
         }
 
         $anchor_attributes = apply_filters('metaslider_responsive_slider_anchor_attributes', array(
@@ -945,6 +967,10 @@ class MetaImageSlide extends MetaSlide
 
         if (isset($fields['alt'])) {
             update_post_meta($this->slide->ID, '_wp_attachment_image_alt', $fields['alt']);
+        }
+
+        if (isset($fields['link-alt'])) {
+            $this->add_or_update_or_delete_meta($this->slide->ID, 'link-alt', $fields['link-alt']);
         }
 
         $this->add_or_update_or_delete_meta(

@@ -29,7 +29,10 @@ class MetaFlexSlider extends MetaSlider
         parent::__construct($id, $shortcode_settings);
 
         add_filter('metaslider_flex_slider_parameters', array( $this, 'enable_carousel_mode' ), 10, 2);
+        add_filter('metaslider_flex_slider_parameters', array( $this, 'enable_pause_play'), 10, 2);
         add_filter('metaslider_flex_slider_parameters', array( $this, 'manage_easing' ), 10, 2);
+        add_filter('metaslider_flex_slider_parameters', array( $this, 'manage_tabindex' ), 99, 3);
+        add_filter('metaslider_flex_slider_parameters', array( $this, 'manage_aria_current' ), 99, 3);
 
         if(metaslider_pro_is_active() == false) {
             add_filter('metaslider_flex_slider_parameters', array( $this, 'metaslider_flex_loop'), 99, 3);
@@ -38,7 +41,7 @@ class MetaFlexSlider extends MetaSlider
         if( metaslider_pro_is_active() ) {
             add_filter( 'metaslider_flex_slider_parameters', array( $this, 'custom_delay_per_slide' ), 10, 3 );
         }
-        
+
         add_filter('metaslider_css', array( $this, 'get_carousel_css' ), 11, 3);
         add_filter('metaslider_css', array( $this, 'hide_for_mobile' ), 11, 3);
         add_filter('metaslider_css_classes', array( $this, 'remove_bottom_margin' ), 11, 3);
@@ -79,7 +82,7 @@ class MetaFlexSlider extends MetaSlider
                     $options["slideshow"] = "false";
                     $options['start'] = isset($options['start']) ? $options['start'] : array();
                     $options['start'] = array_merge($options['start'], array("
-                        var ul = $('#metaslider_" . $slider_id . " .slides');
+                        var ul = $('#" . $this->identifier . " .slides');
                         ul.find('li').clone(true).appendTo(ul);
                     "));
                 }                
@@ -89,6 +92,32 @@ class MetaFlexSlider extends MetaSlider
 
         // we don't want this filter hanging around if there's more than one slideshow on the page
         remove_filter('metaslider_flex_slider_parameters', array( $this, 'enable_carousel_mode' ), 10, 2);
+        return $options;
+    }
+
+    /**
+     * Adjust the slider parameters to enable pausePlay if both autoPlay (slideshow) or pausePlay are enabled
+     *
+     * @since 3.90
+     * 
+     * @param array   $options   Slider options
+     * @param integer $slider_id Slider ID
+     * @return array $options
+     */
+    public function enable_pause_play($options, $slider_id)
+    {
+        if (isset($options['pausePlay']) && $options['pausePlay'] == 'true') { 
+            // Check if auto play is enabled 
+            if (isset($options['slideshow']) && $options['slideshow'] == 'true') {
+                $options['pausePlay'] = "true";
+            } else {
+                unset($options['pausePlay']);
+            }
+        }
+
+        // We don't want this filter hanging around if there's more than one slideshow on the page
+        remove_filter('metaslider_flex_slider_parameters', array( $this, 'enable_pause_play' ), 10, 2);
+
         return $options;
     }
 
@@ -127,7 +156,8 @@ class MetaFlexSlider extends MetaSlider
             $options = $advancedSettings->build_custom_delay_js(
                 $options,
                 $settings,
-                $get_slides->posts
+                $get_slides->posts,
+                $slider_id
             );
         }
 
@@ -190,7 +220,7 @@ class MetaFlexSlider extends MetaSlider
     {
         if (isset($settings['carouselMode']) && $settings['carouselMode'] == 'true') {
             $margin = apply_filters('metaslider_carousel_margin', $this->get_setting('carouselMargin'), $slider_id);
-            $css .= "\n        #metaslider_{$slider_id}.flexslider .slides li {margin-right: {$margin}px !important;}";
+            $css .= "\n        #" . $this->identifier . ".flexslider .slides li {margin-right: {$margin}px !important;}";
             if(isset($settings['infiniteLoop']) && $settings['infiniteLoop'] == 'true'){
                 //check if theres mobile setting to subtract from the slide count
                 if($this->check_mobile_settings() == true) {
@@ -210,13 +240,13 @@ class MetaFlexSlider extends MetaSlider
                             transform: translateX(calc(-" . $settings["width"] . "px * " . $slides . "));
                         }
                     }
-                    #metaslider_{$slider_id}.flexslider .slides {
+                    #" . $this->identifier . ".flexslider .slides {
                         -webkit-animation: infiniteloop_" . $slider_id . " " . $animationtime . "ms linear infinite;
                                 animation: infiniteloop_" . $slider_id . " " . $animationtime . "ms linear infinite;
                         display: flex;
                         width: calc(" . $settings["width"] . "px * " . $double . ");
                     }
-                    #metaslider_{$slider_id}.flexslider .slides:hover{
+                    #" . $this->identifier . ".flexslider .slides:hover{
                         animation-play-state: paused;
                     }
                 ";
@@ -238,7 +268,7 @@ class MetaFlexSlider extends MetaSlider
         if ( isset($global_settings['mobileSettings']) && true == $global_settings['mobileSettings']
         ){
             if($this->check_mobile_settings() == true) {
-                $css .= "\n        #metaslider_{$slider_id}.flexslider {display: none;}";
+                $css .= "\n        #" . $this->identifier . ".flexslider {display: none;}";
             }
         }
         remove_filter('metaslider_css', array( $this, 'hide_for_mobile' ), 11, 3);
@@ -270,7 +300,8 @@ class MetaFlexSlider extends MetaSlider
             'easing' => 'easing',
             'autoPlay' => 'slideshow',
             'firstSlideFadeIn' => 'fadeFirstSlide',
-            'smoothHeight' => 'smoothHeight'
+            'smoothHeight' => 'smoothHeight',
+            'pausePlay' => 'pausePlay'
         );
         return isset($params[$param]) ? $params[$param] : false;
     }
@@ -294,14 +325,25 @@ class MetaFlexSlider extends MetaSlider
      */
     protected function get_html()
     {
+        
         $class = $this->get_setting('noConflict') == 'true' ? "" : ' class="flexslider"';
+
+        //accessibility option
+        if ($this->get_setting('ariaLive') == 'true' && $this->get_setting('autoPlay') == 'false') {
+            $aria_live = " aria-live='polite'";
+        } elseif ($this->get_setting('ariaLive') == 'true' && $this->get_setting('autoPlay') == 'true') {
+            $aria_live = " aria-live='off'";
+        } else {
+            $aria_live = '';
+        }
+        
         $return_value = '';
         if($this->check_mobile_settings() == true) {
             $return_value .= '<div id="temp_' . $this->get_identifier() . '" class="flexslider">';
-            $return_value .= "<ul aria-live=\"polite\" class=\"slides\"></ul></div>";
+            $return_value .= "<ul" . $aria_live . " class='slides'></ul></div>";
         }
         $return_value .= '<div id="' . $this->get_identifier() . '"' . $class . '>';
-        $return_value .= "\n            <ul aria-live=\"polite\" class=\"slides\">";
+        $return_value .= "\n            <ul" . $aria_live . " class='slides'>";
 
         foreach ($this->slides as $slide) {
             // backwards compatibility with older versions of MetaSlider Pro (< v2.0)
@@ -325,16 +367,6 @@ class MetaFlexSlider extends MetaSlider
         return apply_filters('metaslider_flex_slider_get_html', $return_value, $this->id, $this->settings);
     }
 
-
-    private function print_flex_js($device){
-        $js = '';
-        $identifier = $this->get_identifier();
-        $js .= "\n liHTML.forEach((slideHTML, index) => {
-            $('#temp_" . $identifier . " .slides').append(slideHTML);
-        })";
-        return $js;
-    }
-
     /**
      * Function to show/hide slides per device on FlexSlider
      */
@@ -348,36 +380,95 @@ class MetaFlexSlider extends MetaSlider
             (isset($global_settings['mobileSettings']) && true == $global_settings['mobileSettings'])
         ) {
             if($this->check_mobile_settings() == true) {
-                $js .= "\n jQuery(document).ready(function($){";
-                $js .= "\n     var newBreakpoint = window.getComputedStyle(document.body, ':after').getPropertyValue('content');";
-                $js .= '         newBreakpoint = newBreakpoint.replace(/"/g, "");';
-                $js .= "\n       if (newBreakpoint == 'smartphone') {";
-                $js .= "\n     var liHTML = $('#" . $identifier . " .slides li:not(.clone, .hidden_smartphone)').removeAttr('style').toArray();";
-                $js .= $this->print_flex_js('smartphone');
-                $js .= "\n       }";
-                $js .= "\n       if (newBreakpoint == 'tablet') {";
-                $js .= "\n     var liHTML = $('#" . $identifier . " .slides li:not(.clone, .hidden_tablet)').removeAttr('style').toArray();";
-                $js .= $this->print_flex_js('tablet');
-                $js .= "\n       }";
-                $js .= "\n       if (newBreakpoint == 'laptop') {";
-                $js .= "\n     var liHTML = $('#" . $identifier . " .slides li:not(.clone, .hidden_laptop)').removeAttr('style').toArray();";
-                $js .= $this->print_flex_js('laptop');
-                $js .= "\n       }";
-                $js .= "\n       if (newBreakpoint == 'desktop') {";
-                $js .= "\n     var liHTML = $('#" . $identifier . " .slides li:not(.clone, .hidden_desktop)').removeAttr('style').toArray();";
-                $js .= $this->print_flex_js('desktop');
-                $js .= "\n       }";
-                $js .= "\n     $('#" . $identifier . "').remove();";
-                $js .= "\n     $('#temp_" . $identifier . "')." . $this->js_function . "({ ";
-                $js .= "\n        " . $this->_get_javascript_parameters();
-                $js .= "\n     });";
-                $js .= "\n     $('#temp_" . $identifier . "').attr('id', '" . $identifier . "');";
-                $js .= "\n     $(document).trigger('metaslider/initialized', '#" . $identifier . "');";
-                $js .= "\n     $('#" . $identifier . "').show();";
-                $js .= "\n });";
+                $js .= "
+                jQuery(document).ready(function($){
+                    var newBreakpoint = window.getComputedStyle(document.body, ':after').getPropertyValue('content');";
+                $js .= 'newBreakpoint = newBreakpoint.replace(/"/g, "");';
+                $js .= "
+                    var liHTML = $('#" . $identifier . " .slides li:not(.clone, .hidden_' + newBreakpoint + ')').removeAttr('style').toArray();
+                    $('#temp_" . $identifier . " .slides').append(liHTML);
+                    $('#" . $identifier . "').hide();
+                    $('#temp_" . $identifier . "')." . $this->js_function . "({" .   $this->_get_javascript_parameters() . "});
+                    $('#temp_" . $identifier . "').attr('id', '" . $identifier . "');
+                    $(document).trigger('metaslider/initialized', '#" . $identifier . "');
+                    $('#" . $identifier . "').show();
+                });";
             }
         }
-
+        remove_filter('metaslider_flex_slider_javascript_before', array( $this, 'manage_responsive' ), 10, 3);
         return $js;
+    }
+
+    /**
+     * Add JavaScript for tabindex
+     *
+     * @param array $options SLide options
+     * @param integer $slider_id Slider ID
+     * @param array $settings Slide settings
+     * @return array
+     */
+    public function manage_tabindex($options, $slider_id, $settings)
+    {
+        if (isset($settings['tabIndex']) && 'true' == $settings['tabIndex']) {
+            $options['start'] = isset($options['start']) ? $options['start'] : array();
+            $options['start'] = array_merge(
+                $options['start'],
+                array(
+                    "
+                    $('#" . $this->get_identifier() . " .flex-control-nav').attr('role', 'tablist');
+                    $('#" . $this->get_identifier() . " .flex-control-nav a:not(.flex-active)').attr('tabindex', '-1');
+                    "
+                )
+            );
+
+            $options['after'] = isset($options['after']) ? $options['after'] : array();
+            $options['after'] = array_merge(
+                $options['after'],
+                array(
+                    "
+                    $('#" . $this->get_identifier() . " .flex-control-nav a.flex-active').removeAttr('tabindex');
+                    $('#" . $this->get_identifier() . " .flex-control-nav a:not(.flex-active)').attr('tabindex', '-1');
+                    "
+                )
+            );
+        }
+
+        return $options;
+    }
+
+    /**
+     * Add aria-current attribute to active navigation
+     *
+     * @param array $options SLide options
+     * @param integer $slider_id Slider ID
+     * @param array $settings Slide settings
+     * @return array
+     * @since 3.90
+     */
+    public function manage_aria_current($options, $slider_id, $settings)
+    {
+        if (isset($settings['ariaCurrent']) && 'true' == $settings['ariaCurrent']) {
+            $options['start'] = isset($options['start']) ? $options['start'] : array();
+            $options['start'] = array_merge(
+                $options['start'],
+                array(
+                    "
+                    $('#" . $this->get_identifier() . " .flex-control-nav a.flex-active').attr('aria-current', 'true');
+                    $('#" . $this->get_identifier() . " .flex-control-nav a:not(.flex-active)').removeAttr('aria-current');
+                    "
+                )
+            );
+            $options['after'] = isset($options['after']) ? $options['after'] : array();
+            $options['after'] = array_merge(
+                $options['after'],
+                array(
+                    "
+                    $('#" . $this->get_identifier() . " .flex-control-nav a.flex-active').attr('aria-current', 'true');
+                    $('#" . $this->get_identifier() . " .flex-control-nav a:not(.flex-active)').removeAttr('aria-current');
+                    "
+                )
+            );
+        }
+        return $options;
     }
 }

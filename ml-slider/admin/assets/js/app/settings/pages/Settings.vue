@@ -129,6 +129,10 @@
 				<template slot="header">{{ __('New slides order', 'ml-slider') }}</template>
 				<template slot="description">{{ __('Select the position for new added slides.', 'ml-slider') }}</template>
 			</select-field-input>
+			<switch-single-input v-model="globalSettings.legacyWidget" @change="saveGlobalSettings()">
+				<template slot="header">{{ __('Disable Legacy Widget', 'ml-slider') }}</template>
+				<template slot="description">{{ __('This setting allows you to disable the legacy MetaSlider widget.', 'ml-slider') }}</template>
+			</switch-single-input>
 		</template>
 	</split-layout>
 	<!-- Pro settings -->
@@ -193,6 +197,7 @@ export default {
 				legacy: true,
 				newSlideOrder: 'last',
 				mobileSettings: true,
+				legacyWidget: true
 			},
 			proSettings: {
 				postFeedFields: 30,

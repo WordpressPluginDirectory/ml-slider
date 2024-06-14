@@ -685,7 +685,7 @@ class MetaSlide
             esc_attr( $this->slide->ID ) . '" data-attachment-id="' . 
             esc_attr( $attachment_id ) . '">
                 <div class="thumb">
-                    <img style="display:none" src="' . 
+                    <img src="' . 
                     esc_url( $thumb_small ) . '" srcset="' . 
                     esc_url( $thumb_large ) . ' 1024w, ' . 
                     esc_url( $thumb_medium ) . ' 768w, ' . 

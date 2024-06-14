@@ -5,11 +5,11 @@
  * Plugin Name: MetaSlider
  * Plugin URI:  https://www.metaslider.com
  * Description: MetaSlider gives you the power to create a beautiful slideshow, carousel, or gallery on your WordPress site.
- * Version:     3.70.2
+ * Version:     3.90.0
  * Author:      MetaSlider
  * Author URI:  https://www.metaslider.com
  * License:     GPL-2.0+
- * Copyright:   2023 - MetaSlider LLC
+ * Copyright:   2024 - MetaSlider LLC
  *
  * Text Domain: ml-slider
  * Domain Path: /languages
@@ -42,7 +42,7 @@ if (! class_exists('MetaSliderPlugin')) {
          *
          * @var string
          */
-        public $version = '3.70.2';
+        public $version = '3.90.0';
 
         /**
          * Pro installed version number
@@ -156,6 +156,72 @@ if (! class_exists('MetaSliderPlugin')) {
             }
 
             // require_once(METASLIDER_PATH . 'admin/lib/temporary.php');
+        }
+
+        /**
+         * Filter admin notices added through 'admin_notices' hook in MetaSlider screens
+         * https://wordpress.stackexchange.com/questions/316151/alter-admin-notices-to-remove-message-that-contain-a-certain-string
+         * 
+         * @since 3.90
+         */
+        public function filter_admin_notices() {
+            global $wp_filter;
+
+            // Only in MetaSlider pages - /wp-admin/admin.php?page=metaslider
+            $page = isset( $_GET['page'] ) ? sanitize_key( $_GET['page'] ) : '';
+            if ( 'metaslider' === $page ) {
+
+                // Allowed notice that contains these strings
+                $allowed_message_strings = [
+                    'MetaSlider'
+                ];
+
+                $allowed_callbacks = [];
+
+                // Loop each admin_notice callbacks
+                if ( isset( $wp_filter['admin_notices']->callbacks ) 
+                    && is_array( $wp_filter['admin_notices']->callbacks ) 
+                ) {
+                    
+                    foreach ( $wp_filter['admin_notices']->callbacks as $weight => $callbacks ) {
+                        foreach ( $callbacks as $name => $details ) {
+
+                            // Output buffer and call the callback
+                            ob_start();
+                            call_user_func( $details['function'] );
+                            $message = ob_get_clean();
+            
+                            // Check if this notice any of our allowed strings
+                            $allowed = false;
+                            foreach ( $allowed_message_strings as $allowed_string ) {
+                                if ( strpos( $message, $allowed_string) !== false ) {
+                                    $allowed = true;
+                                    break;
+                                }
+                            }
+            
+                            // If it contains an allowed string, store the callback
+                            if ( $allowed ) {
+                                // Ensure the weight is initialized as an array if not already
+                                if ( !isset( $allowed_callbacks[$weight] ) ) {
+                                    $allowed_callbacks[$weight] = [];
+                                }
+                                $allowed_callbacks[$weight][$name] = $details;
+                            }
+                        }
+                    }
+            
+                    // Replace the original callbacks with the allowed ones
+                    // Preserve other weights even if they have no allowed callbacks
+                    foreach ( $wp_filter['admin_notices']->callbacks as $weight => $callbacks ) {
+                        if ( ! isset( $allowed_callbacks[$weight] ) ) {
+                            $allowed_callbacks[$weight] = [];
+                        }
+                    }
+            
+                    $wp_filter['admin_notices']->callbacks = $allowed_callbacks;
+                }
+            }
         }
 
         /**
@@ -290,6 +356,8 @@ if (! class_exists('MetaSliderPlugin')) {
          */
         private function setup_actions()
         {
+            add_action( 'in_admin_header', array( $this, 'filter_admin_notices' ) );
+
             add_action('admin_menu', array($this, 'register_admin_pages'), 9553);
             add_action('admin_bar_menu', array($this, 'add_edit_links'), 100);
             add_action('init', array($this, 'register_post_types'));
@@ -298,7 +366,6 @@ if (! class_exists('MetaSliderPlugin')) {
             add_action('admin_init', array($this, 'redirect_on_activate'));
             add_action('admin_footer', array($this, 'admin_footer'), 11);
             add_action('admin_footer', array($this, 'quickstart_params'), 11);
-            add_action('widgets_init', array($this, 'register_metaslider_widget'));
             
             add_action('admin_post_metaslider_switch_view', array($this, 'switch_view'));
             add_action('admin_post_metaslider_delete_slide', array($this, 'delete_slide'));
@@ -325,9 +392,16 @@ if (! class_exists('MetaSliderPlugin')) {
                 update_option('ms_was_installed_on', time());
             }
 
-            // New install (for legacy library)
+            // New install (for legacy library/widget)
+            // disable widget on new installs
             if (get_option('metaslider_new_user') == false) {
                 add_option('metaslider_new_user', 'new');
+            } else {
+                $global_settings = $this->get_global_settings();
+                if (!isset($global_settings['legacyWidget']) 
+                || ( isset($global_settings['legacyWidget'] ) && false == $global_settings['legacyWidget'])) {
+                    add_action('widgets_init', array($this, 'register_metaslider_widget'));
+                }
             }
         }
 
@@ -1159,11 +1233,10 @@ if (! class_exists('MetaSliderPlugin')) {
                             'type' => 'flex',
                             'printCss' => 'on',
                             'printJs' => 'on',
-                            'width' => 1200,
-                            'height' => 600,
+                            'width' => 400,
+                            'height' => 400,
                             'center' => 'on',
                             'carouselMode' => 'on',
-                            'autoPlay' => 'on',
                             'fullWidth' => 'on',
                             'noConflict' => 'on',
                             'effect' => 'slide'
@@ -1178,7 +1251,6 @@ if (! class_exists('MetaSliderPlugin')) {
                             'height' => 400,
                             'center' => 'on',
                             'carouselMode' => 'on',
-                            'autoPlay' => 'on',
                             'fullWidth' => 'on',
                             'noConflict' => 'on',
                             'effect' => 'slide'
@@ -1714,10 +1786,10 @@ if (! class_exists('MetaSliderPlugin')) {
                          class="metaslider-inner wp-clearfix">
                          <?php
                             if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'permanent') {
-                                echo '<div class="updated below-h2" id="message"><p>' . esc_html( 'Slide permanently deleted.', 'ml-slider'). '</p></div>';
+                                echo '<div class="updated below-h2" id="message"><p>' . esc_html__( 'Slide permanently deleted.', 'ml-slider'). '</p></div>';
                             }
                             if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'restore') {
-                                echo '<div class="updated below-h2" id="message"><p>' . esc_html( 'Slide restored.', 'ml-slider'). '</p></div>';
+                                echo '<div class="updated below-h2" id="message"><p>' . esc_html__( 'Slide restored.', 'ml-slider'). '</p></div>';
                             }
                          ?>
                         <div class="my-6">

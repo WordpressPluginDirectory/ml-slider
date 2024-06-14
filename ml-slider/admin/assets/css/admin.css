@@ -244,8 +244,8 @@ eventually be removed/refactored */
 
 .metaslider .left table tr.slide textarea {
     width: 100%;
-    height: 60px;
-    margin: 0 0 5px 0;
+    height: 120px;
+    margin: 0;
     padding: 2px 5px;
 }
 
@@ -325,7 +325,8 @@ eventually be removed/refactored */
 	display: block;
 }
 .metaslider .tabs-content .image-title-label,
-.metaslider .tabs-content .image-alt-label {
+.metaslider .tabs-content .image-alt-label,
+.metaslider .tabs-content .link-alt-label {
     line-height: 30px;
 }
 
@@ -825,7 +826,7 @@ eventually be removed/refactored */
 }
 .metaslider-ui .metaslider-slides-container .slide .thumb img {
     width: 100%;
-    height: auto;
+    height: 100%;
     object-fit: cover;
 }
 .metaslider-ui .metaslider-slides-container .toolbar-button,
@@ -1662,7 +1663,8 @@ td .dot.available {
 	box-shadow: 0px 5px 5px 0px silver;
 }
 
-#loading-add-sample-slides-notice {
+#loading-add-sample-slides-notice,
+#add-first-slide-notice {
     height: 200px;
     text-align: center;
     width: 100%;

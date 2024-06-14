@@ -642,6 +642,10 @@ class MetaSlider_Api
             $fields['alt'] = sanitize_text_field($fields['alt']);
         }
 
+        if (isset($fields['link-alt'])) {
+            $fields['link-alt'] = sanitize_text_field($fields['link-alt']);
+        }
+
         if (isset($fields['crop_position'])) {
             $fields['crop_position'] = sanitize_text_field($fields['crop_position']);
         }
@@ -876,6 +880,10 @@ class MetaSlider_Api
         foreach ($settings as $key => $value) {
             if ($value === '') {
                 wp_send_json_error(array('message' => sprintf(__('The field (%s) cannot be empty', 'ml-slider'), $key)), 422);
+            }
+            //convert mobile setting to integer
+            if ($key == 'smartphone' || $key == 'tablet' || $key == 'laptop' || $key == 'desktop') {
+                $settings[$key] = (int)$value;
             }
         }
 

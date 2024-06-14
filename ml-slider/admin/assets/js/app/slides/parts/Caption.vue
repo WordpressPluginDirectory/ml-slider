@@ -1,5 +1,5 @@
 <template>
-	<div class="row caption">
+	<div class="row caption mb-0">
 		<div class="flex justify-between">
 			<label class="mr-4 caption-label">
 				{{ __("Caption", "ml-slider") }}
@@ -71,8 +71,8 @@ export default {
 	data() {
 		return {
 			sources: {
-				'image-caption': this.imageCaption,
-				'image-description': this.imageDescription,
+				'image-caption': this.cleanupQuotes(this.imageCaption),
+				'image-description': this.cleanupQuotes(this.imageDescription),
 				'override': this.override
 			},
 			language: {},
@@ -129,7 +129,7 @@ export default {
 							type: 'image',
 							configuration: {
 								toolbar: [
-									'undo redo bold italic forecolor link aligncenter alignright styles code'
+									'undo redo bold italic forecolor link unlink alignleft aligncenter alignright styles code'
 								],
 								menubar: false,
 								plugins: 'code link',
@@ -138,6 +138,7 @@ export default {
 								height: 240,
 								preview_styles: false,
 								forced_root_block: 'div',
+								convert_urls: false,
 								setup: function (editor) {
 									editor.on('input', function () {
 										updateContent(editor);
@@ -201,6 +202,25 @@ export default {
 		convertStyleAttributes(html) {
 			const regex = /style=\\(".*?"|'.*?')/g;
 			return html.replace(regex, match => match.replace(/\\(?="|')/g, ''));
+		},
+		/**
+		 * Avoid Vue converting single quotes into &#039; 
+		 * and adding inverted slash for sinle and double quotes
+		 * 
+		 * @since 3.80
+		 * 
+		 * Replace: \&#039; with single quote, \' with single quote, and \" with double quote
+		 */
+		cleanupQuotes(html) {
+			const regex = /\\&#039;|\\'|\\\"/g;
+			return html.replace(regex, match => {
+				// 
+				if (match === '\\&#039;' || match === "\\'") {
+					return "'";
+				} else if (match === '\\"') {
+					return '"';
+				}
+			});
 		},
 	},
 	watch: {
