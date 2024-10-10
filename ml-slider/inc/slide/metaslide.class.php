@@ -604,11 +604,12 @@ class MetaSlide
      * Get the closest image based on a width size
      * 
      * @since 3.60
+     * @since 3.92 - Added a placeholder URL return instead of an empty string
      * 
      * @param int $width            Image width we want to target
      * @param int $attachment_id    Optional image ID. We use in ajax_update_slide_image()
      * 
-     * @return string 
+     * @return string A valid media image URL or a placeholder URL
      */
     public function get_intermediate_image_src( $width, $attachment_id = false )
     {
@@ -659,7 +660,7 @@ class MetaSlide
             }
         }
 
-        return '';
+        return METASLIDER_ASSETS_URL . 'metaslider/placeholder-thumb.jpg';
     }
 
     /**

@@ -67,11 +67,47 @@ class MetaSlider_Theme_Databold extends MetaSlider_Theme_Base
         if ( isset( $settings['theme_customize'] ) ) {
             $customize = $settings['theme_customize'];
 
+            //Play Button Colors
+            if ( isset( $customize['play_button'] ) ) {
+                $new_css .= "
+                #metaslider-id-{$slideshow_id} .flexslider .flex-pauseplay .flex-pause,
+                #metaslider-id-{$slideshow_id} .flexslider .flex-pauseplay .flex-play {
+                    background-color: " . esc_html( $customize['play_button'] ) . "; 
+                }";
+            }
+
+            if ( isset( $customize['play_button_hover'] ) ) {
+                $new_css .= "
+                #metaslider-id-{$slideshow_id} .flexslider .flex-pauseplay a:hover {
+                    background-color: " . esc_html( $customize['play_button_hover'] ) . "; 
+                }";
+            }
+
+            if ( isset( $customize['play_button_icon'] ) ) {
+                $new_css .= "
+                #metaslider-id-{$slideshow_id} .flexslider .flex-pauseplay a:before {
+                    color: " . esc_html( $customize['play_button_icon'] ) . "; 
+                }";
+            }
+
+            if ( isset( $customize['play_button_icon_hover'] ) ) {
+                $new_css .= "
+                #metaslider-id-{$slideshow_id} .flexslider .flex-pauseplay a:hover:before {
+                    color: " . esc_html( $customize['play_button_icon_hover'] ) . "; 
+                }";
+            }
+
             // Arrows color
             if ( isset( $customize['arrows_color'] ) ) {
                 $new_css .= "
                 #metaslider-id-{$slideshow_id} .flexslider .flex-direction-nav li a {
                     background-color: " . esc_html( $customize['arrows_color'] ) . "; 
+                }";
+            }
+            if ( isset( $customize['arrows_color_hover'] ) ) {
+                $new_css .= "
+                #metaslider-id-{$slideshow_id} .flexslider .flex-direction-nav li a:hover {
+                    background-color: " . esc_html( $customize['arrows_color_hover'] ) . "; 
                 }";
             }
 
@@ -83,6 +119,16 @@ class MetaSlider_Theme_Databold extends MetaSlider_Theme_Base
                 }
                 #metaslider-id-{$slideshow_id} .flexslider .flex-control-nav li a.flex-active {
                     border-color: " . esc_html( $customize['navigation_color'] ) . ";
+                }";
+            }
+
+            if ( isset( $customize['navigation_color_hover'] ) ) {
+                $new_css .= "
+                #metaslider-id-{$slideshow_id} .flexslider .flex-control-nav li a:not(.flex-active):hover { 
+                    background: " . esc_html( $customize['navigation_color_hover'] ) . "; 
+                }
+                #metaslider-id-{$slideshow_id} .flexslider .flex-control-nav li a.flex-active {
+                    border-color: " . esc_html( $customize['navigation_color_hover'] ) . ";
                 }";
             }
 

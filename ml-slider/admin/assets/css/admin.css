@@ -1529,16 +1529,20 @@ input.no_last_pass {
 }
 
 /* Settngs & Help Page */
-#mobile-settings button {
+#mobile-settings button,
+#dashboard-settings button {
 	display: none !important;
 }
-#mobile-settings div.col:last-child button {
+#mobile-settings div.col:last-child button,
+#dashboard-settings div.col:last-child button {
 	display: inline-block !important;
 }
-#mobile-settings .row {
+#mobile-settings .row,
+#dashboard-settings .row {
 	display: flex;
 }
-#mobile-settings .col {
+#mobile-settings .col,
+#dashboard-settings .col {
 	display: flex;
 	flex-direction: row;
 	align-items: flex-start;
@@ -1553,7 +1557,18 @@ input.no_last_pass {
 #mobile-settings form input {
 	width: 80px !important;
 }
-
+#dashboard-settings form {
+	box-shadow: none !important;
+}
+#dashboard-settings form .px-4.py-5.md\:p-6 {
+	padding: 10px 10px 0 0 !important;
+}
+#dashboard-settings form h3 {
+	font-size: 16px !important;
+}
+#dashboard-settings form select {
+	width: 200px !important;
+}
 /* Comparison Chart */
 #comparison-chart {
 	width: 100%;
@@ -1729,6 +1744,9 @@ td .dot.available {
         padding-left: 4px!important;
         padding-right: 4px!important;
     }
+    #dashboard-settings form select {
+        width: 100% !important;
+    }
 }
 
 @media (min-width : 768px) {
@@ -1762,6 +1780,9 @@ td .dot.available {
     .metaslider-start {
         margin: 30px auto!important;
         max-width: 80%;
+    }
+    #dashboard-settings form select {
+        width: 200px!important;
     }
 }
 

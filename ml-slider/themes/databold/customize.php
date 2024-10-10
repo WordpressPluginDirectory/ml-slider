@@ -10,13 +10,29 @@ return array(
         'label' => esc_html__( 'Arrows', 'ml-slider' ),
         'name' => 'arrows_color',
         'type' => 'color',
-        'default' => '#016fb9'
+        'default' => '#016fb9',
+        'dependencies' => 'links'
+    ),
+    array(
+        'label' => esc_html__( 'Arrows Hover', 'ml-slider' ),
+        'name' => 'arrows_color_hover',
+        'type' => 'color',
+        'default' => '#016fb9',
+        'dependencies' => 'links'
     ),
     array(
         'label' => esc_html__( 'Navigation', 'ml-slider' ),
         'name' => 'navigation_color',
         'type' => 'color',
-        'default' => '#016fb9'
+        'default' => '#016fb9',
+        'dependencies' => 'navigation'
+    ),
+    array(
+        'label' => esc_html__( 'Navigation Hover', 'ml-slider' ),
+        'name' => 'navigation_color_hover',
+        'type' => 'color',
+        'default' => '#016fb9',
+        'dependencies' => 'navigation'
     ),
     array(
         'label' => esc_html__( 'Caption background', 'ml-slider' ),

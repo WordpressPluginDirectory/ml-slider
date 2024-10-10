@@ -526,6 +526,10 @@
                         array(
                             'show' => 'loop', // Show Loop
                             'when' => false // When carouselMode is false
+                        ),
+                        array(
+                            'show' => 'carouselMargin',
+                            'when' => true
                         )
                     )
                 ),

@@ -466,6 +466,92 @@ window.jQuery(function ($) {
     showHideAutoPlay();
 
     /**
+     * When Pause/Play button changes
+     * 
+     * @since 3.92
+     */
+    $('.metaslider').on('change', '.ms-settings-table input[name="settings[pausePlay]"], .ms-settings-table input[name="settings[autoPlay]"]', function () {
+        showHideCustomPlayColor();
+    });
+
+    /**
+     * Show/hide custom color settings for play button
+     * 
+     * @since 3.92
+     */
+    var showHideCustomPlayColor = function () {
+        var pausePlay = $('.ms-settings-table input[name="settings[pausePlay]"]');
+        var autoPlay = $('.ms-settings-table input[name="settings[autoPlay]"]');
+        if (autoPlay.is(':checked')) {
+            if (pausePlay.is(':checked')) {
+                $('tr.customizer-pausePlay').show();
+            } else {
+                $('tr.customizer-pausePlay').hide();
+            }
+        } else {
+            $('tr.customizer-pausePlay').hide(); 
+        }   
+    }
+
+    setTimeout(function () {
+        showHideCustomPlayColor();
+    }, 100);
+
+    /**
+     * When Arrows changes
+     * 
+     * @since 3.92
+     */
+    $('.metaslider').on('change', '.ms-settings-table select[name="settings[links]"]', function () {
+        showHideCustomArrowColor();
+    });
+
+    /**
+     * Show/hide custom color settings for arrows button
+     * 
+     * @since 3.92
+     */
+    var showHideCustomArrowColor = function () {
+        var links = $('.ms-settings-table select[name="settings[links]"]').val();
+        if (links === 'false') {
+            $('tr.customizer-links').hide();
+        } else {
+            $('tr.customizer-links').show();
+        }
+    }
+
+    setTimeout(function () {
+        showHideCustomArrowColor();
+    }, 100);
+
+    /**
+     * When Navigation changes
+     * 
+     * @since 3.92
+     */
+    $('.metaslider').on('change', '.ms-settings-table select[name="settings[navigation]"]', function () {
+        showHideCustomNavigationColor();
+    });
+
+    /**
+     * Show/hide custom color settings for navigation
+     * 
+     * @since 3.92
+     */
+    var showHideCustomNavigationColor = function () {
+        var navigation = $('.ms-settings-table select[name="settings[navigation]"]').val();
+        if (navigation === 'false') {
+            $('tr.customizer-navigation').hide();
+        } else {
+            $('tr.customizer-navigation').show();
+        }
+    }
+
+    setTimeout(function () {
+        showHideCustomNavigationColor();
+    }, 100);
+
+    /**
      * When Auto play or Loop changes
      * 
      * @since 3.90
@@ -1011,8 +1097,9 @@ window.jQuery(function ($) {
 
     /* Add mobile icon for slides with existing mobile setting */
     var show_mobile_icon = function (slide_id) {
+        var mobile_label = APP && APP.__('Mobile options are enabled for this slide. Adjust using the Mobile tab.', 'ml-slider');
         var mobile_checkboxes = $('#metaslider-slides-list #'+ slide_id +' .mobile-checkbox:checked');
-        var icon = '<span class="mobile_setting_enabled float-left tipsy-tooltip-top" title="Mobile options enabled for this slide"><span class="inline-block mr-1"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-smartphone"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg></span></span>';
+        var icon = '<span class="mobile_setting_enabled float-left tipsy-tooltip-top" title="'+ mobile_label +'"><span class="inline-block mr-1"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-smartphone"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg></span></span>';
         var mobile_enabled = $('#metaslider-slides-list #'+ slide_id +' .slide-details .mobile_setting_enabled');
         if (mobile_checkboxes.length > 0) {
             if(mobile_enabled.length == 0) {

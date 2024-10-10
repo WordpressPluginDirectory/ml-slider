@@ -49,10 +49,10 @@ $demo_options = apply_filters( 'metaslider_quickstart_options', $demo_options );
 				<div class="">
 
 					<div>
-						<h3 class="ms-heading"><?php esc_html_e('Create a slideshow with sample images', 'ml-slider'); ?></h3>
+						<h3 class="ms-heading"><?php esc_html_e('Import a demo slideshow', 'ml-slider'); ?></h3>
 						<p>
 							<?php 
-								echo apply_filters( 'metaslider_quickstart_description', esc_html__('Create a demo slideshow.', 'ml-slider'));  //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+								echo apply_filters( 'metaslider_quickstart_description', esc_html__('Use sample slides to quickly create a new slideshow.', 'ml-slider'));  //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 							?>
 						</p>
 					</div>

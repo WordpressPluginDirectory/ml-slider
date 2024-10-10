@@ -77,7 +77,12 @@ class MetaSlider
             }
         } else {
             if (strlen($this->settings[$name]) > 0) {
-                return $this->settings[$name];
+                // @since 3.92 - Make sure to return a string, even if is boolean
+                if(gettype($this->settings[$name]) == 'boolean') {
+                    return $this->settings[$name] ? 'true' : 'false';
+                } else {
+                    return $this->settings[$name];
+                }
             }
         }
 

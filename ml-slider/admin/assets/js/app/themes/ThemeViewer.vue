@@ -63,7 +63,7 @@
 				<!-- Customize theme design (optional) -->
 				<div class="static-theme-customize" v-if="theme_customize.length">
 					<table>
-						<tr v-for="(item, index) in theme_customize" :key="index">
+						<tr v-for="(item, index) in theme_customize" :key="index" :class="item.dependencies ? 'customizer-' + item.dependencies : ''">
 							<td>
 								{{ item.label }}
 							</td>
@@ -239,11 +239,21 @@
 									</div>
 								</template>
 								<template v-else>
-									<div>
-										<h1 class="metaslider-theme-title">{{ __('How To Use', 'ml-slider') }}</h1>
-										<p>{{ __('Select a theme on the left to use on this slideshow. Click the theme for more details.', 'ml-slider') }}</p>
-										<p>{{ __('If no theme is selected we will use the default theme provided by the slider plugin', 'ml-slider') }}</p>
-									</div>
+									<template v-if="proUser">
+										<div>
+											<div>
+												<h1 class="metaslider-theme-title">{{ __('How To Use', 'ml-slider') }}</h1>
+												<p>{{ __('Select a theme on the left to use on this slideshow. Click the theme for more details.', 'ml-slider') }}</p>
+												<p>{{ __('If no theme is selected we will use the default theme provided by the slider plugin', 'ml-slider') }}</p>
+											</div>
+										</div>
+									</template>
+									<template v-else>
+										<div>
+											<h1 class="metaslider-theme-title">{{ __('Get MetaSlider Pro!', 'ml-slider') }}</h1>
+											<p>{{ __('MetaSlider Pro gives you access to extra themes. You can also create completely new themes that can easily be added to new slideshows.', 'ml-slider') }}</p>
+										</div>
+									</template>
 								</template>
 							</div>
 						</div>
@@ -346,11 +356,18 @@ export default {
 
 					// Replace default values with the saved ones
 					for (let i = 0; i < this.theme_customize.length; i++) {
-						this.theme_customize[i].value 	= customize_data.saved_settings 
-															&& typeof Object.entries(customize_data.saved_settings)[i] !== 'undefined' 
-															&& typeof Object.entries(customize_data.saved_settings)[i][1] !== 'undefined' 
-															? Object.entries(customize_data.saved_settings)[i][1] 
-															: this.theme_customize[i].default;
+						// The 'name' in theme_customize should match keys in saved_settings
+						const name = this.theme_customize[i].name; 
+						
+						// Check if saved_settings contains the key matching 'name'
+						if (customize_data.saved_settings 
+							&& customize_data.saved_settings.hasOwnProperty(name)
+							&& typeof customize_data.saved_settings[name] !== 'undefined') {
+							this.theme_customize[i].value = customize_data.saved_settings[name];
+						} else {
+							// Use default value if saved setting for this name doesn't exist
+							this.theme_customize[i].value = this.theme_customize[i].default;
+						}
 					}
 					this.updateColorPicker();
 				}).catch(error => {
@@ -472,6 +489,11 @@ export default {
 					}
 
 					this.updateColorPicker();
+
+					setTimeout(() => {
+						this.showHideColorPicker();  //delay to load all picker first
+					}, 1000);
+
 					this.notifySuccess('metaslider/theme-updated', this.__('Theme saved', 'ml-slider'), true)
 				}).catch(error => {
 					this.notifyError('metaslider/theme-error', error, true)
@@ -563,6 +585,34 @@ export default {
 			// Commented but lines below should work - read comment above for more details
 			//this.theme_customize[index].value = item.value;
 			//this.$set(this.theme_customize, index, { ...item, value: item.value });
+		},
+		showHideColorPicker() {
+			this.$nextTick( function () {
+				var $ = window.jQuery;
+				$('.static-theme-customize tr').show();
+
+				if ($('.ms-settings-table input[name="settings[autoPlay]"]').is(':checked')) {
+					if ($('.ms-settings-table input[name="settings[pausePlay]"]').is(':checked')) {
+						$('tr.customizer-pausePlay').show();
+					} else {
+						$('tr.customizer-pausePlay').hide();
+					}
+				} else {
+					$('tr.customizer-pausePlay').hide(); 
+				}
+
+				if ($('.ms-settings-table select[name="settings[links]"]').val() === 'false') {
+					$('tr.customizer-links').hide();
+				} else {
+					$('tr.customizer-links').show();
+				}
+
+				if ($('.ms-settings-table select[name="settings[navigation]"]').val() === 'false') {
+					$('tr.customizer-navigation').hide();
+				} else {
+					$('tr.customizer-navigation').show();
+				}
+			});
 		}
 	}
 }

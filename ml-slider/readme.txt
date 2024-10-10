@@ -2,9 +2,9 @@
 Contributors: andergmartins, htmgarcia, publishpress, stevejburge, rochdesigns
 Tags: slider, slider, image slider, carousel slider, gallery
 Requires at least: 5.0
-Stable tag: 3.91.0
+Stable tag: 3.92.0
 Requires PHP: 7.0
-Tested up to: 6.6.1
+Tested up to: 6.6.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -319,6 +319,24 @@ Yes, you can build Elementor slides and Beaver Builder slideshows. You can creat
 
 The format is based on [Keep a Changelog recommendations](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
+
+= [3.92.0] - 09 Oct, 2024 =
+
+* ADDED: Customize colors for the new themes, #1258, #1298, #1306;
+* ADDED: New sorting / filtering options for /admin.php?page=metaslider, #1178;
+* ADDED: Make the the table headers clickable in main admin page, #1297;
+* CHANGED: Improve theme texts, #1241, #1242, #1243, #1246, #1239, #1244, #1245, #1300;
+* CHANGED: Update "Create a slideshow with sample images", #1251;
+* CHANGED: Move general theme customization settings to the bottom, #1296;
+* FIXED: Retain saved theme color customizations from older plugin versions, #1305;
+* FIXED: __ is not defined (admin.js), #1291;
+* FIXED: Odd text display when you hover over the "Upgrade" area when choosing a theme, #1240;
+* FIXED: Italian, Spanish and French translation updates, #1266;
+* FIXED: Toggle settings can't be disabled, #1286;
+* FIXED: Add number of slides and Type of Slides, #1151;
+* FIXED: Disable copying settings from previous slide, #1262;
+* FIXED: Quickstart options skips the arrows and navigation, #1281;
+* FIXED: Hide "Carousel margin" when "Carousel mode" is disabled, #1171;
 
 = [3.91.0] - 09 Sep, 2024 =
 

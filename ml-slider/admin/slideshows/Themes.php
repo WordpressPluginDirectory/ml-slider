@@ -406,7 +406,7 @@ return $theme;
     {
         $base_customizations = ( include METASLIDER_THEMES_PATH . 'customize.php' );
 
-        return array_merge( $base_customizations, $customizations );
+        return array_merge( $customizations, $base_customizations );
     }
 
     /**
