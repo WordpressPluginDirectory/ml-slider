@@ -38,7 +38,7 @@ class MetaSlider_Admin_Table extends WP_List_table
     {
         global $wpdb;
         $wpdbTable = $wpdb->prefix . 'posts';
-        $columns = ['slides', 'post_title', 'post_date', 'slide_count', 'slideshow_type','slideshow_theme'];
+        $columns = ['slides', 'post_title', 'post_date', 'slide_count', 'slideshow_type'];
         $global_settings = get_option( 'metaslider_global_settings' );
 
         $orderBy = $_GET['orderby'] ?? $global_settings['dashboardSort'] ?? 'ID';
@@ -64,15 +64,6 @@ class MetaSlider_Admin_Table extends WP_List_table
             $each_slide['slideshow_thumb'] = $this->get_slides($each_slide['ID'], $status);
             $each_slide['slideshow_type'] = $this->get_slide_types($each_slide['ID']);
             $each_slide['slide_count'] = count($this->get_slides($each_slide['ID'], $status));
-
-            $theme = metaslider_themes::get_instance()->get_current_theme($each_slide['ID']); 
-            if (is_wp_error($theme)) {
-                $each_slide['slideshow_theme'] = '';
-            } elseif (is_array($theme) && isset($theme['title'])) {
-                $each_slide['slideshow_theme'] = $theme['title'];
-            } else {
-                $each_slide['slideshow_theme'] = '';
-            }
         }
 
         if ($orderBy === 'slide_count') {
@@ -170,7 +161,6 @@ class MetaSlider_Admin_Table extends WP_List_table
             'post_title' => esc_html__('Title', 'ml-slider'),
             'slideshow_type' => esc_html__('Type of Slides', 'ml-slider'),
             'slide_count' => esc_html__('Number of Slides', 'ml-slider'),
-            'slideshow_theme' => esc_html__('Theme', 'ml-slider'),
             'post_date' => esc_html__('Created', 'ml-slider'),
             'ID' => esc_html__('Shortcode', 'ml-slider')
         );
@@ -183,8 +173,7 @@ class MetaSlider_Admin_Table extends WP_List_table
           'post_title' => array('post_title', false),
           'post_date' => array('post_date', false),
           'slideshow_type' => array('slideshow_type',false),
-          'slide_count' => array('slide_count',false),
-          'slideshow_theme' => array('slideshow_theme',false)
+          'slide_count' => array('slide_count',false)
         );
         return $sortable_columns;
     }
@@ -281,8 +270,8 @@ class MetaSlider_Admin_Table extends WP_List_table
     {
         $page = empty($_REQUEST['page']) ? 'metaslider' : sanitize_key($_REQUEST['page']);
         if(isset($_GET['post_status']) && $_GET['post_status'] == 'trash') {
-            $restoreUrl = wp_nonce_url('?page=' . $page . '&post_status=trash&action=restore&slideshows=' . absint($item['ID']), 'metaslider-action' );
-            $deleteUrl = wp_nonce_url('?page=' . $page . '&post_status=trash&action=permanent&slideshows=' . absint($item['ID']), 'metaslider-action' );
+            $restoreUrl = wp_nonce_url('?page=' . $page . '&post_status=trash&action=restore&slideshows=' . absint($item['ID']), 'bulk-' . $this->_args['plural'] );
+            $deleteUrl = wp_nonce_url('?page=' . $page . '&post_status=trash&action=permanent&slideshows=' . absint($item['ID']), 'bulk-' . $this->_args['plural'] );
 
             $actions = [
                 'restore' => '<a href="' . esc_url($restoreUrl) . '">' . esc_html__('Restore', 'ml-slider') . '</a>',
@@ -296,7 +285,7 @@ class MetaSlider_Admin_Table extends WP_List_table
             );
         } else {
             $editUrl = '?page=' . $page . '&id=' . absint($item['ID']);
-            $deleteUrl = wp_nonce_url('?page=' . $page . '&action=delete&slideshows=' . absint($item['ID']), 'metaslider-action' );
+            $deleteUrl = wp_nonce_url('?page=' . $page . '&action=delete&slideshows=' . absint($item['ID']), 'bulk-' . $this->_args['plural'] );
 
             $actions = [
                 'edit' => '<a href="' . esc_url($editUrl) . '">' . esc_html__('Edit', 'ml-slider') . '</a>',
@@ -319,11 +308,6 @@ class MetaSlider_Admin_Table extends WP_List_table
     public function column_slide_count($item)
     {
         return $item['slide_count'];
-    }
-
-    public function column_slideshow_theme($item)
-    {
-        return $item['slideshow_theme'];
     }
 
     public function column_post_date($item)
@@ -358,76 +342,83 @@ class MetaSlider_Admin_Table extends WP_List_table
 
     protected function process_action()
     {
-        if (isset($_POST['_wpnonce']) && ! empty($_POST['_wpnonce'])) {
-            $nonce  = filter_input( INPUT_POST, '_wpnonce', FILTER_SANITIZE_SPECIAL_CHARS );
-            $action = 'bulk-' . $this->_args['plural'];
-            if ( ! wp_verify_nonce($nonce, $action)) {
-                wp_die( 'Cannot process action' );
-            }
-        }
-
-        if (isset($_POST['delete_all'])) {
-            $slideshows = $this->table_data('', 'trash');
-            foreach($slideshows as $slideshow_id) {
-                wp_delete_post($slideshow_id['ID'], true);
-            }
-        }
-
-        if(isset($_GET['_wpnonce'])) {
-            if ( ! wp_verify_nonce($_GET['_wpnonce'], 'metaslider-action')) {
-                wp_die( 'Cannot process action' );
-            }
-        }
-
         $action = $this->current_action();
-        if(isset($_REQUEST['slideshows'])) {
-            if(is_array($_REQUEST['slideshows'])) {
-                $slideshows = array_map('intval', $_REQUEST['slideshows']);
-            } else {
-                $toArray = array($_REQUEST['slideshows']);
-                $slideshows = array_map('intval', $toArray);
-            }
-        } else {
-            //single slider
-            if(isset($_REQUEST['id'])) {
-                $toArray = array($_REQUEST['id']);
-                $slideshows = array_map('intval', $toArray);
-            }
-        }
-        switch ( $action ) {
-            case 'delete':
-                foreach($slideshows as $slideshow_id) {
-                    wp_update_post(array(
-                        'ID' => $slideshow_id,
-                        'post_status' => 'trash'
-                    ));
-                }
-                break;
-            case 'permanent':
-                foreach($slideshows as $slideshow_id) {
-                    wp_delete_post( $slideshow_id, true);
-                }
-                break;
-            case 'restore':
-                foreach($slideshows as $slideshow_id) {
-                    wp_update_post(array(
-                        'ID' => $slideshow_id,
-                        'post_status' => 'publish'
-                    ));
 
-                    $slides = $this->get_slides($slideshow_id, 'trash');
-                    foreach ($slides as $key => $slide) {
+        if (isset($_POST['delete_all'])
+            || ($action && in_array($action, array('delete', 'restore', 'permanent')))
+        ) {
+            // Check nonce
+            if (! isset($_REQUEST['_wpnonce']) 
+                || empty($_REQUEST['_wpnonce'])
+                || ! wp_verify_nonce(
+                    sanitize_key($_REQUEST['_wpnonce']), 
+                    'bulk-' . $this->_args['plural']
+                )
+            ) {
+                wp_die('Cannot process action', 'ml-slider');
+            }
+
+            if (isset($_POST['delete_all'])) {
+                $slideshows = $this->table_data('', 'trash');
+                foreach($slideshows as $slideshow_id) {
+                    wp_delete_post($slideshow_id['ID'], true);
+                }
+
+                return;
+            }
+    
+            if(isset($_REQUEST['slideshows'])) {
+
+                if(is_array($_REQUEST['slideshows'])) {
+                    $slideshows = array_map('intval', $_REQUEST['slideshows']);
+                } else {
+                    $toArray = array($_REQUEST['slideshows']);
+                    $slideshows = array_map('intval', $toArray);
+                }
+            } else {
+                //single slider
+                if(isset($_REQUEST['id'])) {
+                    $toArray = array($_REQUEST['id']);
+                    $slideshows = array_map('intval', $toArray);
+                }
+            }
+
+            switch ( $action ) {
+                case 'delete':
+                    foreach($slideshows as $slideshow_id) {
                         wp_update_post(array(
-                            'ID' => $slide->ID,
-                            'post_status' => 'publish'
+                            'ID' => $slideshow_id,
+                            'post_status' => 'trash'
                         ));
                     }
-                }
-                break;
-            default:
-                return;
-                break;
+                    break;
+                case 'permanent':
+                    foreach($slideshows as $slideshow_id) {
+                        wp_delete_post( $slideshow_id, true);
+                    }
+                    break;
+                case 'restore':
+                    foreach($slideshows as $slideshow_id) {
+                        wp_update_post(array(
+                            'ID' => $slideshow_id,
+                            'post_status' => 'publish'
+                        ));
+    
+                        $slides = $this->get_slides($slideshow_id, 'trash');
+                        foreach ($slides as $key => $slide) {
+                            wp_update_post(array(
+                                'ID' => $slide->ID,
+                                'post_status' => 'publish'
+                            ));
+                        }
+                    }
+                    break;
+                default:
+                    return;
+                    break;
+            }
         }
+
         return;
     }
 }

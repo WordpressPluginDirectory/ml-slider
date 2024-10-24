@@ -2,14 +2,14 @@
 # This file is distributed under the GPL-2.0+.
 msgid ""
 msgstr ""
-"Project-Id-Version: MetaSlider 3.92.0\n"
+"Project-Id-Version: MetaSlider 3.92.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/project\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-10-09T17:26:28+00:00\n"
+"POT-Creation-Date: 2024-10-23T13:53:21+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: ml-slider\n"
@@ -90,8 +90,8 @@ msgstr ""
 #: ml-slider.php:821
 #: ml-slider.php:903
 #: ml-slider.php:1015
-#: ml-slider.php:2515
-#: ml-slider.php:2556
+#: ml-slider.php:2508
+#: ml-slider.php:2549
 msgid "The security check failed. Please refresh the page and try again."
 msgstr ""
 
@@ -104,8 +104,8 @@ msgstr ""
 #: ml-slider.php:829
 #: ml-slider.php:911
 #: ml-slider.php:1023
-#: ml-slider.php:2523
-#: ml-slider.php:2564
+#: ml-slider.php:2516
+#: ml-slider.php:2557
 msgid "Access denied. Sorry, you do not have permission to complete this task."
 msgstr ""
 
@@ -117,8 +117,8 @@ msgstr ""
 #: ml-slider.php:838
 #: ml-slider.php:920
 #: ml-slider.php:1032
-#: ml-slider.php:2532
-#: ml-slider.php:2573
+#: ml-slider.php:2525
+#: ml-slider.php:2566
 msgid "Bad request"
 msgstr ""
 
@@ -194,7 +194,7 @@ msgid "The request format was not valid."
 msgstr ""
 
 #: admin/routes/api.php:463
-#: admin/routes/api.php:585
+#: admin/routes/api.php:595
 msgid "This slideshow is no longer available."
 msgstr ""
 
@@ -202,33 +202,33 @@ msgstr ""
 msgid "Nothing to import."
 msgstr ""
 
-#: admin/routes/api.php:592
+#: admin/routes/api.php:602
 msgid "This was not a slideshow, so we cannot delete it."
 msgstr ""
 
-#: admin/routes/api.php:805
+#: admin/routes/api.php:815
 msgid "This was not a slideshow, so we cannot update the setting."
 msgstr ""
 
-#: admin/routes/api.php:914
+#: admin/routes/api.php:924
 msgid "The title cannot be empty."
 msgstr ""
 
-#: admin/routes/api.php:918
-#: admin/routes/api.php:1105
+#: admin/routes/api.php:928
+#: admin/routes/api.php:1115
 msgid "The field (%s) cannot be empty"
 msgstr ""
 
-#: admin/routes/api.php:1095
+#: admin/routes/api.php:1105
 #: admin/assets/dist/js/app.js:2
 msgid "Maximum Number of Custom Field in Post Feed Sliders"
 msgstr ""
 
-#: admin/routes/api.php:1201
+#: admin/routes/api.php:1211
 msgid "Import slug not found"
 msgstr ""
 
-#: admin/routes/api.php:1217
+#: admin/routes/api.php:1227
 msgid "Import data could not be processed"
 msgstr ""
 
@@ -258,72 +258,66 @@ msgstr ""
 msgid "We removed your selected theme as it could not be found. Was the folder deleted?"
 msgstr ""
 
-#: admin/Table.php:108
+#: admin/Table.php:99
 msgid "You don't have any slideshows yet. Click %shere%s to create a new slideshow."
 msgstr ""
 
-#: admin/Table.php:125
+#: admin/Table.php:116
 msgid "Published"
 msgstr ""
 
-#: admin/Table.php:129
-#: admin/Table.php:158
-#: admin/Table.php:303
+#: admin/Table.php:120
+#: admin/Table.php:149
+#: admin/Table.php:292
 msgid "Trash"
 msgstr ""
 
-#: admin/Table.php:153
-#: admin/Table.php:288
+#: admin/Table.php:144
+#: admin/Table.php:277
 #: inc/slide/metaslide.class.php:406
 msgid "Restore"
 msgstr ""
 
-#: admin/Table.php:154
-#: admin/Table.php:289
+#: admin/Table.php:145
+#: admin/Table.php:278
 #: inc/slide/metaslide.class.php:416
 msgid "Delete Permanently"
 msgstr ""
 
-#: admin/Table.php:169
+#: admin/Table.php:160
 #: admin/views/pages/parts/toolbar.php:44
 #: admin/assets/dist/js/app.js:2
 msgid "Preview"
 msgstr ""
 
-#: admin/Table.php:170
+#: admin/Table.php:161
 #: admin/assets/dist/js/app.js:2
 msgid "Title"
 msgstr ""
 
-#: admin/Table.php:171
+#: admin/Table.php:162
 msgid "Type of Slides"
 msgstr ""
 
-#: admin/Table.php:172
+#: admin/Table.php:163
 msgid "Number of Slides"
 msgstr ""
 
-#: admin/Table.php:173
-#: admin/views/pages/parts/slider-settings-legacy.php:250
-#: admin/views/pages/parts/slider-settings.php:180
-msgid "Theme"
-msgstr ""
-
-#: admin/Table.php:174
+#: admin/Table.php:164
 msgid "Created"
 msgstr ""
 
-#: admin/Table.php:175
+#: admin/Table.php:165
 #: admin/views/pages/parts/slider-settings-legacy.php:962
 #: admin/views/pages/parts/slider-settings.php:763
 msgid "Shortcode"
 msgstr ""
 
-#: admin/Table.php:302
+#: admin/Table.php:291
 msgid "Edit"
 msgstr ""
 
-#: admin/Table.php:339
+#: admin/Table.php:323
 #: admin/views/pages/parts/shortcode.php:11
 msgid "Click to copy shortcode."
 msgstr ""
@@ -341,11 +335,11 @@ msgstr ""
 msgid "Add New"
 msgstr ""
 
-#: admin/views/pages/dashboard.php:28
+#: admin/views/pages/dashboard.php:30
 msgid "Slideshows permanently deleted."
 msgstr ""
 
-#: admin/views/pages/dashboard.php:36
+#: admin/views/pages/dashboard.php:38
 msgid "Search"
 msgstr ""
 
@@ -571,6 +565,11 @@ msgstr ""
 #: admin/views/pages/parts/slider-settings-legacy.php:228
 #: admin/views/pages/parts/slider-settings.php:164
 msgid "Stretch the slideshow output to fill its parent container."
+msgstr ""
+
+#: admin/views/pages/parts/slider-settings-legacy.php:250
+#: admin/views/pages/parts/slider-settings.php:180
+msgid "Theme"
 msgstr ""
 
 #: admin/views/pages/parts/slider-settings-legacy.php:285
@@ -1438,7 +1437,7 @@ msgid "Select Slider:"
 msgstr ""
 
 #: inc/metaslider.widget.class.php:125
-#: ml-slider.php:1978
+#: ml-slider.php:1971
 #: admin/assets/dist/js/app.js:2
 msgid "No slideshows found"
 msgstr ""
@@ -1627,148 +1626,148 @@ msgstr ""
 msgid "You are viewing slides that have been trashed, which will be automatically deleted in %s days."
 msgstr ""
 
-#: ml-slider.php:1880
+#: ml-slider.php:1872
 msgid "Move slideshow to trash"
 msgstr ""
 
-#: ml-slider.php:1927
+#: ml-slider.php:1920
 msgid "Add slideshow"
 msgstr ""
 
-#: ml-slider.php:1957
+#: ml-slider.php:1950
 msgctxt "Keep the plugin name \"MetaSlider\" when possible"
 msgid "Select slideshow to insert into post"
 msgstr ""
 
-#: ml-slider.php:1963
+#: ml-slider.php:1956
 msgid "Choose slideshow"
 msgstr ""
 
-#: ml-slider.php:1973
+#: ml-slider.php:1966
 msgid "Insert slideshow"
 msgstr ""
 
-#: ml-slider.php:2008
+#: ml-slider.php:2001
 msgid "Create slides by adding text, videos and more to your images"
 msgstr ""
 
-#: ml-slider.php:2012
+#: ml-slider.php:2005
 msgid "With Layer slides, you can create beautiful, stylish layers of different elements."
 msgstr ""
 
-#: ml-slider.php:2016
+#: ml-slider.php:2009
 msgid "You start with an image and then can add text, video, colors, animations, more images, and even shortcodes."
 msgstr ""
 
-#: ml-slider.php:2022
-#: ml-slider.php:2063
-#: ml-slider.php:2104
-#: ml-slider.php:2147
-#: ml-slider.php:2190
-#: ml-slider.php:2233
-#: ml-slider.php:2276
-#: ml-slider.php:2315
+#: ml-slider.php:2015
+#: ml-slider.php:2056
+#: ml-slider.php:2097
+#: ml-slider.php:2140
+#: ml-slider.php:2183
+#: ml-slider.php:2226
+#: ml-slider.php:2269
+#: ml-slider.php:2308
 #: admin/assets/dist/js/app.js:2
 msgid "Find out more about MetaSlider Pro"
 msgstr ""
 
-#: ml-slider.php:2051
+#: ml-slider.php:2044
 msgid "Create slideshows with your Vimeo videos"
 msgstr ""
 
-#: ml-slider.php:2055
+#: ml-slider.php:2048
 msgid "With Vimeo slides, you can build beautiful slideshows with your Vimeo videos."
 msgstr ""
 
-#: ml-slider.php:2059
+#: ml-slider.php:2052
 msgid "Vimeo slides will display your videos with auto play, mute, the ability to hide controls, and much more."
 msgstr ""
 
-#: ml-slider.php:2092
+#: ml-slider.php:2085
 msgid "Create slideshows with your YouTube videos"
 msgstr ""
 
-#: ml-slider.php:2096
+#: ml-slider.php:2089
 msgid "With YouTube slides, you can build beautiful slideshows with your YouTube videos."
 msgstr ""
 
-#: ml-slider.php:2100
+#: ml-slider.php:2093
 msgid "YouTube slides will display your videos with auto play, mute, lazy load, the ability to hide controls, and much more."
 msgstr ""
 
-#: ml-slider.php:2133
+#: ml-slider.php:2126
 msgid "Create slideshows with your posts"
 msgstr ""
 
-#: ml-slider.php:2137
+#: ml-slider.php:2130
 msgid "With Post Feed slides, you can build slideshows with your latest posts, events, or WooCommerce products."
 msgstr ""
 
-#: ml-slider.php:2141
+#: ml-slider.php:2134
 msgid "Post Feed slides will automatically display your posts with images, text, custom fields, and much more."
 msgstr ""
 
-#: ml-slider.php:2176
+#: ml-slider.php:2169
 msgid "Create slideshows with images stored outside of WordPress"
 msgstr ""
 
-#: ml-slider.php:2180
+#: ml-slider.php:2173
 msgid "With External URL slides, you can load images directly from non-WordPress sources such as CDNs or image hosts."
 msgstr ""
 
-#: ml-slider.php:2184
+#: ml-slider.php:2177
 msgid "External URL slides give you all the power of MetaSlider, using images stored anywhere you want."
 msgstr ""
 
-#: ml-slider.php:2219
+#: ml-slider.php:2212
 msgid "Create slideshows with videos in your media library"
 msgstr ""
 
-#: ml-slider.php:2223
+#: ml-slider.php:2216
 msgid "With Local Video slides, you can build beautiful slideshows with videos in your WordPress media library."
 msgstr ""
 
-#: ml-slider.php:2227
+#: ml-slider.php:2220
 msgid "Local Video slides will display your MP4, WebM, and MOV videos with cover images, auto play, mute, lazy load, the ability to hide controls, and much more."
 msgstr ""
 
-#: ml-slider.php:2262
+#: ml-slider.php:2255
 msgid "Create slideshows with videos stored outside of WordPress"
 msgstr ""
 
-#: ml-slider.php:2266
+#: ml-slider.php:2259
 msgid "With External Video slides, you can add videos directly from non-WordPress sources."
 msgstr ""
 
-#: ml-slider.php:2270
+#: ml-slider.php:2263
 msgid "External Video Slides will display your MP4, WebM, and MOV videos. Features include text captions, cover images, auto play, mute, lazy load, the ability to hide controls, and much more."
 msgstr ""
 
-#: ml-slider.php:2305
+#: ml-slider.php:2298
 msgid "Create slideshows with Tiktok Videos"
 msgstr ""
 
-#: ml-slider.php:2309
+#: ml-slider.php:2302
 msgid "A TikTok Slide will display a video in your slideshow directly from TikTok.com."
 msgstr ""
 
-#: ml-slider.php:2353
+#: ml-slider.php:2346
 msgid "Premium Support"
 msgstr ""
 
-#: ml-slider.php:2359
+#: ml-slider.php:2352
 msgid "MetaSlider Pro"
 msgstr ""
 
-#: ml-slider.php:2363
+#: ml-slider.php:2356
 msgid "Support"
 msgstr ""
 
-#: ml-slider.php:2368
+#: ml-slider.php:2361
 msgid "Documentation"
 msgstr ""
 
-#: ml-slider.php:2372
+#: ml-slider.php:2365
 msgid "Leave a review"
 msgstr ""
 
@@ -2163,11 +2162,19 @@ msgid "Confirm"
 msgstr ""
 
 #: admin/assets/dist/js/app.js:2
-msgid "Something went wrong"
+msgid "Invalid nonce token"
 msgstr ""
 
 #: admin/assets/dist/js/app.js:2
 msgid "OK"
+msgstr ""
+
+#: admin/assets/dist/js/app.js:2
+msgid "Unable to proceed due to invalid nonce token."
+msgstr ""
+
+#: admin/assets/dist/js/app.js:2
+msgid "Something went wrong"
 msgstr ""
 
 #: admin/assets/dist/js/app.js:2

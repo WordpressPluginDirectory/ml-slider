@@ -5,7 +5,7 @@
  * Plugin Name: MetaSlider
  * Plugin URI:  https://www.metaslider.com
  * Description: MetaSlider gives you the power to create a beautiful slideshow, carousel, or gallery on your WordPress site.
- * Version:     3.92.0
+ * Version:     3.92.1
  * Author:      MetaSlider
  * Author URI:  https://www.metaslider.com
  * License:     GPL-2.0+
@@ -42,7 +42,7 @@ if (! class_exists('MetaSliderPlugin')) {
          *
          * @var string
          */
-        public $version = '3.92.0';
+        public $version = '3.92.1';
 
         /**
          * Pro installed version number
@@ -1866,18 +1866,11 @@ if (! class_exists('MetaSliderPlugin')) {
                                             </div>
                                         </div>
                                     </metaslider-settings-viewer>
-                                    <?php
-                                    $url = wp_nonce_url(
-                                        admin_url(
-                                            "admin-post.php?action=metaslider_delete_slider&amp;slider_id={$this->slider->id}"
-                                        ),
-                                        "metaslider_delete_slider"
-                                    ); ?>
-
                                     <div class="ms-delete-save">
-                                        <a @click.prevent="deleteSlideshow()" class='ms-delete-slideshow' href='<?php
-                                        echo esc_url($url) ?>'><?php
-                                            esc_html_e('Move slideshow to trash', 'ml-slider'); ?></a>
+                                        <a @click.prevent="deleteSlideshow($event)" data-nonce="<?php 
+                                            esc_attr_e(wp_create_nonce('metaslider_delete_slider')) ?>" class='ms-delete-slideshow' href='#'><?php
+                                            esc_html_e('Move slideshow to trash', 'ml-slider'); ?>
+                                        </a>
                                     </div>
                                     </div>
                                 <?php

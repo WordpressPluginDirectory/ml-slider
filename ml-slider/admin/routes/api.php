@@ -573,7 +573,17 @@ class MetaSlider_Api
             $this->deny_access();
         }
 
-        $data = $this->get_request_data($request, array('slideshow_id', 'slider_id'));
+        $data = $this->get_request_data($request, array('slideshow_id', 'slider_id', 'nonce'));
+
+        // Validate nonce
+        if (! isset($data['nonce']) 
+            || empty($data['nonce']) 
+            || ! wp_verify_nonce(sanitize_key($data['nonce']), 'metaslider_delete_slider')
+        ) {
+            wp_send_json_error(array(
+                'message' => 'There was an error. Invalid nonce token.'
+            ), 400);
+        }
 
         // Backwards compatability for slider_id param
         $slideshow_id = is_null($data['slideshow_id']) ? $data['slider_id'] : $data['slideshow_id'];
