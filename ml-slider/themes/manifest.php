@@ -6,6 +6,14 @@
  * The type should be free, premium, or bonus
  */
 return array(
+    'default-base' => array(
+        'folder' => 'default-base',
+        'title' => 'Base',
+        'type' => 'free',
+        'supports' => array('flex'),
+        'tags' => array(),
+        'description' => __('This is the default MetaSlider theme.', 'ml-slider')
+    ),
     'bitono' => array(
         'folder' => 'bitono',
         'title' => 'Bitono',

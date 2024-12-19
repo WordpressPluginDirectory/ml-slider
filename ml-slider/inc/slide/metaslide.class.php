@@ -110,7 +110,10 @@ class MetaSlide
                 $slide_id,
                 $this->settings['width'],
                 $this->settings['height'],
-                isset($this->settings['smartCrop']) ? $this->settings['smartCrop'] : 'false'
+                isset($this->settings['smartCrop']) ? $this->settings['smartCrop'] : 'false',
+                true,
+                null,
+                isset($this->settings['cropMultiply']) ? absint($this->settings['cropMultiply']) : 1
             );
 
             return array(

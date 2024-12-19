@@ -129,6 +129,7 @@ class MetaSlider
             'slices' => 15,
             'center' => false,
             'smartCrop' => true,
+            'cropMultiply' => 1,
             'smoothHeight' => false,
             'carouselMode' => false,
             'carouselMargin' => 5,

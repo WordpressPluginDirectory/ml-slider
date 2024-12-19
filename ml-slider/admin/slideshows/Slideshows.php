@@ -84,10 +84,17 @@ class MetaSlider_Slideshows
         /* Make sure we set a default theme if available - Pro set '_theme_default' 
          * to bypass $last_modified_settings['theme'] that takes the last saved theme configuration 
          * 
+         * @TODO - Allow to set a regular theme, not just a custom theme
+         * by using too MetaSlider_Themes::get_instance()->set($new_id, $theme_data_array);
+         * 
          * @since 3.62 */
         $default_theme = apply_filters( 'metaslider_default_theme', '' );
         if ( $default_theme ) {
             $new_settings['theme'] = $default_theme;
+        } elseif (!metaslider_pro_is_active()) {
+            // @since 3.93 - Only in Free
+            $themes_ = MetaSlider_Themes::get_instance();
+            $themes_->set($new_id, $themes_->get_single_theme('default-base'));
         }
 
         add_post_meta($new_id, 'ml-slider_settings', $new_settings, true);
@@ -374,7 +381,10 @@ class MetaSlider_Slideshows
                             $new_slide_id,
                             $settings['width'],
                             $settings['height'],
-                            isset($settings['smartCrop']) ? $settings['smartCrop'] : 'false'
+                            isset($settings['smartCrop']) ? $settings['smartCrop'] : 'false',
+                            true,
+                            null,
+                            isset($settings['cropMultiply']) ? absint($settings['cropMultiply']) : 1
                         );
                         // This crops even though it doesn't sounds like it
                         $image_cropper->get_image_url();

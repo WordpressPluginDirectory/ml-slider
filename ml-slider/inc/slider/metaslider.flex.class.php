@@ -33,6 +33,7 @@ class MetaFlexSlider extends MetaSlider
         add_filter('metaslider_flex_slider_parameters', array( $this, 'manage_easing' ), 10, 2);
         add_filter('metaslider_flex_slider_parameters', array( $this, 'manage_tabindex' ), 99, 3);
         add_filter('metaslider_flex_slider_parameters', array( $this, 'manage_aria_current' ), 99, 3);
+        add_filter('metaslider_flex_slider_parameters', array( $this, 'manage_progress_bar' ), 99, 3);
 
         if(metaslider_pro_is_active() == false) {
             add_filter('metaslider_flex_slider_parameters', array( $this, 'metaslider_flex_loop'), 99, 3);
@@ -359,6 +360,11 @@ class MetaFlexSlider extends MetaSlider
         }
 
         $return_value .= "\n            </ul>";
+
+        if ($this->get_setting('progressBar') == 'true' && $this->get_setting('infiniteLoop') == 'false') {
+            $return_value .= "\n        <div class='flex-progress-bar'></div>";
+        }
+
         $return_value .= "\n        </div>";
 
         // show the first slide
@@ -471,6 +477,59 @@ class MetaFlexSlider extends MetaSlider
                 )
             );
         }
+        return $options;
+    }
+
+    /**
+     * Add JavaScript for progressBar
+     *
+     * @param array $options SLide options
+     * @param integer $slider_id Slider ID
+     * @param array $settings Slide settings
+     * @return array
+     */
+    public function manage_progress_bar($options, $slider_id, $settings)
+    {
+        if (isset($settings['progressBar']) && 'true' == $settings['progressBar'] && 'false' == $settings['infiniteLoop']) {
+            $options['start'] = isset($options['start']) ? $options['start'] : array();
+            $totalTime = $settings['delay'] - $settings['animationSpeed'];
+            $options['start'] = array_merge(
+                $options['start'],
+                array(
+                    "
+                    $('#metaslider_" . $slider_id . " .flex-progress-bar')[0].offsetWidth;
+                    $('#metaslider_" . $slider_id . " .flex-progress-bar').css({
+                        width: '100%',
+                        transition: `width " . $totalTime . "ms linear`
+                    });
+                    "
+                )
+                
+            );
+            $options['before'] = isset($options['before']) ? $options['before'] : array();
+            $options['before'] = array_merge(
+                $options['before'],
+                array(
+                    "
+                    $('#metaslider_" . $slider_id . " .flex-progress-bar').css({width: '0%',transition: 'none'});
+                    "
+                )
+            );
+            $options['after'] = isset($options['after']) ? $options['after'] : array();
+            $options['after'] = array_merge(
+                $options['after'],
+                array(
+                    "
+                    $('#metaslider_" . $slider_id . " .flex-progress-bar')[0].offsetWidth;
+                    $('#metaslider_" . $slider_id . " .flex-progress-bar').css({
+                        width: '100%',
+                        transition: `width " . $totalTime . "ms linear`
+                    });
+                    "
+                )
+            );
+        }
+
         return $options;
     }
 }

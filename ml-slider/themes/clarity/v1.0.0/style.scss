@@ -78,13 +78,28 @@
 			position: absolute;
 			top: 50%;
 			width: 50px;
+			z-index: 2;
 
 			&.flex-nav-prev {
 				left: -60px;
+
+				& > a.flex-disabled {
+					display: none;
+				}
+				&:has(> a.flex-disabled) {
+					display: none;
+				}
 			}
 
 			&.flex-nav-next {
 				right: -60px;
+
+				& > a.flex-disabled {
+					display: none;
+				}
+				&:has(> a.flex-disabled) {
+					display: none;
+				}
 			}
 
 			a {
@@ -117,6 +132,11 @@
 			}
 		}
 
+		.flex-control-paging li a {
+			text-indent: 99999px;
+			overflow: hidden;
+		}
+		
 		.flex-control-nav {
 			bottom: -35px;
 	

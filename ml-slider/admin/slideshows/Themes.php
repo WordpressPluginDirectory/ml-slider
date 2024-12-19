@@ -76,14 +76,8 @@ class MetaSlider_Themes
             (isset($new_install)  && 'new' == $new_install)
         ) {
             $themes = (include METASLIDER_THEMES_PATH . 'manifest.php');
-            
-            // Add theme base customization settings
-            $themes = $this->add_base_customize_settings( $themes );
         } else {
             $themes = (include METASLIDER_THEMES_PATH . 'manifest-legacy.php');
-            
-            // Add theme base customization settings
-            $themes = $this->add_base_customize_settings( $themes );
         }
 
         // If is not Pro, let's include some Premium themes with upgrade link
@@ -92,7 +86,16 @@ class MetaSlider_Themes
             $themes = array_merge($themes, $premium_themes);
         }
         
-        // Let theme developers or others define a folder to check for themes
+        /**
+         * Check if we have extra themes/ folders added from external sources,
+         * including MetaSlider Pro 
+         * 
+         * e.g. 
+         * array(
+         *  '/path/to/wp-content/plugins/ml-slider-pro/themes/',
+         *  '/path/to/wp-content/themes/my-theme/ms-themes/'
+         * )
+         */
         $extra_themes = apply_filters('metaslider_extra_themes', array());
         foreach ($extra_themes as $location) {
             // Make sure there is a manifest
@@ -101,15 +104,20 @@ class MetaSlider_Themes
 
                 // Make sure each theme has an existing folder, title, description
                 foreach ($manifest as $data) {
-                    if (
-                        file_exists(trailingslashit($location) . $data['folder'])
+                    if (isset($data['folder'])
+                        && file_exists($folder = trailingslashit($location) . $data['folder'])
                         && isset($data['title']) 
                         && isset($data['description'])
                         && isset($data['screenshot_dir'])
                     ) {
-                        // Identify this as an external theme
-                        $data['type'] = 'external';
+                        // Adjust type
+                        $data['type'] = isset($data['type']) ? $data['type'] : 'external';
                         
+                        // Set a temporary array key to pass the customize.php file location
+                        if (file_exists($customize = trailingslashit($folder) . 'customize.php')) {
+                            $data['theme_customize_temp_'] = $customize;
+                        }
+
                         // Add a key to the theme array
                         $data = array( $data['folder'] => $data );
 
@@ -119,6 +127,9 @@ class MetaSlider_Themes
                 }
             }
         }
+
+        // Add theme customization settings
+        $themes = $this->add_base_customize_settings($themes);
 
         return $themes;
     }
@@ -132,17 +143,25 @@ class MetaSlider_Themes
      * 
      * @return array 
      */
-    public function add_base_customize_settings( $themes )
+    public function add_base_customize_settings($themes)
     {
         foreach ( $themes as $item ) {
-            $folder         = $item['folder'];
-            $customize_file = METASLIDER_THEMES_PATH . $folder . '/customize.php';
+            $folder = $item['folder'];
+
+            // Check if we use a different customize.php file (e.g. is an external theme) for this theme or default
+            $customize_file = isset($item['theme_customize_temp_']) ? $item['theme_customize_temp_'] : METASLIDER_THEMES_PATH . $folder . '/customize.php';
             
-            if ( file_exists( $customize_file ) ) {
-                $customize_settings = ( include $customize_file );
-                $themes[$folder]['customize'] = $this->merge_theme_customizations( $customize_settings );
+            if (in_array($item['type'], array('free', 'premium', 'external')) 
+                && file_exists($customize_file)
+            ) {
+                $customize_settings = (include $customize_file);
+                $themes[$folder]['customize'] = $this->merge_theme_customizations($customize_settings);
             }
-            
+
+            // Remove temporary array keys
+            if (isset($themes[$folder]['theme_customize_temp_'])) {
+                unset($themes[$folder]['theme_customize_temp_']);
+            }
         }
 
         return $themes;
@@ -152,14 +171,20 @@ class MetaSlider_Themes
      * Get customize settings from a specific theme
      * 
      * @since 3.91.0
+     * @since 3.93 - Added $alt_customize_file param
      * 
-     * @param string $theme Theme slug in lowercase. Use the theme's folder name actually.
+     * @param string $theme                     Theme slug in lowercase. Use the theme's folder name actually.
+     * @param bool|string $alt_customize_file   Alternative customize.php location
+     *                                          Use cases: if is a Pro theme or a custom theme.
+     *                                          e.g. 'path/to/another/themes/my-theme/customize.php'
      * 
      * return array
      */
-    public function add_base_customize_settings_single($theme)
+    public function add_base_customize_settings_single($theme, $alt_customize_file = false)
     {
-        $customize_file = METASLIDER_THEMES_PATH . $theme . '/customize.php';
+        $customize_file = $alt_customize_file 
+                        ? $alt_customize_file 
+                        : METASLIDER_THEMES_PATH . $theme . '/customize.php';
         
         if (file_exists($customize_file)) {
             $customize_settings = (include $customize_file);
@@ -169,6 +194,22 @@ class MetaSlider_Themes
         }
 
         return $data;
+    }
+
+    /**
+     * Get single theme data from manifest file
+     * 
+     * @since 3.93.0
+     * 
+     * @param string $theme Theme slug in lowercase. Use the theme's folder name actually.
+     * 
+     * return array
+     */
+    public function get_single_theme($theme)
+    {
+        $all_themes = $this->get_all_free_themes();
+
+        return $all_themes[$theme];
     }
 
     /**
@@ -184,8 +225,17 @@ class MetaSlider_Themes
                 $custom_themes[$id] = array(
                     'folder' => $id,
                     'title' => $theme['title'],
-                    'type' => 'custom'
+                    'type' => 'custom',
+                    'version' => (isset($theme['version']) ? $theme['version'] : 'v1')
                 );
+                
+                // Data exclusive to v2 themes
+                if (isset($theme['base'])) {
+                    $custom_themes[$id]['base'] = $theme['base'];
+                }
+                if (isset($theme['base_title'])) {
+                    $custom_themes[$id]['base_title'] = $theme['base_title'];
+                }
             }
         }
         return $custom_themes;
@@ -311,7 +361,16 @@ return false;
 return $theme;
         }
 
-        // If the theme exists via outside source
+        /**
+         * Check if we have extra themes/ folders added from external sources,
+         * including MetaSlider Pro 
+         * 
+         * e.g. 
+         * array(
+         *  '/path/to/wp-content/plugins/ml-slider-pro/themes/',
+         *  '/path/to/wp-content/themes/my-theme/ms-themes/'
+         * )
+         */
         $extra_themes = apply_filters('metaslider_extra_themes', array());
         foreach ($extra_themes as $location) {
             if (file_exists(trailingslashit($location) . trailingslashit($theme['folder']) . trailingslashit($theme['version']) . 'theme.php')) {
@@ -372,9 +431,30 @@ return $theme;
         // For custom themes, it's easier to use the legacy setting because the pro plugin
         // already hooks into it.
         if ('_theme' === substr($theme['folder'], 0, 6)) {
+            /* @since 3.94 - Make sure we keep theme_customize empty for custom themes based on core themes (v2 theme editor), 
+             * let's empty 'theme_customize' to make sure we don't keep previous customize settings saved 
+             * in case the new assigned theme doesn't have 'customize' to override it */
+            if(isset($theme['type']) && ! in_array($theme['type'], array('free', 'premium'))) {
+                if ('_theme_v2' === substr($theme['folder'], 0, 9)) {
+                    // Is a theme created with v2 Theme editor
+                    $settings['theme_customize'] = array();
+                } elseif (isset($settings['theme_customize'])) {
+                    // Is a theme created with v1 Theme editor (legacy)
+                    unset($settings['theme_customize']);
+                }
+            }
+
             $settings['theme'] = $theme['folder'];
             update_post_meta($slideshow_id, 'ml-slider_settings', $settings);
         } else if (isset($settings['theme'])) {
+
+            /* @since 3.94 - If theme doesn't have 'customize' array key, let's empty 'theme_customize'
+             * Important: even if is empty, 'theme_customize' is required in 'ml-slider_settings' postmeta db 
+             * for themes created with v2 theme editor */
+            if (! isset($theme['customize']) && isset($settings['theme_customize'])) {
+                $settings['theme_customize'] = array();
+            }
+
             // If the theme isn't a custom theme, we should unset the legacy setting
             // unset($settings['theme']); // ! Pro requires this to be set
             $settings['theme'] = '';
@@ -421,25 +501,92 @@ return $theme;
      */
     public function save_theme_customizations( $slideshow_id, $theme )
     {
-        $theme_settings = array();
         $customizations = $theme['customize'];
 
-        /** 
-         * Just save name => default/value
-         *
-         * array(
-         *     'background' => '#000',
-         *     'color' => '#feb123',
-         * )
-         */
-        foreach ( $customizations as $index => $value ) {
-            $theme_settings[$customizations[$index]['name']] = $customizations[$index]['default'];
+        // To fix incoming warning: foreach() argument must be of type array|object, null given
+        if (! is_array($customizations)) {
+            return false;
         }
+
+        $theme_settings = $this->get_customize_defaults($customizations, array('color')); // Only get 'color' settings
 
         $slideshow_settings = get_post_meta( $slideshow_id, 'ml-slider_settings', true );
         $slideshow_settings['theme_customize'] = $theme_settings;
 
         update_post_meta( $slideshow_id, 'ml-slider_settings', $slideshow_settings );
+    }
+
+    /** 
+     * Just save name => default/value of each array inside 'fields' from customize.php manifest
+     *
+     * In customize.php as:
+     * array(
+     *      array(
+     *          'label' => 'Arrows',
+     *          'fields' => array(
+     *              array(
+     *                  'label' => 'Normal',
+     *                  'name' => 'arrows_color',
+     *                  'type' => 'color',
+     *                  'default' => '#336699',
+     *                  'css' => '%s .lorem { color: %s }'
+     *              ),
+     *              // More arrays ...
+     *          )
+     *      )
+     * )
+     * 
+     * Stored in db as:
+     * array(
+     *     'arrows_color' => '#336699',
+     *     'another_setting' => '#feb123',
+     * )
+     * 
+     * @since 3.94
+     * 
+     * @param array $customizations All the data from 'customize' from theme's manifest file
+     * @param bool|array $filter    Include only these setting types only. e.g. array('color') = only include color settings
+     * 
+     * @return array
+     */
+    public function get_customize_defaults($customizations, $filter = false)
+    {
+        $res = array();
+
+        if (! is_array($customizations)) {
+            return $res;
+        }
+
+        // Loop each section that has 'status' key
+        foreach ($customizations as $section) {
+
+            if (!$filter || in_array($section['type'], $filter)) {
+                // Extract 'name' and 'default' for 'section' type
+                $res[$section['name']] = $section['default'];
+            }
+
+            // Loop each section 'settings' key
+            foreach ($section['settings'] as $row_item) {
+                
+                // If type is 'fields', let's look for the list of fields. 
+                // Usually for multiple color fields grouped together
+                if ($row_item['type'] === 'fields') {
+
+                    foreach ($row_item['fields'] as $field_item) {
+                        if (!$filter || in_array($field_item['type'], $filter)) {
+                            $res[$field_item['name']] = $field_item['default'];
+                        }
+                    } 
+                } else { 
+                    if (!$filter || in_array($row_item['type'], $filter)) {
+                        // Get individual fields
+                        $res[$row_item['name']] = $row_item['default'];
+                    }
+                }
+            }
+        }
+
+        return $res;
     }
 
     /**
@@ -452,11 +599,32 @@ return $theme;
      */
     public function load_theme($slideshow_id, $theme_id = null)
     {
+        $is_theme_editor_screen = is_admin() 
+            && function_exists('get_current_screen') 
+            && ($screen = get_current_screen()) 
+            && 'metaslider-pro_page_metaslider-theme-editor' === $screen->id;
 
         // Don't load a theme on the editor page.
-        if (is_admin() && function_exists('get_current_screen') && $screen = get_current_screen()) {
-            if ('metaslider-pro_page_metaslider-theme-editor' === $screen->id) {
+        if ($is_theme_editor_screen && (! isset($_GET['version']) || $_GET['version'] == 'v1')) {
             return false;
+        }
+
+        // @since 3.94 - Adjust $theme_id load for v2 editor
+        if ($is_theme_editor_screen && (isset($_GET['version']) && $_GET['version'] == 'v2')) {
+            if (! empty($_GET['theme_slug'] ?? null)) {
+                // e.g. /wp-admin/admin.php?page=metaslider-theme-editor&theme_slug=_theme_1733247735&version=v2
+                $custom_theme_slug  = sanitize_key($_GET['theme_slug']);
+                $custom_themes      = get_option('metaslider-themes');
+
+                if ($custom_themes 
+                    && isset($custom_themes[$custom_theme_slug]) 
+                    && isset($custom_themes[$custom_theme_slug]['base'])
+                ) {
+                    $theme_id = $custom_themes[$custom_theme_slug]['base'];
+                }
+            } elseif (! empty($_GET['base'] ?? null)) {
+                // e.g. /wp-admin/admin.php?page=metaslider-theme-editor&add=true&version=v2&base=outline
+                $theme_id = sanitize_key($_GET['base']);
             }
         }
 
@@ -489,7 +657,16 @@ return $theme;
             $theme_dir = METASLIDER_THEMES_PATH . $theme['folder'];
         }
 
-        // Let theme developers or others define a folder to check for themes (this lets them override our themes)
+        /**
+         * Check if we have extra themes/ folders added from external sources,
+         * including MetaSlider Pro 
+         * 
+         * e.g. 
+         * array(
+         *  '/path/to/wp-content/plugins/ml-slider-pro/themes/',
+         *  '/path/to/wp-content/themes/my-theme/ms-themes/'
+         * )
+         */
         $extra_themes = apply_filters('metaslider_extra_themes', array(), $slideshow_id);
         foreach ($extra_themes as $location) {
             if (file_exists(trailingslashit($location) . $theme['folder'])) {
@@ -505,6 +682,104 @@ return $theme;
         
         // This should be a custom theme (pro)
         return $theme;
+    }
+
+    /**
+     * Loop each theme customize setting from customize.php and build final working CSS
+     * 
+     * 
+     * @since 3.94
+     * 
+     * @param $array $manifest  The manifest customize data. e.g. $manifest['customize']
+     * @param $array $stored    The stored data. e.g. 'theme_customize' data at ml-slider_settings postmeta
+     * @param int $slideshow_id Sldieshow ID
+     * 
+     * @return string
+     */
+    public function build_customize_css($manifest, $stored, $slideshow_id)
+    {
+        $output = "";
+
+        foreach ($manifest as $section) {
+
+            // Loop each section 'settings' key
+            foreach ($section['settings'] as $row_item) {
+
+                // If type is 'fields', let's look for the list of fields. 
+                // Usually for multiple color fields grouped together
+                if ($row_item['type'] === 'fields') {
+
+                    foreach ($row_item['fields'] as $field_item) {
+                        
+                        // Check if setting from manifest exists in db
+                        if (isset($stored[$field_item['name']]) && isset($field_item['css'])) {
+                            if ($field_item['css'] == 'css_rules' && isset($field_item['css_rules'])) {
+                                // CSS code is actually on css_rules key (aka css = 'css_rules') BUT based on value parameter
+                                // @TODO Maybe allow array of CSS too as in regular css key?
+                                $output .= $this->adjust_css_placeholders(
+                                    $field_item['css_rules'][$stored[$field_item['name']]], 
+                                    "#metaslider-id-{$slideshow_id}", 
+                                    $stored[$field_item['name']]
+                                ) . "\n";
+                            } elseif (is_array($field_item['css'])) {
+                                // CSS is an array of strings
+                                foreach ($field_item['css'] as $css_item) {
+
+                                    $output .= $this->adjust_css_placeholders(
+                                        $css_item,
+                                        "#metaslider-id-{$slideshow_id}", 
+                                        $stored[$field_item['name']]
+                                    ) . "\n";
+                                }
+                            } else {
+                                // CSS is a single string
+                                $output .= $this->adjust_css_placeholders(
+                                    $field_item['css'],
+                                    "#metaslider-id-{$slideshow_id}", 
+                                    $stored[$field_item['name']]
+                                ) . "\n";
+                            }
+                        }
+
+                    } 
+                } else { 
+                    
+                    // Check if setting from manifest exists in db
+                    if (isset($stored[$row_item['name']]) && isset($row_item['css'])) {
+                        if ($row_item['css'] == 'css_rules' && isset($row_item['css_rules'])) {
+                            // CSS code is actually on css_rules key (aka css = 'css_rules') BUT based on value parameter
+                            // @TODO Maybe allow array of CSS too as in regular css key?
+                            $output .= $this->adjust_css_placeholders(
+                                $row_item['css_rules'][$stored[$row_item['name']]], 
+                                "#metaslider-id-{$slideshow_id}", 
+                                $stored[$row_item['name']]
+                            ) . "\n";
+
+                        } elseif (is_array($row_item['css'])) {
+                            // CSS is an array of strings
+                            foreach ($row_item['css'] as $css_item) {
+
+                                $output .= $this->adjust_css_placeholders(
+                                    $css_item, 
+                                    "#metaslider-id-{$slideshow_id}", 
+                                    $stored[$row_item['name']]
+                                ) . "\n";
+                            }
+                        } else {
+                            // CSS is a single string
+                            $output .= $this->adjust_css_placeholders(
+                                $row_item['css'], 
+                                "#metaslider-id-{$slideshow_id}", 
+                                $stored[$row_item['name']]
+                            ) . "\n";
+                        }
+                    }
+
+                }
+            }
+        }
+
+        return $output;
     }
 
     /**
@@ -534,5 +809,31 @@ return $theme;
     {
         $class .= ' ms-theme-default';
         return $class;
+    }
+
+    /**
+     * Adjust CSS from customize.php to replace [ms_id] and [value] placeholders
+     * 
+     * @since 3.94
+     * 
+     * @param string $css               e.g. '[ms_id] .flexslider .caption-wrap a { color: [ms_value] }'
+     * @param string $id                e.g. "#metaslider-id-{$slideshow_id}"
+     * @param string|int|float $value   e.g. 'rgba(255,255,255,0.8)' or 18
+     * 
+     * @return string
+     */
+    public function adjust_css_placeholders($css, $id, $value)
+    {
+        $search = array(
+            '[ms_id]',
+            '[ms_value]'
+        );
+
+        $replace = array(
+            $id,
+            (string) $value
+        );
+
+        return str_replace($search, $replace, $css);
     }
 }

@@ -38,7 +38,7 @@ class MetaSlider_Admin_Table extends WP_List_table
     {
         global $wpdb;
         $wpdbTable = $wpdb->prefix . 'posts';
-        $columns = ['slides', 'post_title', 'post_date', 'slide_count', 'slideshow_type'];
+        $columns = ['slides', 'post_title', 'post_date', 'slide_count', 'slideshow_type', 'slideshow_theme'];
         $global_settings = get_option( 'metaslider_global_settings' );
 
         $orderBy = $_GET['orderby'] ?? $global_settings['dashboardSort'] ?? 'ID';
@@ -61,9 +61,18 @@ class MetaSlider_Admin_Table extends WP_List_table
         $query_results = $wpdb->get_results($slides_query, ARRAY_A ); // WPCS: unprepared SQL OK.
 
         foreach ($query_results as &$each_slide) {
-            $each_slide['slideshow_thumb'] = $this->get_slides($each_slide['ID'], $status);
-            $each_slide['slideshow_type'] = $this->get_slide_types($each_slide['ID']);
-            $each_slide['slide_count'] = count($this->get_slides($each_slide['ID'], $status));
+            $theme = get_post_meta($each_slide['ID'], 'metaslider_slideshow_theme', true);
+
+            if ($theme && isset($theme['title'])) {
+                $each_slide['slideshow_theme'] = $theme['title'];
+            } else {
+                $each_slide['slideshow_theme'] = '';
+            }
+
+            $slideshow_slides = $this->get_slides($each_slide['ID'], $status);
+            $each_slide['slideshow_thumb'] = $slideshow_slides;
+            $each_slide['slideshow_type'] = $this->get_slide_types($slideshow_slides);
+            $each_slide['slide_count'] = count($slideshow_slides);
         }
 
         if ($orderBy === 'slide_count') {
@@ -95,13 +104,21 @@ class MetaSlider_Admin_Table extends WP_List_table
 
     public function no_items()
     {
-        printf(
-            esc_html__(
-                'You don\'t have any slideshows yet. Click %shere%s to create a new slideshow.',
+        if (!empty($_GET['post_status']) && $_GET['post_status'] === 'trash') {
+            esc_html_e(
+                'You don\'t have any trashed slideshows.',
                 'ml-slider'
-            ),
-            '<a href="' . esc_url(wp_nonce_url(admin_url("admin-post.php?action=metaslider_create_slider"), "metaslider_create_slider")) . '">','</a>'
-        );
+            );
+        } else {
+            printf(
+                esc_html__(
+                    'You don\'t have any slideshows yet. Click %shere%s to create a new slideshow.',
+                    'ml-slider'
+                ),
+                '<a href="' . esc_url(wp_nonce_url(admin_url("admin-post.php?action=metaslider_create_slider"), "metaslider_create_slider")) . '">','</a>'
+            );
+        }
+        
     }   
 
     protected function get_views()
@@ -161,6 +178,7 @@ class MetaSlider_Admin_Table extends WP_List_table
             'post_title' => esc_html__('Title', 'ml-slider'),
             'slideshow_type' => esc_html__('Type of Slides', 'ml-slider'),
             'slide_count' => esc_html__('Number of Slides', 'ml-slider'),
+            'slideshow_theme' => esc_html__('Theme', 'ml-slider'),
             'post_date' => esc_html__('Created', 'ml-slider'),
             'ID' => esc_html__('Shortcode', 'ml-slider')
         );
@@ -173,7 +191,8 @@ class MetaSlider_Admin_Table extends WP_List_table
           'post_title' => array('post_title', false),
           'post_date' => array('post_date', false),
           'slideshow_type' => array('slideshow_type',false),
-          'slide_count' => array('slide_count',false)
+          'slide_count' => array('slide_count',false),
+          'slideshow_theme' => array('slideshow_theme',false)
         );
         return $sortable_columns;
     }
@@ -217,9 +236,8 @@ class MetaSlider_Admin_Table extends WP_List_table
         return $slides;
     }
 
-    public function get_slide_types($slideshowId)
+    public function get_slide_types($slides)
     {
-        $slides = $this->get_slides($slideshowId, 'publish');
         $slide_list = array();
         foreach ($slides as $slide) {
             $post_title = explode(' - ', $slide->post_title);
@@ -248,17 +266,19 @@ class MetaSlider_Admin_Table extends WP_List_table
     public function column_slideshow_thumb($item)
     {
         $logo = 'data:image/svg+xml;base64,' . base64_encode(file_get_contents(dirname(__FILE__) . '/assets/metaslider.svg'));
+        $placeholder = "<img src='". $logo ."' class='thumb-logo'>";
         $numberOfSlides = count($item['slideshow_thumb']);
 
         $thumbHtml = "<div class='w-16 h-16 bg-gray-light slidethumb'>";
         if ($numberOfSlides === 0) {
-            $thumbHtml .= "<img src='". $logo ."' class='thumb-logo'>";
+            $thumbHtml .= $placeholder;
         } else {
             if ($numberOfSlides === 1){
-                $thumbHtml .= $this->getslide_thumb($item['slideshow_thumb']->ID);
+                $thumbHtml .= isset($item['slideshow_thumb']->ID) 
+                            ? $this->getslide_thumb($item['slideshow_thumb']->ID) : $placeholder;
             } else {
                 foreach ($item['slideshow_thumb'] as $thumb) {
-                    $thumbHtml .= $this->getslide_thumb($thumb->ID);
+                    $thumbHtml .= isset($thumb->ID) ? $this->getslide_thumb($thumb->ID) : $placeholder;
                 }
             }        
         }
@@ -308,6 +328,11 @@ class MetaSlider_Admin_Table extends WP_List_table
     public function column_slide_count($item)
     {
         return $item['slide_count'];
+    }
+
+    public function column_slideshow_theme($item)
+    {
+        return $item['slideshow_theme'];
     }
 
     public function column_post_date($item)

@@ -212,6 +212,10 @@
 					{{ __('Change the maximum custom fields for Post Feed', 'ml-slider') }}
 				</template>
 			</text-single-input>
+			<switch-single-input v-model="proSettings.legacyThemeEditor" @change="saveProSettings()">
+				<template slot="header">{{ __('Enable Legacy Theme Editor', 'ml-slider') }}</template>
+				<template slot="description">{{ __('This setting allows you to enable the legacy Theme Editor.', 'ml-slider') }}</template>
+			</switch-single-input>
 		</template>
 	</split-layout>
 </div>
@@ -269,6 +273,7 @@ export default {
 			},
 			proSettings: {
 				postFeedFields: 30,
+				legacyThemeEditor: false // false means legacy Theme editor is disabled
 			},
 			legacySlideshows: {}
 

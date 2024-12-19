@@ -491,6 +491,35 @@
                     'helptext' => esc_html__(
                         "Smart Crop ensures your responsive slides are cropped to a ratio that results in a consistent slideshow size.",
                         "ml-slider"
+                    ),
+                    'dependencies' => array(
+                        array(
+                            'show' => 'cropMultiply', // Show Image double size
+                            'when' => array( // When Image crop is 'true' or 'false'
+                                'true',
+                                'false'
+                            )
+                        )
+                    )
+                ),
+                'cropMultiply' => array(
+                    'priority' => 34,
+                    'type' => 'select',
+                    'label' => __("Image Crop Size", "ml-slider"),
+                    'class' => 'option flex',
+                    'value' => $this->slider->get_setting('cropMultiply'),
+                    'options' => array(
+                        1 => array('label' => '1x'),
+                        2 => array('label' => '2x'),
+                        3 => array('label' => '3x'),
+                        4 => array('label' => '4x')
+                    ),
+                    'helptext' => __(
+                        "This will increase the size of the images in your slideshow. Larger images are higher quality. Smaller images load more quickly.",
+                        "ml-slider"
+                    ),
+                    'extra_attrs' => array(
+                        'data-value' => $this->slider->get_setting('cropMultiply')
                     )
                 ),
                 'smoothHeight' => array(
@@ -544,7 +573,14 @@
                     'helptext' => esc_html__(
                         "Infinite loop of slides when Carousel Mode is enabled. This option disables arrows and navigation.",
                         "ml-slider"
+                    ),
+                    'dependencies' => array(
+                        array(
+                            'show' => 'progressBar', // Show Progress Bar
+                            'when' => false // When infinteLoop is false
+                        )
                     )
+                    
                 ),
                 'carouselMargin' => array(
                     'priority' => 45,
@@ -623,6 +659,19 @@
                     ) ? 'checked' : '',
                     'helptext' => esc_html__(
                         "Allow touch swipe navigation of the slider on touch-enabled devices.",
+                        "ml-slider"
+                    )
+                ),
+                'progressBar' => array(
+                    'priority' => 84,
+                    'type' => 'checkbox',
+                    'label' => esc_html__("Progress Bar", "ml-slider"),
+                    'class' => 'option flex',
+                    'checked' => $this->slider->get_setting(
+                        'progressBar'
+                    ) == 'true' ? 'checked' : '',
+                    'helptext' => esc_html__(
+                        "Displays a visual indicator showing the time left before the next slide.",
                         "ml-slider"
                     )
                 ),
@@ -743,7 +792,7 @@
                     'label' => esc_html__("Image Animation", "ml-slider"),
                     'class' => 'option flex',
                     'helptext' => esc_html__(
-                        'Easing adds gradual acceleration and deceleration to slide transitions, rather than abrupt starts and stops. Easing only uses the "Slide" Effect.',
+                        'This feature adds gradual acceleration and deceleration to slide transitions, rather than abrupt starts and stops. This feature only works with the "Slide" Transition Effect.',
                         "ml-slider"
                     ),
                     'value' => $this->slider->get_setting('easing'),

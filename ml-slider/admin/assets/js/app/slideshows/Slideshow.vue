@@ -261,6 +261,10 @@ export default {
 						.attr('data-width', $this.attr('data-width'))
 						.attr('data-height', $this.attr('data-height'))
 				})
+				$('select.cropMultiply').each(function() {
+					let $this = $(this);
+					$this.attr('data-value', $this.val());
+				});
 			})
 		},
 		cancelTour() {

@@ -87,6 +87,7 @@ class MetaSlider_Slideshow_Settings
             'slices' => 15,
             'center' => false,
             'smartCrop' => true,
+            'cropMultiply' => 1,
             'smoothHeight' => false,
             'carouselMode' => false,
             'infiniteLoop' => false,
@@ -111,7 +112,8 @@ class MetaSlider_Slideshow_Settings
             'ariaLive' => false,
             'ariaCurrent' => false,
             'tabIndex' => false,
-            'pausePlay' => false
+            'pausePlay' => false,
+            'progressBar' => false
         );
         $defaults = apply_filters('metaslider_default_parameters', $defaults);
         $overrides = get_option('metaslider_default_settings');
@@ -130,7 +132,7 @@ class MetaSlider_Slideshow_Settings
     public static function adjust_settings($settings)
     {
         // Convert submitted checkbox values from 'on' or 'off' to boolean values in string format (e.g. true becomes 'true')
-        $checkboxes = apply_filters("metaslider_checkbox_settings", array('noConflict', 'fullWidth', 'hoverPause', 'reverse', 'random', 'printCss', 'printJs', 'smoothHeight', 'center', 'carouselMode', 'autoPlay', 'firstSlideFadeIn', 'responsive_thumbs', 'keyboard', 'touch', 'infiniteLoop',  'mobileArrows_smartphone', 'mobileArrows_tablet','mobileArrows_laptop', 'mobileArrows_desktop', 'mobileNavigation_smartphone', 'mobileNavigation_tablet', 'mobileNavigation_laptop', 'mobileNavigation_desktop', 'ariaLive', 'tabIndex', 'pausePlay','ariaCurrent'));
+        $checkboxes = apply_filters("metaslider_checkbox_settings", array('noConflict', 'fullWidth', 'hoverPause', 'reverse', 'random', 'printCss', 'printJs', 'smoothHeight', 'center', 'carouselMode', 'autoPlay', 'firstSlideFadeIn', 'responsive_thumbs', 'keyboard', 'touch', 'infiniteLoop',  'mobileArrows_smartphone', 'mobileArrows_tablet','mobileArrows_laptop', 'mobileArrows_desktop', 'mobileNavigation_smartphone', 'mobileNavigation_tablet', 'mobileNavigation_laptop', 'mobileNavigation_desktop', 'ariaLive', 'tabIndex', 'pausePlay','ariaCurrent', 'progressBar'));
 
         foreach ($checkboxes as $checkbox) {
             $settings[$checkbox] = (isset($settings[$checkbox]) && 'on' == $settings[$checkbox]) ? 'true' : 'false';

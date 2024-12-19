@@ -61,6 +61,9 @@ class MetaSlider_Theme_Base
         self::$themes[$this->id] = $this;
 
         $this->init();
+
+        // Customize theme design
+        add_filter('metaslider_css', array($this, 'theme_customize'), 10, 3);
     }
 
     /**
@@ -241,5 +244,113 @@ return $options;
             
         }
         return $available_slides;
+    }
+
+    /**
+     * Build CSS to customize theme colors
+     * 
+     * @since 3.93
+     * 
+     * @param string $theme                 Theme name in lowercase. e.g. 'bitono'
+     * @param array|string $settings        Slideshow settings
+     * @param array|string $slideshow_id    Slideshow id 
+     * 
+     * @return string
+     */
+    public function theme_customize_css($theme, $settings, $slideshow_id)
+    {
+        $theme_settings = get_post_meta($slideshow_id, 'metaslider_slideshow_theme', true);
+
+        // @since 3.94 - Are we using this core theme through a custom theme v2?
+        if (isset($theme_settings['folder']) && '_theme_v2' === substr($theme_settings['folder'], 0, 9)) {
+            $custom_themes  = get_option('metaslider-themes');
+            $stored_data    = isset($custom_themes[$theme_settings['folder']]) && isset($custom_themes[$theme_settings['folder']]['customize']) 
+                            ? $custom_themes[$theme_settings['folder']]['customize']
+                            : array();
+        } else {
+            // Is a core theme - customization settings are stored in ml-slider_settings postmeta db
+            $stored_data = $settings['theme_customize'];
+        }
+
+        $manifest   = array();
+        $type       = isset($theme_settings['type']) ? $theme_settings['type'] : 'free';
+
+        $themes_class = MetaSlider_Themes::get_instance();
+
+        // Is a premium, external or custom theme (v2), override $manifest path
+        if ($type !== 'free') {
+            // Check if is a custom v2 based on a free theme
+            $manifest = $themes_class->add_base_customize_settings_single($theme);
+
+            /**
+             * Check if is a premium or custom theme (v2) based on a premium theme
+             * by looping extra themes/ folders added from external sources,
+             * including MetaSlider Pro.
+             * We may also support external themes (custom coded themes added by users).
+             * 
+             * e.g. 
+             * array(
+             *  '/path/to/wp-content/plugins/ml-slider-pro/themes/',
+             *  '/path/to/wp-content/themes/my-theme/ms-themes/'
+             * )
+             */
+            if (! count($manifest)) {
+                $extra_themes = apply_filters('metaslider_extra_themes', array());
+
+                foreach ($extra_themes as $location) {
+                    // Check if customize.php file that belongs to $theme as theme name (lowercase) exists
+                    if (file_exists($customize_file = trailingslashit($location) . trailingslashit($theme) . 'customize.php')) {
+                        // Get the data from customize.php files
+                        $manifest = $themes_class->add_base_customize_settings_single(
+                            $theme, $customize_file
+                        );
+                        break;
+                    }
+                }
+            }
+        } else {
+            // Is a free theme - Get data from themes/$theme/customize.php
+            $manifest = $themes_class->add_base_customize_settings_single($theme);
+        }
+
+        $output = $themes_class->build_customize_css($manifest, $stored_data, $slideshow_id);
+
+        return $output;
+    }
+
+    /**
+     * Add inline CSS to customize theme design
+     * 
+     * @since 3.93.0 - Moved from each theme.php file
+     */
+    public function theme_customize($css, $settings, $slideshow_id)
+    {
+        // /wp-admin/admin.php?page=metaslider-theme-editor&theme_slug=<slug>1&version=v2
+        $is_theme_editor_screen = is_admin() 
+            && function_exists('get_current_screen') 
+            && ($screen = get_current_screen())
+            && 'metaslider-pro_page_metaslider-theme-editor' === $screen->id 
+            && isset($_GET['version']) 
+            && $_GET['version'] == 'v2';
+
+        /* This CSS only works with Flexslider
+         * Important: even if is empty, 'theme_customize' is required in 'ml-slider_settings' postmeta db 
+         * for themes created with v2 theme editor */
+        $doesnt_use_customize = $settings['type'] !== 'flex' || ! isset($settings['theme_customize']);
+
+        
+        if ($is_theme_editor_screen || $doesnt_use_customize) {
+            return "";
+        }
+
+        $css .= $this->theme_customize_css(
+            $this->id,
+            $settings,
+            $slideshow_id
+        );
+
+        remove_filter('metaslider_css', array($this, 'theme_customize'), 10, 3);
+
+        return $css;
     }
 }

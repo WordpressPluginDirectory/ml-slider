@@ -5,7 +5,7 @@
  * Plugin Name: MetaSlider
  * Plugin URI:  https://www.metaslider.com
  * Description: MetaSlider gives you the power to create a beautiful slideshow, carousel, or gallery on your WordPress site.
- * Version:     3.92.1
+ * Version:     3.94.0
  * Author:      MetaSlider
  * Author URI:  https://www.metaslider.com
  * License:     GPL-2.0+
@@ -42,7 +42,7 @@ if (! class_exists('MetaSliderPlugin')) {
          *
          * @var string
          */
-        public $version = '3.92.1';
+        public $version = '3.94.0';
 
         /**
          * Pro installed version number
@@ -624,6 +624,19 @@ if (! class_exists('MetaSliderPlugin')) {
                 return "<!-- MetaSlider {$atts['id']} not found -->";
             }
 
+            /* @since 3.94 - Check if we're using a custom theme with v2 version 
+             * in order to load it's base theme (aka core theme) */
+            $theme = get_post_meta($id, 'metaslider_slideshow_theme', true);
+
+            if (isset($theme['folder']) && '_theme' === substr($theme['folder'], 0, 6)) {
+                $custom_themes = get_option('metaslider-themes');
+
+                if (isset($custom_themes[$theme['folder']]['version']) 
+                    && $custom_themes[$theme['folder']]['version'] == 'v2') {
+                    $atts['theme'] = $custom_themes[$theme['folder']]['base'];
+                }
+            }
+
             // Set up the slideshow and load the slideshow theme
             $this->set_slider($id, $atts);
             MetaSlider_Themes::get_instance()->load_theme($id, $atts['theme']);
@@ -644,14 +657,6 @@ if (! class_exists('MetaSliderPlugin')) {
                 load_textdomain(
                     'ml-slider',
                     METASLIDER_PATH . 'languages/' . 'ml-slider' . '-' . get_locale() . '.mo'
-                );
-            }
-
-            if (function_exists('wp_set_script_translations')) {
-                wp_set_script_translations(
-                    'metaslider-admin-script',
-                    'ml-slider',
-                    METASLIDER_PATH . 'languages'
                 );
             }
         }
@@ -1352,6 +1357,13 @@ if (! class_exists('MetaSliderPlugin')) {
                     $dependencies = ' data-dependencies="' . $dependencies . '"';
                 }
 
+                $extra_attrs = '';
+                if (isset($row['extra_attrs']) && is_array($row['extra_attrs'])) {
+                    foreach ($row['extra_attrs'] as $x_attr => $x_value) {
+                        $extra_attrs .= ' ' . $x_attr . '="' . $x_value . '"';
+                    }
+                }
+
                 $after = '';
                 if (isset($row['after'])) {
                     $after = '<span class="">' . $row['after'] . '</span>';
@@ -1471,7 +1483,7 @@ if (! class_exists('MetaSliderPlugin')) {
                             ) . '</td><td><select class="option ' . esc_attr($row["class"]) . ' ' . esc_attr(
                                 $id
                             ) . ' width w-40" name="settings[' . esc_attr($id) . ']"' . 
-                                $dependencies . '>';
+                                $dependencies . $extra_attrs . '>';
                         foreach ($row['options'] as $option_name => $option_value) {
                             $selected = selected($option_name, $row['value'], false);
                             $disabled = isset( $option_value['addon_required'] ) && $option_value['addon_required'] 
@@ -2358,7 +2370,7 @@ if (! class_exists('MetaSliderPlugin')) {
                             'ml-slider'
                         ) . "</a>";
                 }
-                $meta[] = "<a href='https://www.metaslider.com/documentation/' target='_blank'>" . esc_html__(
+                $meta[] = "<a href='https://www.metaslider.com/docs/' target='_blank'>" . esc_html__(
                         'Documentation',
                         'ml-slider'
                     ) . "</a>";
@@ -2590,7 +2602,10 @@ if (! class_exists('MetaSliderPlugin')) {
                 $attach_id,
                 $settings['width'],
                 $settings['height'],
-                isset($settings['smartCrop']) ? $settings['smartCrop'] : 'false'
+                isset($settings['smartCrop']) ? $settings['smartCrop'] : 'false',
+                true,
+                null,
+                isset($settings['cropMultiply']) ? absint($settings['cropMultiply']) : 1
             );
             $newurl = $image_cropper->get_image_url();
     

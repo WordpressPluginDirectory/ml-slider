@@ -31,7 +31,7 @@ $demo_options = apply_filters( 'metaslider_quickstart_options', $demo_options );
 							<div id="drag-drop-area">
 								<div class="drag-drop-inside">
 								<p class="drag-drop-info"><?php _e('Drop files to upload'); ?></p>
-								<p><?php _ex('or', 'Uploader: Drop files to upload - or - Select Files'); ?></p>
+								<p><?php _ex('or', 'Uploader: Drop files to upload - or - Select Files', 'ml-slider'); ?></p>
 								<p class="drag-drop-buttons">
 									<input id="plupload-browse-button" type="button" value="<?php esc_attr_e('Select Files'); ?>" class="button" />
 									<button id="quickstart-browse-button" class="button"><?php esc_html_e('Open Media Library', 'ml-slider'); ?></button>

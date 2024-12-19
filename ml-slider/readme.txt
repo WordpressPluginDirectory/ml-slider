@@ -1,14 +1,14 @@
-=== Slider, Gallery, and Carousel by MetaSlider - Responsive WordPress Image Sliders ===
+=== Slider, Gallery, and Carousel by MetaSlider - Image Slider, Video Slider ===
 Contributors: andergmartins, htmgarcia, publishpress, stevejburge, rochdesigns
-Tags: slider, slider, image slider, carousel slider, gallery
+Tags: slider, video slider, image slider, carousel slider, gallery
 Requires at least: 5.0
-Stable tag: 3.92.1
+Stable tag: 3.94.0
 Requires PHP: 7.0
-Tested up to: 6.6.2
+Tested up to: 6.7
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-The best slider, gallery, carousel plugin for WordPress. Build your image slider, video slider, post slider, or WooCommerce product slider.
+Slider, gallery, carousel plugin for WordPress. Build your image slider, video slider, post slider, YouTube slider, or WooCommerce product slider.
 
 == Description ==
 
@@ -319,6 +319,44 @@ Yes, you can build Elementor slides and Beaver Builder slideshows. You can creat
 
 The format is based on [Keep a Changelog recommendations](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
+
+= [3.94.0] - 18 Dec, 2024 =
+
+* ADDED: Allow users to sort slides in a slideshow by different criteria, #995;
+* ADDED: Add new pro themes screenshots to promote Pro, #1393;
+* ADDED: Progress bar, #1045;
+* ADDED: Allow users to choose the background color for their slideshow, #1332;
+* FIXED: Improve the thumbnails for Highway, Bubble and Outline, #1388;
+* FIXED: Italian, Spanish and French translation updates, #1379;
+* FIXED: Update AppSero, #1392;
+* FIXED: Simply Dark preview shows "Previous" and "Next", #1397;
+* FIXED: Improve the Nexus and other thumbnails, #1238;
+* FIXED: rgba missing in color customization in slideshow edit, #1394;
+* FIXED: Arrow should be hidden when first or last slide is active, #1345;
+* FIXED: Documentation link is wrong, #1380;
+* FIXED: Trash, restore and delete translations not working, #1336;
+* FIXED: Precognition theme double navigation, #1413;
+
+= [3.93.0] - 14 Nov, 2024 =
+
+* ADDED: Execute crop feature when changing crop position, #997;
+* ADDED: Add back the "Theme" column to "Home", #1329;
+* ADDED: Allow theme customizations for pro and external themes, #1351, #1369;
+* ADDED: Image crop size from 1x to 4x, #1048, #1364, #1365;
+* ADDED: Add the color pickers to all free FlexSlider themes, #1220;
+* CHANGED: Create "Base Theme" and set by default for new slideshows, #944, #1247, #1360;
+* CHANGED: Convert theme's arrow icons into SVG, #1322;
+* CHANGED: Make theme customize settings shorter, #1308;
+* CHANGED: Optimize dynamic CSS from theme customize, #1301;
+* FIXED: Issue with Post Feed and no images, #1356;
+* FIXED: Validate JS for logged out users, #1315;
+* FIXED: Theme settings: navigation, active vs inactive, #1249;
+* FIXED: Italian, Spanish and French translation updates, #1335;
+* FIXED: JS translations are not being outputted, #1326;
+* FIXED: Wrong message when trash section is empty, #1321;
+* FIXED: Sometimes color picker is cropped, #1325;
+* FIXED: Theme customize navigation should be visible only when Navigation uses 'Dots', #1323;
+* FIXED: Play button theme customize settings are showing even though Play / Pause button is disabled, #1362;
 
 = [3.92.1] - 23 Oct, 2024 =
 
