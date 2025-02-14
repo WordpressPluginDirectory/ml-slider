@@ -54,6 +54,8 @@
 			width: 60px;
 			height: 36px;
 			background-image: none;
+			top: calc(50% + 20px); // 20px is the margin-bottom / 2 from .flexslider
+			transform: translateY(-50%);
 			
 			&:after {
 				background-color: #fff;
@@ -87,6 +89,7 @@
 		}
 
 		.flex-control-paging li a {
+			font-size: 0;
 			text-indent: 99999px;
 			overflow: hidden;
 		}

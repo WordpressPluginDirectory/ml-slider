@@ -29,22 +29,25 @@ class MetaFlexSlider extends MetaSlider
         parent::__construct($id, $shortcode_settings);
 
         add_filter('metaslider_flex_slider_parameters', array( $this, 'enable_carousel_mode' ), 10, 2);
-        add_filter('metaslider_flex_slider_parameters', array( $this, 'enable_pause_play'), 10, 2);
         add_filter('metaslider_flex_slider_parameters', array( $this, 'manage_easing' ), 10, 2);
         add_filter('metaslider_flex_slider_parameters', array( $this, 'manage_tabindex' ), 99, 3);
         add_filter('metaslider_flex_slider_parameters', array( $this, 'manage_aria_current' ), 99, 3);
         add_filter('metaslider_flex_slider_parameters', array( $this, 'manage_progress_bar' ), 99, 3);
+        add_filter('metaslider_flex_slider_parameters', array( $this, 'manage_tabbed_slider' ), 99, 3);
+        add_filter('metaslider_flex_slider_parameters', array( $this, 'manage_pausePlay_button' ), 99, 3);
 
         if(metaslider_pro_is_active() == false) {
             add_filter('metaslider_flex_slider_parameters', array( $this, 'metaslider_flex_loop'), 99, 3);
         }
 
         if( metaslider_pro_is_active() ) {
-            add_filter( 'metaslider_flex_slider_parameters', array( $this, 'custom_delay_per_slide' ), 10, 3 );
+            add_filter( 'metaslider_flex_slider_parameters', array( $this, 'custom_delay_per_slide' ), 99, 3 );
         }
 
         add_filter('metaslider_css', array( $this, 'get_carousel_css' ), 11, 3);
         add_filter('metaslider_css', array( $this, 'hide_for_mobile' ), 11, 3);
+        add_filter('metaslider_css', array( $this, 'show_hide_play_text' ), 11, 3);
+        add_filter('metaslider_css', array( $this, 'show_hide_play_button' ), 11, 3);
         add_filter('metaslider_css_classes', array( $this, 'remove_bottom_margin' ), 11, 3);
 
         $global_settings = get_option( 'metaslider_global_settings' );
@@ -56,7 +59,6 @@ class MetaFlexSlider extends MetaSlider
                 add_filter("metaslider_flex_slider_javascript_before", array( $this, 'manage_responsive' ), 10, 3);
             }
         }
-        
     }
 
     /**
@@ -93,32 +95,6 @@ class MetaFlexSlider extends MetaSlider
 
         // we don't want this filter hanging around if there's more than one slideshow on the page
         remove_filter('metaslider_flex_slider_parameters', array( $this, 'enable_carousel_mode' ), 10, 2);
-        return $options;
-    }
-
-    /**
-     * Adjust the slider parameters to enable pausePlay if both autoPlay (slideshow) or pausePlay are enabled
-     *
-     * @since 3.90
-     * 
-     * @param array   $options   Slider options
-     * @param integer $slider_id Slider ID
-     * @return array $options
-     */
-    public function enable_pause_play($options, $slider_id)
-    {
-        if (isset($options['pausePlay']) && $options['pausePlay'] == 'true') { 
-            // Check if auto play is enabled 
-            if (isset($options['slideshow']) && $options['slideshow'] == 'true') {
-                $options['pausePlay'] = "true";
-            } else {
-                unset($options['pausePlay']);
-            }
-        }
-
-        // We don't want this filter hanging around if there's more than one slideshow on the page
-        remove_filter('metaslider_flex_slider_parameters', array( $this, 'enable_pause_play' ), 10, 2);
-
         return $options;
     }
 
@@ -280,6 +256,43 @@ class MetaFlexSlider extends MetaSlider
     }
 
     /**
+     * Show/Hide Play Button Text
+     */
+    public function show_hide_play_text($css, $settings, $slider_id)
+    {
+        if (isset($settings['showPlayText']) && $settings['showPlayText'] == 'true') {
+            $css .= "\n 
+            #metaslider_{$slider_id}.flexslider .flex-pauseplay .flex-play,
+            #metaslider_{$slider_id}.flexslider .flex-pauseplay .flex-pause {
+               width: auto;
+               height: auto;
+            }
+            #metaslider_{$slider_id}.flexslider .flex-pauseplay .flex-play::before,
+            #metaslider_{$slider_id}.flexslider .flex-pauseplay .flex-pause::before {
+                margin-right: 5px;
+            }";
+            
+        }
+        remove_filter('metaslider_css', array( $this, 'show_hide_play_text' ), 11, 3);
+        return $css;
+    }
+
+    /**
+     * Show/Hide Play Button When Infinite Loop is enabled
+     */
+    public function show_hide_play_button($css, $settings, $slider_id)
+    {
+        if (isset($settings['infiniteLoop']) && $settings['infiniteLoop'] == 'true') {
+            $css .= "\n 
+            #metaslider_{$slider_id}.flexslider .flex-pauseplay {
+               display: none;
+            }"; 
+        }
+        remove_filter('metaslider_css', array( $this, 'show_hide_play_text' ), 11, 3);
+        return $css;
+    }
+
+    /**
      * Enable the parameters that are accepted by the slider
      *
      * @param  string $param Parameters
@@ -305,7 +318,10 @@ class MetaFlexSlider extends MetaSlider
             'autoPlay' => 'slideshow',
             'firstSlideFadeIn' => 'fadeFirstSlide',
             'smoothHeight' => 'smoothHeight',
-            'pausePlay' => 'pausePlay'
+            'pausePlay' => 'pausePlay',
+            'showPlayText' => 'showPlayText',
+            'playText' => 'playText',
+            'pauseText' => 'pauseText'
         );
         return isset($params[$param]) ? $params[$param] : false;
     }
@@ -361,7 +377,10 @@ class MetaFlexSlider extends MetaSlider
 
         $return_value .= "\n            </ul>";
 
-        if ($this->get_setting('progressBar') == 'true' && $this->get_setting('infiniteLoop') == 'false') {
+        if ($this->get_setting('autoPlay') == 'true' 
+            && $this->get_setting('progressBar') == 'true' 
+            && ($this->get_setting('infiniteLoop') == 'false' || $this->get_setting('carouselMode') == 'false')
+        ) {
             $return_value .= "\n        <div class='flex-progress-bar'></div>";
         }
 
@@ -490,7 +509,11 @@ class MetaFlexSlider extends MetaSlider
      */
     public function manage_progress_bar($options, $slider_id, $settings)
     {
-        if (isset($settings['progressBar']) && 'true' == $settings['progressBar'] && 'false' == $settings['infiniteLoop']) {
+        if (isset($settings['progressBar']) 
+            && $settings['progressBar'] == 'true'
+            && $settings['autoPlay'] == 'true' 
+            && ($settings['infiniteLoop'] == 'false' || $settings['carouselMode'] == 'false')
+        ) {
             $options['start'] = isset($options['start']) ? $options['start'] : array();
             $totalTime = $settings['delay'] - $settings['animationSpeed'];
             $options['start'] = array_merge(
@@ -530,6 +553,45 @@ class MetaFlexSlider extends MetaSlider
             );
         }
 
+        return $options;
+    }
+
+    /**
+     * Trigger resize when slideshow is inside a tab
+     */
+    public function manage_tabbed_slider($options, $slider_id, $settings)
+    {
+        if ($settings['effect'] == 'slide') {
+            $options['start'] = isset( $options['start'] ) ? $options['start'] : array();
+            $options['start'] = array_merge(
+                $options['start'],
+                array(
+                    "document.addEventListener('click', function (event) {
+                        if (event.target.closest('[role=\'tab\']')) {
+                            $('#metaslider_" . $slider_id . "').resize();
+                        }
+                    });"
+                )  
+            );
+        }
+        return $options;
+    }
+
+    /**
+     * Change button to play icon when autoplay is disabled
+     */
+    public function manage_pausePlay_button($options, $slider_id, $settings)
+    {
+        if (isset($settings['pausePlay']) && $settings['pausePlay'] === 'true' && $settings['autoPlay'] === 'false') {
+            $script = "$('.flex-pauseplay a').removeClass('flex-pause').addClass('flex-play');";
+        
+            if (isset($settings['showPlayText']) && $settings['showPlayText'] === 'true' && !empty($settings['playText'])) {
+                $script .= "$('.flex-pauseplay a').text('" . addslashes($settings['playText']) . "');";
+            }
+        
+            $options['start'] = array_merge($options['start'], [$script]);
+        }
+        
         return $options;
     }
 }

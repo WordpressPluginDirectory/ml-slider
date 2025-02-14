@@ -484,9 +484,47 @@ return $theme;
      */
     public function merge_theme_customizations( $customizations )
     {
-        $base_customizations = ( include METASLIDER_THEMES_PATH . 'customize.php' );
+        $base_customizations    = ( include METASLIDER_THEMES_PATH . 'customize.php' );
+        $all_customizations     = array_merge( $customizations, $base_customizations );
 
-        return array_merge( $customizations, $base_customizations );
+        // Merge Pro customize.php
+        if ( defined( 'METASLIDERPRO_THEMES_PATH' ) 
+            && metaslider_pro_is_active()
+            && file_exists( $pro = METASLIDERPRO_THEMES_PATH . '/customize.php' )
+        ) {
+            $all_customizations = $this->merge_settings_by_name( $all_customizations, include $pro );
+        }
+
+        return $all_customizations;
+    }
+
+    /**
+     * Merge $a customize.php 'settings' into $b customize.php 'settings' by matching 'section' 
+     * 
+     * @since 3.96
+     * 
+     * @param array $a Customize file A
+     * @param array $b Customize file B
+     * 
+     * @return array $a modified version
+     */
+    public function merge_settings_by_name( &$a, $b ) {
+        foreach ($b as $b_section) {
+            foreach ( $a as &$a_section ) {
+                // Check if sections match by 'name'
+                if (isset( $a_section['name'], $b_section['name'] ) 
+                    && $a_section['name'] === $b_section['name']
+                ) {
+                    // Merge 'settings' arrays
+                    if ( isset( $a_section['settings'], $b_section['settings'] ) ) {
+                        $a_section['settings'] = array_merge( $a_section['settings'], $b_section['settings'] );
+                    }
+                }
+            }
+            unset( $a_section ); // Break reference to prevent side effects
+        }
+
+        return $a;
     }
 
     /**
@@ -685,6 +723,75 @@ return $theme;
     }
 
     /**
+     * Filter the manifest data by field 'dependencies' and return final CSS
+     * 
+     * @since 3.96
+     * 
+     * @param array $data The manifest data with all the customzie settings
+     * 
+     * @return string
+     */
+    public function filter_customize_css( $data )
+    {
+        foreach ( $data as $key => $item ) {
+            if ( isset( $item['dependencies'] ) && $item['dependencies'] !== false ) {
+
+                foreach ( $data[$key]['dependencies'] as $dep ) {
+                    
+                    // If dependecy 'when' value is different to $data[$key]['value] (aka $item['value']) value, 
+                    // let's exclude from $data
+                    if ( $dep['when'] !== $item['value'] ) {
+                        if ( isset( $data[$dep['show']] ) ) {
+                            unset($data[$dep['show']]);
+                        }
+                    }
+                }
+            }
+        }
+
+        // Let's extract only the CSS and merge as a single string
+        $css = "";
+        foreach ( $data as $item ) {
+            if ( ! empty( $item['css'] ) ) {
+                $css .= $item['css'];
+            }
+        }
+
+        return $css;
+    }
+
+    /**
+     * When match get the value of a css_field 
+     * from another field based on css_field value
+     * 
+     * @since 3.96
+     * 
+     * @return bool|string|integer|float false if no match found (not a css_field)
+     */
+    public function value_linked_to_field( $manifest, $stored, $name )
+    {
+        foreach ( $manifest as $section ) {
+            // Loop each section 'settings' key
+            foreach ( $section['settings'] as $row_item ) {
+
+                // Skip fields and its childs. Perhaps in future support it?
+                if ( $row_item['type'] !== 'fields' ) {
+
+                    if ( isset( $row_item['css_field'] )
+                        && $row_item['css_field'] === $name 
+                        && isset( $stored[$row_item['name']] )
+                    ) {
+                        // Exit early and return the matching data
+                        return $stored[$row_item['name']];
+                    }
+                }
+            }
+        }
+    
+        return false;
+    }
+
+    /**
      * Loop each theme customize setting from customize.php and build final working CSS
      * 
      * 
@@ -698,7 +805,24 @@ return $theme;
      */
     public function build_customize_css($manifest, $stored, $slideshow_id)
     {
-        $output = "";
+        /**
+         * We'll store some data linked to the setting name
+         * 
+         * @since 3.96
+         * 
+         * e.g.
+         * array(
+         *      array(
+         *          'arrows_color' => array(
+         *              'value' => '#fff'
+         *              'css' => '[ms_id] .lorem { color: [ms_value] }'
+         *              'dependencies' => array()
+         *          )
+         *      ),
+         *      // More elements ...
+         * )
+         **/ 
+        $pre_output = array();
 
         foreach ($manifest as $section) {
 
@@ -716,28 +840,50 @@ return $theme;
                             if ($field_item['css'] == 'css_rules' && isset($field_item['css_rules'])) {
                                 // CSS code is actually on css_rules key (aka css = 'css_rules') BUT based on value parameter
                                 // @TODO Maybe allow array of CSS too as in regular css key?
-                                $output .= $this->adjust_css_placeholders(
-                                    $field_item['css_rules'][$stored[$field_item['name']]], 
-                                    "#metaslider-id-{$slideshow_id}", 
-                                    $stored[$field_item['name']]
-                                ) . "\n";
+
+                                // Store final CSS an dependencies if any linked to its name
+                                $pre_output[$field_item['name']] = array(
+                                    'value' => $field_item['css_rules'][$stored[$field_item['name']]],
+                                    'css' => $this->adjust_css_placeholders(
+                                        $field_item['css_rules'][$stored[$field_item['name']]], 
+                                        "#metaslider-id-{$slideshow_id}", 
+                                        $stored[$field_item['name']]
+                                    ) . "\n",
+                                    'dependencies' => $field_item['dependencies'] ?? false
+                                );
+
                             } elseif (is_array($field_item['css'])) {
+                                $css_merge = "";
+
                                 // CSS is an array of strings
                                 foreach ($field_item['css'] as $css_item) {
-
-                                    $output .= $this->adjust_css_placeholders(
+                                    
+                                    $css_merge .= $this->adjust_css_placeholders(
                                         $css_item,
                                         "#metaslider-id-{$slideshow_id}", 
                                         $stored[$field_item['name']]
                                     ) . "\n";
                                 }
+
+                                // Store final CSS an dependencies if any linked to its name
+                                $pre_output[$field_item['name']] = array(
+                                    'value' => $stored[$field_item['name']],
+                                    'css' => $css_merge,
+                                    'dependencies' => $field_item['dependencies'] ?? false
+                                );
+
                             } else {
                                 // CSS is a single string
-                                $output .= $this->adjust_css_placeholders(
-                                    $field_item['css'],
-                                    "#metaslider-id-{$slideshow_id}", 
-                                    $stored[$field_item['name']]
-                                ) . "\n";
+                                // Store final CSS an dependencies if any linked to its name
+                                $pre_output[$field_item['name']] = array(
+                                    'value' => $stored[$field_item['name']],
+                                    'css' => $this->adjust_css_placeholders(
+                                        $field_item['css'],
+                                        "#metaslider-id-{$slideshow_id}", 
+                                        $stored[$field_item['name']]
+                                    ) . "\n",
+                                    'dependencies' => $field_item['dependencies'] ?? false
+                                );
                             }
                         }
 
@@ -749,29 +895,69 @@ return $theme;
                         if ($row_item['css'] == 'css_rules' && isset($row_item['css_rules'])) {
                             // CSS code is actually on css_rules key (aka css = 'css_rules') BUT based on value parameter
                             // @TODO Maybe allow array of CSS too as in regular css key?
-                            $output .= $this->adjust_css_placeholders(
-                                $row_item['css_rules'][$stored[$row_item['name']]], 
-                                "#metaslider-id-{$slideshow_id}", 
-                                $stored[$row_item['name']]
-                            ) . "\n";
 
+                            // Is this field linked to another field through their css_field key? 
+                            // We're using only value_linked_to_field() on settings 
+                            // in row (not inside fields) with css_rules only. Perhaps support more in future?
+                            $linked_field = $this->value_linked_to_field( $manifest, $stored, $row_item['name'] );
+
+                            if ( $linked_field === false ) {
+                                // Store final CSS an dependencies if any linked to its name
+                                $pre_output[$row_item['name']] = array(
+                                    'value' => $stored[$row_item['name']],
+                                    'css' => $this->adjust_css_placeholders(
+                                        $row_item['css_rules'][$stored[$row_item['name']]], 
+                                        "#metaslider-id-{$slideshow_id}", 
+                                        $stored[$row_item['name']]
+                                    ) . "\n",
+                                    'dependencies' => $row_item['dependencies'] ?? false
+                                );
+                            } else {
+                                // Is a css_field linked; take css from linked css_field
+                                $pre_output[$row_item['name']] = array(
+                                    'value' => $stored[$row_item['name']],
+                                    'css' => $this->adjust_css_placeholders(
+                                        $row_item['css_rules'][$stored[$row_item['name']]], 
+                                        "#metaslider-id-{$slideshow_id}", 
+                                        $linked_field
+                                    ) . "\n",
+                                    'dependencies' => $row_item['dependencies'] ?? false
+                                );
+                            }
+                            
+                        } elseif ( $row_item['css'] == 'css_field' ) {
+                            // Is a css_field. We're skipping it...
                         } elseif (is_array($row_item['css'])) {
+                            $css_merge = "";
+
                             // CSS is an array of strings
                             foreach ($row_item['css'] as $css_item) {
 
-                                $output .= $this->adjust_css_placeholders(
+                                $css_merge .= $this->adjust_css_placeholders(
                                     $css_item, 
                                     "#metaslider-id-{$slideshow_id}", 
                                     $stored[$row_item['name']]
                                 ) . "\n";
                             }
+
+                            // Store final CSS an dependencies if any linked to its name
+                            $pre_output[$row_item['name']] = array(
+                                'value' => $stored[$row_item['name']],
+                                'css' => $css_merge,
+                                'dependencies' => $row_item['dependencies'] ?? false
+                            );
                         } else {
                             // CSS is a single string
-                            $output .= $this->adjust_css_placeholders(
-                                $row_item['css'], 
-                                "#metaslider-id-{$slideshow_id}", 
-                                $stored[$row_item['name']]
-                            ) . "\n";
+                            // Store final CSS an dependencies if any linked to its name
+                            $pre_output[$row_item['name']] = array(
+                                'value' => $stored[$row_item['name']],
+                                'css' => $this->adjust_css_placeholders(
+                                    $row_item['css'], 
+                                    "#metaslider-id-{$slideshow_id}", 
+                                    $stored[$row_item['name']]
+                                ) . "\n",
+                                'dependencies' => $row_item['dependencies'] ?? false
+                            );
                         }
                     }
 
@@ -779,7 +965,7 @@ return $theme;
             }
         }
 
-        return $output;
+        return $this->filter_customize_css( $pre_output );
     }
 
     /**
@@ -826,14 +1012,228 @@ return $theme;
     {
         $search = array(
             '[ms_id]',
-            '[ms_value]'
+            '[ms_value]',
+            '[ms_field_value]'
         );
 
         $replace = array(
             $id,
-            (string) $value
+            strip_tags( $value ),
+            strip_tags( $value )
         );
 
         return str_replace($search, $replace, $css);
+    }
+
+    /**
+     * Sanitize and validate color formats (hex, rgb, rgba)
+     * 
+     * @since 3.95
+     * 
+     * @param string $color 
+     * 
+     * @return string|bool Return color or false if invalid
+     */
+    public function sanitize_color( $color ) {
+        $hexRegex = '/^#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$/';
+        $rgbRegex = '/^rgb\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*\)$/';
+        $rgbaRegex = '/^rgba\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*(0|1|0?\.\d+)\s*\)$/';
+
+        return preg_match( $hexRegex, $color ) || preg_match( $rgbRegex, $color ) || preg_match( $rgbaRegex, $color ) ? $color : false;
+    }
+
+    /**
+     * Validate and sanitize range
+     * 
+     * @since 3.96
+     * 
+     * @param string $number 
+     * 
+     * @return string|bool Return number as string or false if invalid
+     */
+    public function sanitize_range( $number, $min, $max ) {
+        // Clean up the input to remove unwanted characters
+        $number = sanitize_text_field( $number );
+
+        // Match valid numbers: -123, 45, 1.8, -0.5, or 0
+        if ( preg_match( '/^-?\d+(\.\d)?$/', $number ) ) {
+            // If valid, cast to float or integer based on the input
+            $number = strpos( $number, '.') !== false ? (float) $number : (int) $number;
+            //$min = strpos( (String) $min, '.') !== false ? (float) $min : (int) $min;
+            //$max = strpos( (String) $max, '.') !== false ? (float) $max : (int) $max;
+
+            // Check $number is between $min and $max
+            return $number >= $min && $number <= $max ? (String) $number : false;
+        }
+
+        // Invalid $number
+        return false;
+    }
+
+    /**
+     * Validate and sanitize select
+     * @TODO - Check if $value is one of the available options in $item['options']?
+     * 
+     * @since 3.96
+     * 
+     * @param string $number 
+     * 
+     * @return string
+     */
+    public function sanitize_select( $value ) {
+        return sanitize_text_field( $value );
+    }
+
+    /**
+     * Get theme manifest (customize.php)
+     * 
+     * @since 3.96
+     * 
+     * @param string $theme Theme name in lowercase (slug). e.g. 'bitono'
+     * @param string $type  'free' or 'premium'
+     * 
+     * @return array
+     */
+    public function get_theme_manifest( $theme, $type )
+    {
+        $manifest = array();
+
+        // Is a premium, external or custom theme (v2), override $manifest path
+        if ($type !== 'free') {
+            // Check if is a custom v2 based on a free theme
+            $manifest = $this->add_base_customize_settings_single($theme);
+
+            /**
+             * Check if is a premium or custom theme (v2) based on a premium theme
+             * by looping extra themes/ folders added from external sources,
+             * including MetaSlider Pro.
+             * We may also support external themes (custom coded themes added by users).
+             * 
+             * e.g. 
+             * array(
+             *  '/path/to/wp-content/plugins/ml-slider-pro/themes/',
+             *  '/path/to/wp-content/themes/my-theme/ms-themes/'
+             * )
+             */
+            if (! count($manifest)) {
+                $extra_themes = apply_filters('metaslider_extra_themes', array());
+
+                foreach ($extra_themes as $location) {
+                    // Check if customize.php file that belongs to $theme as theme name (lowercase) exists
+                    if (file_exists($customize_file = trailingslashit($location) . trailingslashit($theme) . 'customize.php')) {
+                        // Get the data from customize.php files
+                        $manifest = $this->add_base_customize_settings_single(
+                            $theme, $customize_file
+                        );
+                        break;
+                    }
+                }
+            }
+        } else {
+            // Is a free theme - Get data from themes/$theme/customize.php
+            $manifest = $this->add_base_customize_settings_single($theme);
+        }
+
+        return $manifest;
+    }
+
+    /**
+     * Theme is free, premium... ?
+     * 
+     * @since 3.96
+     * 
+     * @param string $theme Theme name in lowercase (slug). e.g. 'bitono'
+     * 
+     * return string|bool
+     */
+    public function get_theme_type( $theme )
+    {
+        $data = $this->get_single_theme( $theme );
+
+        if ( isset( $data['type'] ) ) {
+            return $data['type'];
+        }
+        
+        return false;
+    }
+
+    /**
+     * Validate and sanitize manifest vs stored or submitted theme customize
+     * 
+     * @since 3.96
+     * 
+     * @param $array $manifest  The manifest customize data. e.g. $manifest['customize']
+     * @param $array $stored    The stored data. e.g. 'theme_customize' data at ml-slider_settings postmeta
+     * 
+     * return array
+     */
+    public function validate_theme_stored( $manifest, $stored )
+    {
+        // Valid and sanitized $stored
+        $stored_valid = array();
+
+        if ( ! is_array( $manifest ) ) {
+            return $stored_valid;
+        }
+
+        foreach ( $manifest as $section ) {
+            // Loop each section 'settings' key
+            foreach ( $section['settings'] as $row_item ) {
+                // If type is 'fields', let's look for the list of fields. 
+                // Usually for multiple color fields grouped together
+                if ( $row_item['type'] === 'fields' ) {
+                    foreach ( $row_item['fields'] as $field_item ) {
+                        // Check if setting from manifest exists in $stored and sanitized value is not false
+                        if ( isset( $stored[$field_item['name']] ) 
+                            && ( $value_ = $this->sanitize_theme_setting( $field_item, $stored[$field_item['name']] ) ) !== false
+                        ) {
+                            $stored_valid[$field_item['name']] = $value_;
+                        }
+                    } 
+                } else { 
+                    // Check if setting from manifest exists in $stored and sanitized value is not false
+                    if ( isset( $stored[$row_item['name']] ) 
+                        && ( $value_ = $this->sanitize_theme_setting( $row_item, $stored[$row_item['name']] ) ) !== false
+                    ) {
+                        $stored_valid[$row_item['name']] = $value_;
+                    }
+                }
+            }
+        }
+
+        return $stored_valid;
+    }
+
+    /**
+     * Sanitize individual custom theme setting
+     * 
+     * @since 3.96
+     * 
+     * @param array $item   e.g. array(
+     *                          'label' => esc_html__('Default', 'ml-slider'),
+     *                          'name' => 'arrows_color',
+     *                          'type' => 'color',
+     *                          'default' => '#333333',
+     *                          'css' => '[ms_id] .flexslider .flex-direction-nav li a { background: [ms_value] }'
+     *                      )
+     * @param string|float $value The db stored or submitted value 
+     * 
+     * @return bool|string If false, stored value is invalid
+     */
+    public function sanitize_theme_setting( $item, $value )
+    {
+        switch ( $item['type'] ) {
+            case 'color':
+                return $this->sanitize_color( $value );
+            break;
+            case 'select':
+                return $this->sanitize_select( $value );
+            break;
+            case 'range':
+                return $this->sanitize_range( $value, $item['min'], $item['max'] );
+            break;
+        }
+
+        return false;
     }
 }

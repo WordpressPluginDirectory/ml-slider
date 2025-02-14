@@ -446,31 +446,63 @@ window.jQuery(function ($) {
         var infiniteLoop = $('.ms-settings-table input[name="settings[infiniteLoop]"]');
         var autoPlay = $('.ms-settings-table input[name="settings[autoPlay]"]');
         var pausePlay = $('.ms-settings-table input[name="settings[pausePlay]"]');
+        var progressBar = $('.ms-settings-table input[name="settings[progressBar]"]');
 
         if (carouselMode.is(':checked') && infiniteLoop.is(':checked')) {
             // Hide "Auto play" and "Play / pause" if "Carousel mode" AND "Loop carousel continuously" are enabled
             autoPlay.parents('tr').hide();
             pausePlay.parents('tr').hide();
         } else {
-            // Show "Auto play" if "Carousel mode" OR "Loop carousel continuously" are disabled
+            // Show "Auto play" and "Play / pause" if "Carousel mode" OR "Loop carousel continuously" are disabled
             autoPlay.parents('tr').show();
-
-            if (autoPlay.is(':checked')) {
-                // Show "Play / pause" if "Auto play" is enabled
-                pausePlay.parents('tr').show();
-            } else {
-                pausePlay.parents('tr').hide();
-            }
+            pausePlay.parents('tr').show();
         }
+
+        var showProgressBar = autoPlay.is(':checked') && (!carouselMode.is(':checked') || !infiniteLoop.is(':checked')) ? true : false;
+
+        progressBar.parents('tr').toggle(showProgressBar);
+        $('tr.customizer-slideshow').eq(3).toggle(showProgressBar);
     }
     showHideAutoPlay();
+
+    /**
+     * Show/hide Pause/Play Button options
+     * 
+     * @since 3.96
+     * 
+     */
+    $('.metaslider').on('change', '.ms-settings-table input[name="settings[pausePlay]"], .ms-settings-table input[name="settings[autoPlay]"], .ms-settings-table input[name="settings[showPlayText]"], .ms-settings-table input[name="settings[infiniteLoop]"]', function () {
+        showHidePlayButtonOptions();
+    });
+
+    var showHidePlayButtonOptions = function () {
+        var $table = $('.ms-settings-table');
+        var $pausePlay = $table.find('input[name="settings[pausePlay]"]');
+        var $showPlayText = $table.find('input[name="settings[showPlayText]"]');
+        var $infiniteLoop = $table.find('input[name="settings[infiniteLoop]"]');
+        var $playTextRow = $table.find('input[name="settings[playText]"]').closest('tr');
+        var $pauseTextRow = $table.find('input[name="settings[pauseText]"]').closest('tr');
+        var $pausePlayRow = $pausePlay.closest('tr');
+        var $showPlayTextRow = $showPlayText.closest('tr');
+    
+        if ($infiniteLoop.is(':checked')) {
+            $pausePlayRow.add($showPlayTextRow).add($playTextRow).add($pauseTextRow).hide();
+        } else {
+            $pausePlayRow.show();
+            $showPlayTextRow.toggle($pausePlay.is(':checked'));
+            var showText = $pausePlay.is(':checked') && $showPlayText.is(':checked');
+            $playTextRow.add($pauseTextRow).toggle(showText);
+        }
+    };
+    
+    showHidePlayButtonOptions();
 
     /**
      * When Pause/Play button changes
      * 
      * @since 3.92
      */
-    $('.metaslider').on('change', '.ms-settings-table input[name="settings[pausePlay]"], .ms-settings-table input[name="settings[autoPlay]"]', function () {
+    $('.metaslider').on('change', '.ms-settings-table input[name="settings[pausePlay]"]', function () {
         showHideCustomPlayColor();
     });
 
@@ -480,18 +512,13 @@ window.jQuery(function ($) {
      * @since 3.92
      */
     var showHideCustomPlayColor = function () {
-        var pausePlay = $('.ms-settings-table input[name="settings[pausePlay]"]');
-        var autoPlay = $('.ms-settings-table input[name="settings[autoPlay]"]');
-        if (autoPlay.is(':checked')) {
-            if (pausePlay.is(':checked')) {
-                $('tr.customizer-play_pause').show();
-            } else {
-                $('tr.customizer-play_pause').hide();
-            }
-        } else {
-            $('tr.customizer-play_pause').hide(); 
-        }   
-    }
+        var $table = $('.ms-settings-table');
+        var pausePlay = $table.find('input[name="settings[pausePlay]"]');
+        var customizerRow = $('tr.customizer-play_pause');
+    
+        var isChecked = pausePlay.is(':checked');
+        customizerRow.toggle(isChecked);
+    };
 
     setTimeout(function () {
         showHideCustomPlayColor();
@@ -616,15 +643,28 @@ window.jQuery(function ($) {
         showHideCustomProgressBarColor();
     });
 
+    // Make sure to be in sync when selecting another theme
+    window.metaslider.app.EventManager.$on("metaslider/theme-updated", function () {
+        setTimeout(() => {
+            showHideCustomProgressBarColor();
+        }, 1000);
+    });
+
     /**
      * Show/hide custom color settings for progress bar
      * 
      * @since 3.92
      */
     var showHideCustomProgressBarColor = function () {
+        var carouselMode = $('.ms-settings-table input[name="settings[carouselMode]"]');
         var progressBar = $('.ms-settings-table input[name="settings[progressBar]"]');
         var infiniteLoop = $('.ms-settings-table input[name="settings[infiniteLoop]"]');
-        $('tr.customizer-progressBar').toggle(!infiniteLoop.is(':checked') && progressBar.is(':checked'));   
+        var autoPlay = $('.ms-settings-table input[name="settings[autoPlay]"]');
+
+        var showProgressBar = autoPlay.is(':checked') && (!carouselMode.is(':checked') || !infiniteLoop.is(':checked')) ? true : false;
+
+        progressBar.parents('tr').toggle(showProgressBar);
+        $('tr.customizer-slideshow').eq(3).toggle(showProgressBar);
     }
     setTimeout(function () {
         showHideCustomProgressBarColor();

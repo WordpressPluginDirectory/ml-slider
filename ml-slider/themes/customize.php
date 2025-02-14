@@ -65,10 +65,10 @@ return array(
                 'name' => 'play_button_border_radius',
                 'type' => 'range',
                 'default' => 50,
-                'metric' => '%',
+                'metric' => 'px',
                 'min' => 0,
                 'max' => 50,
-                'css' => '[ms_id] .flexslider .flex-pauseplay a { border-radius: [ms_value]% }'
+                'css' => '[ms_id] .flexslider .flex-pauseplay a { border-radius: [ms_value]px }'
             ),
             array(
                 'label' => esc_html__('Opacity (default)', 'ml-slider'),

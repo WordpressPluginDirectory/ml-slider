@@ -100,13 +100,13 @@ return array(
         )
     ),
     array(
-        'label' => esc_html__('Colors', 'ml-slider'),
+        'label' => esc_html__('Caption', 'ml-slider'),
         'name' => 'caption',
         'type' => 'section',
         'default' => 'on',
         'settings' => array(
             array(
-                'label' => esc_html__('Caption', 'ml-slider'),
+                'label' => esc_html__('Colors', 'ml-slider'),
                 'type' => 'fields',
                 'fields' => array(
                     array(
@@ -124,6 +124,40 @@ return array(
                         'css' => '[ms_id] .flexslider .caption-wrap .caption { color: [ms_value] }'
                     )
                 )
+            ),
+            array(
+                'label' => esc_html__('Position', 'ml-slider'),
+                'name' => 'caption_vertical_position',
+                'type' => 'select',
+                'default' => 'bottom',
+                'options' => array(
+                    array(
+                        'label' => esc_html__('Top', 'ml-slider'),
+                        'value' => 'top'
+                    ),
+                    array(
+                        'label' => esc_html__('Bottom', 'ml-slider'),
+                        'value' => 'bottom'
+                    )
+                ),
+                'css' => 'css_rules', // refer to css_rules where 'value' => '.lorem {}' is based on 'options' value
+                'css_rules' => array(
+                    'top' => '[ms_id] .flexslider .caption-wrap { bottom: unset; top: [ms_field_value]%; transform: translateY(-[ms_field_value]%) }', // Take [ms_field_value] from caption_vertical_position_offset
+                    'bottom' => '[ms_id] .flexslider .caption-wrap { top: unset; bottom: [ms_field_value]%; transform: translateY([ms_field_value]%) }', // Take [ms_field_value] from caption_vertical_position_offset
+                    
+                )
+            ),
+            array(
+                'label' => esc_html__('Position Offset', 'ml-slider'),
+                'info' => esc_html__('Based on "Position".', 'ml-slider'),
+                'name' => 'caption_vertical_position_offset',
+                'type' => 'range',
+                'default' => 0,
+                'metric' => '%',
+                'min' => 0,
+                'max' => 100,
+                'css' => 'css_field', // Use the CSS from another field defined at 'css_field'
+                'css_field' => 'caption_vertical_position'
             ),
             array(
                 'label' => esc_html__('Font Size', 'ml-slider'),

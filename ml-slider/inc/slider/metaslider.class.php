@@ -136,6 +136,7 @@ class MetaSlider
             'firstSlideFadeIn' => false,
             'easing' => 'linear',
             'autoPlay' => true,
+            'loop' => 'continuously',
             'thumb_width' => 150,
             'thumb_height' => 100,
             'responsive_thumbs' => true,
@@ -153,7 +154,10 @@ class MetaSlider
             'ariaLive' => false,
             'tabIndex' => false,
             'pausePlay' => false,
-            'ariaCurrent' => false
+            'ariaCurrent' => false,
+            'showPlayText' => false,
+            'playText' => '',
+            'pauseText' => ''
         );
         return apply_filters('metaslider_default_parameters', $params);
     }
@@ -236,8 +240,22 @@ class MetaSlider
         }
 
         // Shuffle slides as needed
-        if (!is_admin() && filter_var($this->get_setting('random'), FILTER_VALIDATE_BOOLEAN)) {
-            shuffle($slides);
+        if (!is_admin()) {
+            $sort_setting = $this->get_setting('random');
+            if ($sort_setting === 'true') {
+                shuffle($slides); 
+            } elseif ($sort_setting === 'newest' || $sort_setting === 'oldest') {
+                usort($slides, function ($a, $b) use ($sort_setting) {
+                    preg_match('/data-date="([^"]+)"/', $a, $matchesA);
+                    preg_match('/data-date="([^"]+)"/', $b, $matchesB);
+        
+                    $dateA = isset($matchesA[1]) ? strtotime($matchesA[1]) : 0;
+                    $dateB = isset($matchesB[1]) ? strtotime($matchesB[1]) : 0;
+        
+                    return ($sort_setting === 'newest') ? ($dateB - $dateA) : ($dateA - $dateB);
+                });
+            }
+            //else - drag-and-drop (false) (default)
         }
 
         // Last chance to add/remove/manipulate slide output (Added 3.10.0)
@@ -278,7 +296,7 @@ class MetaSlider
         $slideshow = new MetaSlider_Slideshows;
         $slideshowDetails = $slideshow->get_single($this->id);
         if ($slideshowDetails[0]['title']) {
-            $slideshow_title = $slideshowDetails[0]['title'];
+            $slideshow_title = htmlspecialchars( $slideshowDetails[0]['title'], ENT_QUOTES, 'UTF-8' );
         } else {
             $slideshow_title = 'Slideshow';
         }

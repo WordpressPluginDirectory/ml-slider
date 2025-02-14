@@ -66,6 +66,39 @@ return array(
                 )
             ),
             array(
+                'label' => esc_html__('Position', 'ml-slider'),
+                'name' => 'arrows_vertical_position',
+                'type' => 'select',
+                'default' => 'top',
+                'options' => array(
+                    array(
+                        'label' => esc_html__('Top', 'ml-slider'),
+                        'value' => 'top'
+                    ),
+                    array(
+                        'label' => esc_html__('Bottom', 'ml-slider'),
+                        'value' => 'bottom'
+                    )
+                ),
+                'css' => 'css_rules',
+                'css_rules' => array(
+                    'top' => '[ms_id] .flexslider .flex-direction-nav li { bottom: unset; top: [ms_field_value]%; transform: translateY(-[ms_field_value]%) }', // Take [ms_field_value] from arrows_vertical_position_offset
+                    'bottom' => '[ms_id] .flexslider .flex-direction-nav li { top: unset; bottom: [ms_field_value]%; transform: translateY([ms_field_value]%) }' // Take [ms_field_value] from arrows_vertical_position_offset
+                )
+            ),
+            array(
+                'label' => esc_html__('Position Offset', 'ml-slider'),
+                'info' => esc_html__('Based on "Position".', 'ml-slider'),
+                'name' => 'arrows_vertical_position_offset',
+                'type' => 'range',
+                'default' => 50,
+                'metric' => '%',
+                'min' => 0,
+                'max' => 100,
+                'css' => 'css_field', // Use the CSS from another field defined at 'css_field'
+                'css_field' => 'arrows_vertical_position'
+            ),
+            array(
                 'label' => esc_html__('Width', 'ml-slider'),
                 'name' => 'arrows_width',
                 'type' => 'range',
@@ -151,6 +184,39 @@ return array(
                 )
             ),
             array(
+                'label' => esc_html__('Position', 'ml-slider'),
+                'name' => 'navigation_vertical_position',
+                'type' => 'select',
+                'default' => 'bottom',
+                'options' => array(
+                    array(
+                        'label' => esc_html__('Top', 'ml-slider'),
+                        'value' => 'top'
+                    ),
+                    array(
+                        'label' => esc_html__('Bottom', 'ml-slider'),
+                        'value' => 'bottom'
+                    )
+                ),
+                'css' => 'css_rules',
+                'css_rules' => array(
+                    'top' => '[ms_id] .flexslider .flex-control-nav { bottom: unset; top: [ms_field_value]px }', // Take [ms_field_value] from navigation_vertical_position_offset
+                    'bottom' => '[ms_id] .flexslider .flex-control-nav { top: unset; bottom: [ms_field_value]px }' // Take [ms_field_value] from navigation_vertical_position_offset
+                )
+            ),
+            array(
+                'label' => esc_html__('Position Offset', 'ml-slider'),
+                'info' => esc_html__('Based on "Position".', 'ml-slider'),
+                'name' => 'navigation_vertical_position_offset',
+                'type' => 'range',
+                'default' => -45,
+                'metric' => 'px',
+                'min' => -100,
+                'max' => 300,
+                'css' => 'css_field', // Use the CSS from another field defined at 'css_field'
+                'css_field' => 'navigation_vertical_position'
+            ),
+            array(
                 'label' => esc_html__('Dots Border Radius', 'ml-slider'),
                 'name' => 'navigation_border_radius',
                 'type' => 'range',
@@ -224,6 +290,40 @@ return array(
                         'css' => '[ms_id] .flexslider .caption-wrap a { color: [ms_value] }'
                     )
                 )
+            ),
+            array(
+                'label' => esc_html__('Position', 'ml-slider'),
+                'name' => 'caption_vertical_position',
+                'type' => 'select',
+                'default' => 'bottom',
+                'options' => array(
+                    array(
+                        'label' => esc_html__('Top', 'ml-slider'),
+                        'value' => 'top'
+                    ),
+                    array(
+                        'label' => esc_html__('Bottom', 'ml-slider'),
+                        'value' => 'bottom'
+                    )
+                ),
+                'css' => 'css_rules', // refer to css_rules where 'value' => '.lorem {}' is based on 'options' value
+                'css_rules' => array(
+                    'top' => '[ms_id] .flexslider .caption-wrap { bottom: unset; top: [ms_field_value]%; transform: translateY(-[ms_field_value]%) }', // Take [ms_field_value] from caption_vertical_position_offset
+                    'bottom' => '[ms_id] .flexslider .caption-wrap { top: unset; bottom: [ms_field_value]%; transform: translateY([ms_field_value]%) }', // Take [ms_field_value] from caption_vertical_position_offset
+                    
+                )
+            ),
+            array(
+                'label' => esc_html__('Position Offset', 'ml-slider'),
+                'info' => esc_html__('Based on "Position".', 'ml-slider'),
+                'name' => 'caption_vertical_position_offset',
+                'type' => 'range',
+                'default' => 0,
+                'metric' => '%',
+                'min' => 0,
+                'max' => 100,
+                'css' => 'css_field', // Use the CSS from another field defined at 'css_field'
+                'css_field' => 'caption_vertical_position'
             ),
             array(
                 'label' => esc_html__('Font Size', 'ml-slider'),

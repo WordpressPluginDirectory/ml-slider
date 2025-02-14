@@ -2,7 +2,7 @@
 Contributors: andergmartins, htmgarcia, publishpress, stevejburge, rochdesigns
 Tags: slider, video slider, image slider, carousel slider, gallery
 Requires at least: 5.0
-Stable tag: 3.94.0
+Stable tag: 3.96.0
 Requires PHP: 7.0
 Tested up to: 6.7
 License: GPLv2 or later
@@ -319,6 +319,36 @@ Yes, you can build Elementor slides and Beaver Builder slideshows. You can creat
 
 The format is based on [Keep a Changelog recommendations](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
+
+= [3.96.0] - 13 Feb 2025 =
+
+* ADDED: Allow users to sort slides in a slideshow by different criteria, #995;
+* ADDED: Allow users to customize the Play / Pause button with text, #1420;
+* ADDED: Hide Progress Bar Option when Autoplay Is Disabled #1408;
+* ADDED: Add labels to two vertical sliders, #1459;
+* ADDED: Active color on most themes not filled in, #1426;
+* ADDED: Custom HTML Slide Type Ad, #1470;
+* FIXED: Execution delay when slideshow is inside a tab content, #1355;
+* FIXED: Sanitize slideshow data on save, #1434;
+* FIXED: Undefined array key "crop_position", #1387;
+* FIXED: Warning: Undefined array key "start" #1463;
+* FIXED: Precognition navigation sync issue, #1461;
+* FIXED: loop is missing from default settings, #1285;
+* CHANGED: Order of tabs free vs pro, #1222;
+* CHANGED: Allow users to choose Auto Play and Play button options, #1389;
+* CHANGED: Update Precognition instruction, #1412;
+* CHANGED: Updated import text, #1436;
+* CHANGED: Update import subheader style, #1437;
+* CHANGED: Update text for "Transition Effect", #1443;
+* CHANGED: "Endlessly" not "Continuously", #1448;
+* REMOVED: Remove the old button for Classic Editor / Elementor, #1290;
+
+= [3.95.0] - 27 Jan, 2025 =
+
+* FIXED: Interrupt slideshow import if data is invalid, #1421;
+* FIXED: Sanitize CSS output from theme customize, #1433;
+* FIXED: Sanitize theme customize settings on slideshow save, #1439;
+* FIXED: Can't have more than one slideshow based on the same theme on the same page, #1427;
 
 = [3.94.0] - 18 Dec, 2024 =
 

@@ -454,7 +454,7 @@ class MetaImageSlide extends MetaSlide
         $row  = "<tr id='slide-" . esc_attr($this->slide->ID) . "' class='slide image flex responsive nivo coin' data-attachment-id='" . esc_attr($attachment_id) . "'>
                     <td class='col-1'>
                         <div class='metaslider-ui-controls ui-sortable-handle rtl:pl-0 rtl:pr-3'>
-                        <h4 class='slide-details'>" . esc_html($slide_label) . " | ID: ". esc_html($this->slide->ID) ."</h4>";
+                        <h4 class='slide-details'>" . esc_html($slide_label) . " | ID: ". esc_html($this->slide->ID) . "</h4>";
         if (metaslider_this_is_trash($this->slide)) {
             $row .= '<div class="row-actions trash-btns">';
             $row .= "<span class='untrash'>{$this->get_undelete_button_html()}</span>";
@@ -848,7 +848,8 @@ class MetaImageSlide extends MetaSlide
                 'style' => "display: none; width: 100%;",
                 'class' => "slide-{$this->slide->ID} ms-image {$mobile_class}",
                 'aria-roledescription' => "slide",
-                'aria-label' =>"slide-{$this->slide->ID}"
+                'aria-label' =>"slide-{$this->slide->ID}",
+                'data-date' => $this->slide->post_date
             ), $slide, $this->slider->ID);
 
         $li = "<li";
@@ -1026,7 +1027,11 @@ class MetaImageSlide extends MetaSlide
 
         $this->add_or_update_or_delete_meta($this->slide->ID, 'url', $fields['url']);
         $this->add_or_update_or_delete_meta($this->slide->ID, 'title', $fields['title']);
-        $this->add_or_update_or_delete_meta($this->slide->ID, 'crop_position', $fields['crop_position']);
+
+        if ( isset( $fields['crop_position'] ) ) {
+            $this->add_or_update_or_delete_meta($this->slide->ID, 'crop_position', $fields['crop_position']);
+        }
+        
         $this->add_or_update_or_delete_meta($this->slide->ID, 'caption_source', $fields['caption_source']);
 
         $this->set_field_inherited('title', isset($fields['inherit_image_title']) && $fields['inherit_image_title'] === 'on');

@@ -42,6 +42,8 @@
 		.caption-wrap {
 			bottom: unset;
 			top: 0;
+			transform: translateY(0);
+			z-index: 2;
 			opacity: 1;
 
 			.caption {
@@ -74,7 +76,7 @@
 				background-position: center;
 				width: 45px;
 				height: 45px;
-				top: 54px;
+				top: calc(34px + 20px); // 20px is the margin-bottom / 2 from .flexslider
 				box-shadow: 1px 1px 1px rgba(0,0,0,0.3) !important;
 				background-image: none;
 			

@@ -849,7 +849,7 @@ class MetaSlider_Api
         if ('title' === $data['setting_key']) {
             wp_update_post(array(
                 'ID' => absint($data['slideshow_id']),
-                'post_title'  => (string) $data['setting_value']
+                'post_title'  => sanitize_text_field( $data['setting_value'] )
             ));
             return wp_send_json_success('OK', 200);
         }

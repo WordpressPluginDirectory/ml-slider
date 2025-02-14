@@ -97,7 +97,8 @@
 					margin-top: -50px;
 					max-width: 50px;
 					overflow: hidden;
-					top: 50%;
+					top: calc(50% + 50px);
+					transform: translateY(-50%);
 					-webkit-transition: all 0.2s ease-in-out;
 					transition: all 0.2s ease-in-out;
 					width: 11%;
@@ -171,6 +172,7 @@
 			.caption-wrap {
 				background: rgba(0, 0, 0, 0.8);
 				bottom: 0;
+				transform: translateY(50%);
 				color: inherit;
 				margin: 0;
 				padding: 0;

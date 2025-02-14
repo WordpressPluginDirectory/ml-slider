@@ -158,7 +158,8 @@
 	  margin-top: -30px;
 	  max-width: 60px;
 	  overflow: hidden;
-	  top: 50%;
+	  top: calc(50% + 30px); // 30px is the margin-bottom / 2 from .flexslider
+	  transform: translateY(-50%);
 	  -webkit-transition: all .2s ease-in-out;
 	  transition: all .2s ease-in-out;
 	  width: 60px;

@@ -5,7 +5,7 @@
  * Plugin Name: MetaSlider
  * Plugin URI:  https://www.metaslider.com
  * Description: MetaSlider gives you the power to create a beautiful slideshow, carousel, or gallery on your WordPress site.
- * Version:     3.94.0
+ * Version:     3.96.0
  * Author:      MetaSlider
  * Author URI:  https://www.metaslider.com
  * License:     GPL-2.0+
@@ -42,7 +42,7 @@ if (! class_exists('MetaSliderPlugin')) {
          *
          * @var string
          */
-        public $version = '3.94.0';
+        public $version = '3.96.0';
 
         /**
          * Pro installed version number
@@ -328,6 +328,7 @@ if (! class_exists('MetaSliderPlugin')) {
             add_action('media_upload_external_url', array($this, 'upgrade_to_pro_tab_external_url'));
             add_action('media_upload_local_video', array($this, 'upgrade_to_pro_tab_local_video'));
             add_action('media_upload_external_video', array($this, 'upgrade_to_pro_tab_external_video'));
+            add_action('media_upload_custom_html', array($this, 'upgrade_to_pro_tab_custom_html'));
             add_action('media_upload_tiktok', array($this, 'upgrade_to_pro_tab_tiktok'));
 
             // TODO: Refactor to Slide class object
@@ -374,7 +375,6 @@ if (! class_exists('MetaSliderPlugin')) {
         {
             add_filter('media_upload_tabs', array($this, 'custom_media_upload_tab_name'), 998);
             add_filter('media_view_strings', array($this, 'custom_media_uploader_tabs'), 5);
-            add_action('media_buttons', array($this, 'insert_metaslider_button'));
             add_filter("plugin_row_meta", array($this, 'get_extra_meta_links'), 10, 4);
             add_action('admin_head', array($this, 'add_star_styles'));
 
@@ -712,7 +712,7 @@ if (! class_exists('MetaSliderPlugin')) {
          */
         public function custom_media_upload_tab_name($tabs)
         {
-            $metaslider_tabs = array('post_feed', 'layer', 'youtube', 'vimeo', 'external_url', 'local_video', 'external_video', 'tiktok');
+            $metaslider_tabs = array('post_feed', 'layer', 'youtube', 'vimeo', 'external_url', 'local_video', 'external_video', 'custom_html', 'tiktok');
 
             // restrict our tab changes to the MetaSlider plugin page
             if ((isset($_GET['page']) && $_GET['page'] == 'metaslider') || (isset($_GET['tab']) && in_array(
@@ -723,14 +723,15 @@ if (! class_exists('MetaSliderPlugin')) {
 
                 if (function_exists('is_plugin_active') && ! is_plugin_active('ml-slider-pro/ml-slider-pro.php')) {
                     $newtabs = array(
-                        'post_feed' => __("Post Feed", "ml-slider"),
                         'vimeo' => __("Vimeo", "ml-slider"),
                         'youtube' => __("YouTube", "ml-slider"),
-                        'layer' => __("Layer Slide", "ml-slider"),
-                        'external_url' => __("External URL", "ml-slider"),
-                        'local_video' => __("Local Video", "ml-slider"),
+                        'tiktok' => __("TikTok", "ml-slider"),
+                        'external_url' => __("External Image", "ml-slider"),
                         'external_video' => __("External Video", "ml-slider"),
-                        'tiktok' => __("Tiktok", "ml-slider"),
+                        'custom_html' => __("Custom HTML", "ml-slider"),
+                        'post_feed' => __("Post Feed", "ml-slider"),
+                        'layer' => __("Layer Slide", "ml-slider"),
+                        'local_video' => __("Local Video", "ml-slider"),
                     );
                 }
 
@@ -1908,32 +1909,6 @@ if (! class_exists('MetaSliderPlugin')) {
         }
 
         /**
-         * Append the 'Add Slideshow' button to selected admin pages (classic editor)
-         * Uses the media_buttons filter
-         */
-        public function insert_metaslider_button()
-        {
-            $capability = apply_filters('metaslider_capability', self::DEFAULT_CAPABILITY_EDIT_SLIDES);
-            if (! current_user_can($capability)) {
-                return;
-            }
-
-            global $pagenow;
-            if (! in_array($pagenow, array('post.php', 'page.php', 'post-new.php', 'post-edit.php'))) {
-                return;
-            }
-
-            printf(
-                '
-                <a href="#TB_inline?&width=783&inlineId=choose-meta-slider" class="thickbox button">
-                    <span class="wp-media-buttons-icon"
-                        style="background:url(%simages/metaslider_logo.png);background-repeat:no-repeat;background-position:left -2px;background-size: 20px;position: relative;margin-left:0;"></span>%s</a>',
-                esc_url(METASLIDER_ADMIN_URL),
-                esc_html__("Add slideshow", "ml-slider")
-            );
-        }
-
-        /**
          * Append the 'Choose MetaSlider' thickbox content to the bottom of selected admin pages
          */
         public function admin_footer()
@@ -2274,6 +2249,45 @@ if (! class_exists('MetaSliderPlugin')) {
                     ) . "</p>",
                     "<p>" . esc_html__(
                         'External Video Slides will display your MP4, WebM, and MOV videos. Features include text captions, cover images, auto play, mute, lazy load, the ability to hide controls, and much more.',
+                        'ml-slider'
+                    ) . "</p>",
+                    '<a class="probutton button button-primary button-hero" href="' . esc_url(
+                        $link
+                    ) . '" target="_blank">' . esc_html__(
+                        "Find out more about MetaSlider Pro",
+                        "ml-slider"
+                    ) . '<span class="dashicons dashicons-external"></span></a>',
+                    "</div>"
+                )
+            );
+        }
+
+        /**
+         * Return the MetaSlider pro upgrade HTML
+         */
+        public function upgrade_to_pro_tab_custom_html()
+        {
+            if (function_exists('is_plugin_active') && ! is_plugin_active('ml-slider-pro/ml-slider-pro.php')) {
+                return wp_iframe(array($this, 'upgrade_to_pro_iframe_custom_html'));
+            }
+        }
+
+        /**
+         * Media Manager iframe HTML - HTML
+         */
+        public function upgrade_to_pro_iframe_custom_html()
+        {
+            $link = apply_filters('metaslider_hoplink', 'https://www.metaslider.com/upgrade/');
+            $link .= '?utm_source=lite&amp;utm_medium=more-slide-types-custom-html&amp;utm_campaign=pro';
+            $this->upgrade_to_pro_iframe(
+                array(
+                    '<div class="left"><img src="' . esc_url(METASLIDER_ADMIN_URL . 'images/upgrade/custom-html.png') . '" alt="" /></div>',
+                    "<div ><h2>" . esc_html__(
+                        'Create slideshows with custom HTML',
+                        'ml-slider'
+                    ) . "</h2>",
+                    "<p>" . esc_html__(
+                        'With Custom HTML slides, you can design slides using images, HTML and CSS. This gives you complete control over the layout and styling.',
                         'ml-slider'
                     ) . "</p>",
                     '<a class="probutton button button-primary button-hero" href="' . esc_url(

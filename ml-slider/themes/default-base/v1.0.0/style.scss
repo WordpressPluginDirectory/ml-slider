@@ -8,6 +8,8 @@
 			background: #333;
 			background-image: none;
 			border-radius: 50%;
+			transform: translateY(-50%);
+			top: calc(50% + 20px);  // 20px is the margin-bottom / 2 from .flexslider
 	
 			&:after {
 				background-color: #fff;

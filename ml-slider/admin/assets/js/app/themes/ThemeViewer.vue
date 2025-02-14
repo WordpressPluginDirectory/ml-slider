@@ -581,6 +581,7 @@ export default {
 					this.updateColorPicker();
 
 					setTimeout(() => {
+						// @TODO - Maybe move to admin.js under window.metaslider.app.EventManager.$on("metaslider/theme-updated", function () {});
 						this.showHideColorPicker();  //delay to load all picker first
 					}, 1000);
 
@@ -604,6 +605,12 @@ export default {
 						input.attr('value',ui.color.toCSS('rgba'));
 			
 						btn.trigger('change');
+					}
+				}).promise().done(function() {
+					var text = typeof metaslider !== 'undefined' ? metaslider : null;
+					if (text) {
+						$(this).parents('.wp-picker-container').find('.iris-strip').eq(0).prepend(`<span class="ms-color-tooltip">${text.tone}</span>`);
+						$(this).parents('.wp-picker-container').find('.iris-strip').eq(1).prepend(`<span class="ms-color-tooltip">${text.opacity}</span>`);
 					}
 				});
 			});
@@ -670,17 +677,11 @@ export default {
 			this.$nextTick( function () {
 				var $ = window.jQuery;
 				$('.static-theme-customize tr').show();
-
-				if ($('.ms-settings-table input[name="settings[autoPlay]"]').is(':checked')) {
-					if ($('.ms-settings-table input[name="settings[pausePlay]"]').is(':checked')) {
-						$('tr.customizer-pausePlay').show();
-					} else {
-						$('tr.customizer-pausePlay').hide();
-					}
+				if ($('.ms-settings-table input[name="settings[pausePlay]"]').is(':checked')) {
+					$('tr.customizer-pausePlay').show();
 				} else {
-					$('tr.customizer-pausePlay').hide(); 
+					$('tr.customizer-pausePlay').hide();
 				}
-
 				if ($('.ms-settings-table select[name="settings[links]"]').val() === 'false') {
 					$('tr.customizer-links').hide();
 				} else {

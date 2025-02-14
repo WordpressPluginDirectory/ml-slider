@@ -38,7 +38,7 @@ class MetaSlider_Theme_Simply_Dark extends MetaSlider_Theme_Base
     {
         wp_enqueue_style( 
             "metaslider_{$this->id}_theme_styles", 
-            METASLIDER_THEMES_URL. "{$this->id}/v{$this->version}/style.min.css", 
+            METASLIDER_THEMES_URL. "{$this->id}/v{$this->version}/style.css", 
             array('metaslider-public'), 
             $this->version 
         );

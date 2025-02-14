@@ -78,18 +78,40 @@ return array(
                     '[ms_id] .flexslider .flex-direction-nav li.flex-nav-next { right: [ms_value]px }'
                 )
             ),
-            /*array(
-                'label' => esc_html__('Vertical Position', 'ml-slider'),
-                'info' => esc_html__('Taking top as reference point. Set 50 to center.', 'ml-slider'),
+            array(
+                'label' => esc_html__('Position', 'ml-slider'),
                 'name' => 'arrows_vertical_position',
+                'type' => 'select',
+                'default' => 'top',
+                'options' => array(
+                    array(
+                        'label' => esc_html__('Top', 'ml-slider'),
+                        'value' => 'top'
+                    ),
+                    array(
+                        'label' => esc_html__('Bottom', 'ml-slider'),
+                        'value' => 'bottom'
+                    )
+                ),
+                'css' => 'css_rules',
+                'css_rules' => array(
+                    'top' => '[ms_id] .flexslider .flex-direction-nav li { bottom: unset; top: [ms_field_value]%; transform: translateY(-[ms_field_value]%); }', // Take [ms_field_value] from arrows_vertical_position_offset
+                    'bottom' => '[ms_id] .flexslider .flex-direction-nav li { top: unset; bottom: [ms_field_value]%; transform: translateY([ms_field_value]%); }' // Take [ms_field_value] from arrows_vertical_position_offset
+                )
+            ),
+            array(
+                'label' => esc_html__('Position Offset', 'ml-slider'),
+                'info' => esc_html__('Based on "Position".', 'ml-slider'),
+                'name' => 'arrows_vertical_position_offset',
                 'type' => 'range',
                 'default' => 50,
                 'metric' => '%',
                 'min' => 0,
                 'max' => 100,
-                'css' => '[ms_id] .flexslider .flex-direction-nav li { top: [ms_value]% }'
+                'css' => 'css_field', // Use the CSS from another field defined at 'css_field'
+                'css_field' => 'arrows_vertical_position'
             ),
-            array(
+            /*array(
                 'label' => esc_html__('Width', 'ml-slider'),
                 'name' => 'arrows_width',
                 'type' => 'range',
@@ -194,18 +216,40 @@ return array(
                     )
                 )
             ),
-            /*array(
-                'label' => esc_html__('Vertical Position', 'ml-slider'),
-                'info' => esc_html__('Taking bottom as reference point.', 'ml-slider'),
+            array(
+                'label' => esc_html__('Position', 'ml-slider'),
                 'name' => 'navigation_vertical_position',
+                'type' => 'select',
+                'default' => 'bottom',
+                'options' => array(
+                    array(
+                        'label' => esc_html__('Top', 'ml-slider'),
+                        'value' => 'top'
+                    ),
+                    array(
+                        'label' => esc_html__('Bottom', 'ml-slider'),
+                        'value' => 'bottom'
+                    )
+                ),
+                'css' => 'css_rules',
+                'css_rules' => array(
+                    'top' => '[ms_id] .flexslider .flex-control-nav { bottom: unset; top: [ms_field_value]px }', // Take [ms_field_value] from navigation_vertical_position_offset
+                    'bottom' => '[ms_id] .flexslider .flex-control-nav { top: unset; bottom: [ms_field_value]px }' // Take [ms_field_value] from navigation_vertical_position_offset
+                )
+            ),
+            array(
+                'label' => esc_html__('Position Offset', 'ml-slider'),
+                'info' => esc_html__('Based on "Position".', 'ml-slider'),
+                'name' => 'navigation_vertical_position_offset',
                 'type' => 'range',
                 'default' => -35,
                 'metric' => 'px',
                 'min' => -100,
                 'max' => 300,
-                'css' => '[ms_id] .flexslider .flex-control-nav { bottom: [ms_value]px }'
+                'css' => 'css_field', // Use the CSS from another field defined at 'css_field'
+                'css_field' => 'navigation_vertical_position'
             ),
-            array(
+            /*array(
                 'label' => esc_html__('Alignment', 'ml-slider'),
                 'name' => 'navigation_align',
                 'type' => 'select',

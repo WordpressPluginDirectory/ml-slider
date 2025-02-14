@@ -65,32 +65,44 @@ return array(
                     '[ms_id] .flexslider .flex-direction-nav li a.flex-next { right: [ms_value]px }'
                 )
             ),
-            /*array(
-                'label' => esc_html__('Vertical Position', 'ml-slider'),
-                'info' => esc_html__('Taking top as reference point. Set 50 to center.', 'ml-slider'),
+            array(
+                'label' => esc_html__('Position', 'ml-slider'),
                 'name' => 'arrows_vertical_position',
+                'type' => 'select',
+                'default' => 'top',
+                'options' => array(
+                    array(
+                        'label' => esc_html__('Top', 'ml-slider'),
+                        'value' => 'top'
+                    ),
+                    array(
+                        'label' => esc_html__('Bottom', 'ml-slider'),
+                        'value' => 'bottom'
+                    )
+                ),
+                'css' => 'css_rules',
+                'css_rules' => array(
+                    'top' => '[ms_id] .flexslider ul.flex-direction-nav li a { bottom: unset; top: calc([ms_field_value]% + 50px); transform: translateY(-[ms_field_value]%) }', // Take [ms_field_value] from arrows_vertical_position_offset
+                    'bottom' => '[ms_id] .flexslider ul.flex-direction-nav li a { top: unset; bottom: [ms_field_value]%; transform: translateY([ms_field_value]%) }' // Take [ms_field_value] from arrows_vertical_position_offset
+                )
+            ),
+            array(
+                'label' => esc_html__('Position Offset', 'ml-slider'),
+                'info' => esc_html__('Based on "Position".', 'ml-slider'),
+                'name' => 'arrows_vertical_position_offset',
                 'type' => 'range',
                 'default' => 50,
                 'metric' => '%',
                 'min' => 0,
                 'max' => 100,
-                'css' => '[ms_id] .flexslider .flex-direction-nav li a.flex-prev, [ms_id] .flexslider .flex-direction-nav li a.flex-next { top: [ms_value]% }'
-            ),*/
+                'css' => 'css_field', // Use the CSS from another field defined at 'css_field'
+                'css_field' => 'arrows_vertical_position'
+            ),
             array(
                 'label' => esc_html__('Height', 'ml-slider'),
                 'name' => 'arrows_height',
                 'type' => 'range',
                 'default' => 100,
-                'metric' => 'px',
-                'min' => 20,
-                'max' => 150,
-                'css' => '[ms_id] .flexslider .flex-direction-nav li a { height: [ms_value]px }'
-            ),
-            array(
-                'label' => esc_html__('Width', 'ml-slider'),
-                'name' => 'arrows_width',
-                'type' => 'range',
-                'default' => 50,
                 'metric' => 'px',
                 'min' => 20,
                 'max' => 150,
@@ -125,7 +137,7 @@ return array(
         'default' => 'on',
         'settings' => array(
             array(
-                'label' => esc_html__('Colors', 'ml-slider'),
+                'label' => esc_html__('Background', 'ml-slider'),
                 'type' => 'fields',
                 'fields' => array(
                     array(
@@ -139,59 +151,78 @@ return array(
                         'label' => esc_html__('Hover', 'ml-slider' ),
                         'name' => 'navigation_color_hover',
                         'type' => 'color',
-                        'default' => 'rgba(255,255,255,0.8)',
-                        'css' => '[ms_id] .flexslider ol.flex-control-nav:not(.flex-control-thumbs) li a:hover { border-color: [ms_value] }'
+                        'default' => 'rgba(255,255,255,0)',
+                        'css' => '[ms_id] .flexslider ol.flex-control-nav:not(.flex-control-thumbs) li a:not(.flex-active):hover { background: [ms_value] }'
                     ),
                     array(
                         'label' => esc_html__('Active', 'ml-slider' ),
                         'name' => 'navigation_color_active',
+                        'type' => 'color',
+                        'default' => 'rgba(255,255,255,0)',
+                        'css' => '[ms_id] .flexslider ol.flex-control-nav li a.flex-active { background: [ms_value] }'
+                    )
+                )
+            ),
+            array(
+                'label' => esc_html__('Border', 'ml-slider'),
+                'type' => 'fields',
+                'fields' => array(
+                    array(
+                        'label' => esc_html__('Default', 'ml-slider'),
+                        'name' => 'navigation_border_color',
+                        'type' => 'color',
+                        'default' => 'rgba(255,255,255,0.8)',
+                        'css' => '[ms_id] .flexslider ol.flex-control-nav:not(.flex-control-thumbs) li a:not(.flex-active):not(:hover) { border-color: [ms_value] }'
+                    ),
+                    array(
+                        'label' => esc_html__('Hover', 'ml-slider' ),
+                        'name' => 'navigation_border_color_hover',
+                        'type' => 'color',
+                        'default' => 'rgba(255,255,255,0.8)',
+                        'css' => '[ms_id] .flexslider ol.flex-control-nav:not(.flex-control-thumbs) li a:not(.flex-active):hover { border-color: [ms_value] }'
+                    ),
+                    array(
+                        'label' => esc_html__('Active', 'ml-slider' ),
+                        'name' => 'navigation_border_color_active',
                         'type' => 'color',
                         'default' => 'rgba(255,255,255,0.8)',
                         'css' => '[ms_id] .flexslider ol.flex-control-nav li a.flex-active { border-color: [ms_value] }'
                     )
                 )
             ),
-            /*array(
+            array(
                 'label' => esc_html__('Position', 'ml-slider'),
-                'name' => 'navigation_position',
+                'name' => 'navigation_vertical_position',
                 'type' => 'select',
-                'default' => 'bottom-center',
+                'default' => 'bottom',
                 'options' => array(
                     array(
-                        'label' => esc_html__('Top Center', 'ml-slider'),
-                        'value' => 'top-center'
+                        'label' => esc_html__('Top', 'ml-slider'),
+                        'value' => 'top'
                     ),
                     array(
-                        'label' => esc_html__('Bottom Center', 'ml-slider'),
-                        'value' => 'bottom-center'
-                    ),
-                    array(
-                        'label' => esc_html__('Top Left', 'ml-slider'),
-                        'value' => 'top-left'
-                    ),
-                    array(
-                        'label' => esc_html__('Bottom Left', 'ml-slider'),
-                        'value' => 'bottom-left'
-                    ),
-                    array(
-                        'label' => esc_html__('Top Right', 'ml-slider'),
-                        'value' => 'top-right'
-                    ),
-                    array(
-                        'label' => esc_html__('Bottom Right', 'ml-slider'),
-                        'value' => 'bottom-right'
+                        'label' => esc_html__('Bottom', 'ml-slider'),
+                        'value' => 'bottom'
                     )
                 ),
                 'css' => 'css_rules',
                 'css_rules' => array(
-                    'bottom-center' => '[ms_id] .flexslider .flex-control-nav:not(.flex-control-thumbs) { top: unset; bottom: 15px; justify-content: center; padding-left: unset; padding-right: unset }',
-                    'top-center' => '[ms_id] .flexslider .flex-control-nav:not(.flex-control-thumbs) { top: 22px; bottom: unset; justify-content: center; padding-left: unset; padding-right: unset }',
-                    'bottom-left' => '[ms_id] .flexslider .flex-control-nav:not(.flex-control-thumbs) { top: unset; bottom: 15px; justify-content: start; padding-left: 22px }',
-                    'top-left' => '[ms_id] .flexslider .flex-control-nav:not(.flex-control-thumbs) { top: 22px; bottom: unset; justify-content: start; padding-left: 22px }',
-                    'bottom-right' => '[ms_id] .flexslider .flex-control-nav:not(.flex-control-thumbs) { top: unset; bottom: 15px; justify-content: end; padding-left: unset; padding-right: 22px }',
-                    'top-right' => '[ms_id] .flexslider .flex-control-nav:not(.flex-control-thumbs) { top: 22px; bottom: unset; justify-content: end; padding-left: unset; padding-right: 22px }',
+                    'top' => '[ms_id] .flexslider ol.flex-control-nav:not(.flex-control-thumbs) { bottom: unset; top: [ms_field_value]px }', // Take [ms_field_value] from navigation_vertical_position_offset
+                    'bottom' => '[ms_id] .flexslider ol.flex-control-nav:not(.flex-control-thumbs) { top: unset; bottom: [ms_field_value]px }' // Take [ms_field_value] from navigation_vertical_position_offset
                 )
-            ),*/
+            ),
+            array(
+                'label' => esc_html__('Position Offset', 'ml-slider'),
+                'info' => esc_html__('Based on "Position".', 'ml-slider'),
+                'name' => 'navigation_vertical_position_offset',
+                'type' => 'range',
+                'default' => 15,
+                'metric' => 'px',
+                'min' => -100,
+                'max' => 300,
+                'css' => 'css_field', // Use the CSS from another field defined at 'css_field'
+                'css_field' => 'navigation_vertical_position'
+            ),
             array(
                 'label' => esc_html__('Dots Border Radius', 'ml-slider'),
                 'name' => 'navigation_border_radius',
@@ -222,6 +253,27 @@ return array(
                 'min' => 1,
                 'max' => 10,
                 'css' => '[ms_id] .flexslider .flex-control-nav li a { border-width: [ms_value]px }'
+            ),
+            array(
+                'label' => esc_html__('Dots Border Style', 'ml-slider'),
+                'name' => 'navigation_border_style',
+                'type' => 'select',
+                'default' => 'solid',
+                'options' => array(
+                    array(
+                        'label' => esc_html__('Solid', 'ml-slider'),
+                        'value' => 'solid'
+                    ),
+                    array(
+                        'label' => esc_html__('Dotted', 'ml-slider'),
+                        'value' => 'dotted'
+                    ),
+                    array(
+                        'label' => esc_html__('Dashed', 'ml-slider'),
+                        'value' => 'dashed'
+                    )
+                ),
+                'css' => '[ms_id] .flexslider .flex-control-nav li a { border-style: [ms_value] }'
             ),
         )
     ),
@@ -258,9 +310,9 @@ return array(
                     )
                 )
             ),
-            /*array(
+            array(
                 'label' => esc_html__('Position', 'ml-slider'),
-                'name' => 'caption_position',
+                'name' => 'caption_vertical_position',
                 'type' => 'select',
                 'default' => 'bottom',
                 'options' => array(
@@ -271,19 +323,27 @@ return array(
                     array(
                         'label' => esc_html__('Bottom', 'ml-slider'),
                         'value' => 'bottom'
-                    ),
-                    array(
-                        'label' => esc_html__('Center', 'ml-slider'),
-                        'value' => 'center'
                     )
                 ),
                 'css' => 'css_rules', // refer to css_rules where 'value' => '.lorem {}' is based on 'options' value
                 'css_rules' => array(
-                    'center' => '[ms_id] .flexslider .caption-wrap { bottom: unset; top: 50%; transform: translateY(-50%) }',
-                    'bottom' => '[ms_id] .flexslider .caption-wrap { top: unset; bottom: 0 }',
-                    'top' => '[ms_id] .flexslider .caption-wrap { top: 0; bottom: unset }'
+                    'top' => '[ms_id] .flexslider .caption-wrap { bottom: unset; top: [ms_field_value]%; transform: translateY(-[ms_field_value]%) }', // Take [ms_field_value] from caption_vertical_position_offset
+                    'bottom' => '[ms_id] .flexslider .caption-wrap { top: unset; bottom: [ms_field_value]%; transform: translateY([ms_field_value]%) }', // Take [ms_field_value] from caption_vertical_position_offset
+                    
                 )
-            ),*/
+            ),
+            array(
+                'label' => esc_html__('Position Offset', 'ml-slider'),
+                'info' => esc_html__('Based on "Position".', 'ml-slider'),
+                'name' => 'caption_vertical_position_offset',
+                'type' => 'range',
+                'default' => 0,
+                'metric' => '%',
+                'min' => 0,
+                'max' => 100,
+                'css' => 'css_field', // Use the CSS from another field defined at 'css_field'
+                'css_field' => 'caption_vertical_position'
+            ),
             array(
                 'label' => esc_html__('Font Size', 'ml-slider'),
                 'name' => 'caption_font_size',

@@ -368,15 +368,54 @@
                 "ml-slider"
             )
         ),
+        'showPlayText' => array(
+            'priority' => 22,
+            'type' => 'checkbox',
+            'label' => esc_html__("Show Play / Pause Button Text", "ml-slider"),
+            'class' => 'option flex',
+            'checked' => $this->slider->get_setting(
+                'showPlayText'
+            ) == 'true' ? 'checked' : '',
+            'helptext' => esc_html__(
+                "Show text options for Play / Pause Button",
+                "ml-slider"
+            )
+        ),
+        'playText' => array(
+            'priority' => 23,
+            'type' => 'text',
+            'label' => esc_html__("Play Text", "ml-slider"),
+            'class' => 'option flex',
+            'helptext' => esc_html__(
+                "Enter text for the Play/Pause Button. Leave the field empty to use the icon only.",
+                "ml-slider"
+            ),
+            'value' => $this->slider->get_setting(
+                'playText'
+            ) == 'false' ? '' : $this->slider->get_setting('playText'),
+        ),
+        'pauseText' => array(
+            'priority' => 24,
+            'type' => 'text',
+            'label' => esc_html__("Pause Text", "ml-slider"),
+            'class' => 'option flex',
+            'helptext' => esc_html__(
+                "Enter text for the Play/Pause Button. Leave the field empty to use the icon only.",
+                "ml-slider"
+            ),
+            'value' => $this->slider->get_setting(
+                'pauseText'
+            ) == 'false' ? '' : $this->slider->get_setting('pauseText')
+        ),
         'loop' => array(
             'priority' => 25,
             'type' => 'select',
             'label' => __("Loop", "ml-slider"),
             'class' => 'option flex',
-            'helptext' => __('If you choose "Loop continuously", the slides will loop infinitely. If you choose "Stop on first slide after looping", the slideshow will stop on the first slide after showing all the items. If you choose "Stop on last slide", the slides will stop on the last slide.', 'ml-slider'),
+            'helptext' => __('If you choose "Loop endlessly", the slides will loop infinitely. If you choose "Stop on first slide after looping", the slideshow will stop on the first slide after showing all the items. If you choose "Stop on last slide", the slides will stop on the last slide.', 'ml-slider'),
             'value' => $this->slider->get_setting('loop'),
             'options' => array(
-                'continuously' => array('label' => __("Loop Continuously", "ml-slider"), 'class' => ''),
+                'continuously' => array('label' => __("Loop Endlessly", "ml-slider"), 'class' => ''),
                 'stopOnLast' => array('label' => __("Stop On Last Slide", "ml-slider"), 'class' => ''),
                 'stopOnFirst' => array('label' => __("Stop On First Slide After Looping", "ml-slider"), 'class' => ''),
             )
@@ -473,7 +512,7 @@
                 'carouselMode'
             ) == 'true' ? 'checked' : '',
             'helptext' => esc_html__(
-                "Display multiple slides at once. Slideshow output will be 100% wide. Carousel Mode only uses the 'Slide' Effect.",
+                "Display multiple slides at once. Slideshow output will be 100% wide. Carousel Mode only uses the 'Slide' Transition Effect.",
                 "ml-slider"
             ),
             'dependencies' => array(
@@ -502,12 +541,6 @@
             'helptext' => esc_html__(
                 "Infinite loop of slides when Carousel Mode is enabled. This option disables arrows and navigation.",
                 "ml-slider"
-            ),
-            'dependencies' => array(
-                array(
-                    'show' => 'progressBar', // Show Progress Bar
-                    'when' => false // When infinteLoop is false
-                )
             )
         ),
         'carouselMargin' => array(
@@ -540,14 +573,26 @@
         ),
         'random' => array(
             'priority' => 50,
-            'type' => 'checkbox',
-            'label' => esc_html__("Random", "ml-slider"),
+            'type' => 'select',
+            'label' => esc_html__("Slide Order", "ml-slider"),
             'class' => 'option flex',
-            'checked' => $this->slider->get_setting(
-                'random'
-            ) == 'true' ? 'checked' : '',
+            'value' => $this->slider->get_setting('random'),
+            'options' => array(
+                'newest' => array(
+                    'label' => __("Newest First", "ml-slider")
+                ),
+                'oldest' => array(
+                    'label' => __("Oldest First", "ml-slider")
+                ),
+                'false' => array(
+                    'label' => __("Drag-and-drop", "ml-slider")
+                ),
+                'true' => array(
+                    'label' => __("Random", "ml-slider")
+                ) 
+            ),
             'helptext' => esc_html__(
-                "Randomize the order of the slides.",
+                "Select the order in which slides appear in the slideshow. This impacts the frontend view.",
                 "ml-slider"
             )
         ),
@@ -590,7 +635,7 @@
                 "ml-slider"
             )
         ),
-        'progressBar' => array(
+        'progressBar' => array( // Don't target 'progressBar' to show/hide with 'dependencies' array key
             'priority' => 84,
             'type' => 'checkbox',
             'label' => esc_html__("Progress Bar", "ml-slider"),
@@ -649,7 +694,7 @@
             'label' => esc_html__("Slide Direction", "ml-slider"),
             'class' => 'option flex',
             'helptext' => esc_html__(
-                'Select the direction that slides will move. Vertical will not work if "Carousel mode" is enabled or "Effect" is set to "Fade".',
+                'Select the direction that slides will move. Vertical will not work if "Carousel mode" is enabled or "Transition Effect" is set to "Fade".',
                 'ml-slider'
             ),
             'value' => $this->slider->get_setting('direction'),

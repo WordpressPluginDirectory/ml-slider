@@ -234,6 +234,11 @@ return $options;
             $type = get_post_meta($slide->ID, 'ml-slider_type', true);
             $type = $type ? $type : 'image'; // Default ot image
 
+            // @since 3.96 - Skip slide if is an image type but doesn't have an actual image (invisible slide in admin)
+            if ( $type == 'image' && get_post_meta( $slide->ID, '_thumbnail_id', true ) == false ) {
+                continue;
+            }
+            
             $is_hidden = get_post_meta($slide->ID, '_meta_slider_slide_is_hidden', true);
             if($is_hidden != true){
                 // If this filter exists, that means the slide type is available (i.e. pro slides)
@@ -272,46 +277,10 @@ return $options;
             $stored_data = $settings['theme_customize'];
         }
 
-        $manifest   = array();
-        $type       = isset($theme_settings['type']) ? $theme_settings['type'] : 'free';
-
         $themes_class = MetaSlider_Themes::get_instance();
 
-        // Is a premium, external or custom theme (v2), override $manifest path
-        if ($type !== 'free') {
-            // Check if is a custom v2 based on a free theme
-            $manifest = $themes_class->add_base_customize_settings_single($theme);
-
-            /**
-             * Check if is a premium or custom theme (v2) based on a premium theme
-             * by looping extra themes/ folders added from external sources,
-             * including MetaSlider Pro.
-             * We may also support external themes (custom coded themes added by users).
-             * 
-             * e.g. 
-             * array(
-             *  '/path/to/wp-content/plugins/ml-slider-pro/themes/',
-             *  '/path/to/wp-content/themes/my-theme/ms-themes/'
-             * )
-             */
-            if (! count($manifest)) {
-                $extra_themes = apply_filters('metaslider_extra_themes', array());
-
-                foreach ($extra_themes as $location) {
-                    // Check if customize.php file that belongs to $theme as theme name (lowercase) exists
-                    if (file_exists($customize_file = trailingslashit($location) . trailingslashit($theme) . 'customize.php')) {
-                        // Get the data from customize.php files
-                        $manifest = $themes_class->add_base_customize_settings_single(
-                            $theme, $customize_file
-                        );
-                        break;
-                    }
-                }
-            }
-        } else {
-            // Is a free theme - Get data from themes/$theme/customize.php
-            $manifest = $themes_class->add_base_customize_settings_single($theme);
-        }
+        $type       = isset($theme_settings['type']) ? $theme_settings['type'] : 'free';
+        $manifest   = $themes_class->get_theme_manifest( $theme, $type );
 
         $output = $themes_class->build_customize_css($manifest, $stored_data, $slideshow_id);
 
@@ -340,7 +309,7 @@ return $options;
 
         
         if ($is_theme_editor_screen || $doesnt_use_customize) {
-            return "";
+            return $css;
         }
 
         $css .= $this->theme_customize_css(
@@ -349,7 +318,9 @@ return $options;
             $slideshow_id
         );
 
-        remove_filter('metaslider_css', array($this, 'theme_customize'), 10, 3);
+        // Commented to solve an issue:
+        // can't have more than one slideshow based on the same theme on the same page
+        //remove_filter('metaslider_css', array($this, 'theme_customize'), 10, 3);
 
         return $css;
     }
