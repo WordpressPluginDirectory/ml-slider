@@ -118,6 +118,11 @@ class MetaSlider_Themes
                             $data['theme_customize_temp_'] = $customize;
                         }
 
+                        // Set a temporary array key to pass the settings.php file location
+                        if (file_exists($edit_settings = trailingslashit($folder) . 'settings.php')) {
+                            $data['theme_edit_settings_temp_'] = $edit_settings;
+                        }
+
                         // Add a key to the theme array
                         $data = array( $data['folder'] => $data );
 
@@ -128,8 +133,9 @@ class MetaSlider_Themes
             }
         }
 
-        // Add theme customization settings
+        // Add theme customization and edit settings
         $themes = $this->add_base_customize_settings($themes);
+        $themes = $this->add_base_edit_settings($themes);
 
         return $themes;
     }
@@ -161,6 +167,59 @@ class MetaSlider_Themes
             // Remove temporary array keys
             if (isset($themes[$folder]['theme_customize_temp_'])) {
                 unset($themes[$folder]['theme_customize_temp_']);
+            }
+        }
+
+        return $themes;
+    }
+
+    /**
+     * Add edit settings array key to each theme that have its own settings.php file
+     * 
+     * @since 3.98
+     * 
+     * @param array $themes Themes array from manifest file
+     * 
+     * @return array 
+     */
+    public function add_base_edit_settings($themes)
+    {
+        $default_settings = MetaSlider_Slideshow_Settings::defaults();
+
+        // Convert booleans linked to <select> fields into strings
+        foreach( array( 'links', 'navigation', 'smartCrop', 'random' ) as $setting_ ) {
+            if ( isset( $default_settings[$setting_] ) && is_bool( $default_settings[$setting_] ) ) {
+                $default_settings[$setting_] = $default_settings[$setting_] === true ? 'true' : 'false';
+            }
+        }
+
+        // Remove non required settings
+        foreach( array( 'title', 'type', 'theme' ) as $setting_ ) {
+            if ( isset( $default_settings[$setting_] ) ) {
+                unset( $default_settings[$setting_] );
+            }
+        }
+
+        foreach ( $themes as $item ) {
+            $folder = $item['folder'];
+
+            // Check if we use a different settings.php file (e.g. is an external theme) for this theme or default
+            $edit_settings_file = isset($item['theme_edit_settings_temp_']) ? $item['theme_edit_settings_temp_'] : METASLIDER_THEMES_PATH . $folder . '/settings.php';
+            
+            if ( in_array( $item['type'], array( 'free', 'premium', 'external' ) ) ) {
+                if ( file_exists($edit_settings_file) ) {
+                    $edit_settings = ( include $edit_settings_file );
+                    $merged_settings = array_merge( $default_settings, $edit_settings );
+                    $themes[$folder]['edit_settings'] = $merged_settings;
+                } else {
+                    // No settings.php file? Just assign defaults
+                    $themes[$folder]['edit_settings'] = $default_settings;
+                }
+            }
+
+            // Remove temporary array keys
+            if (isset($themes[$folder]['theme_edit_settings_temp_'])) {
+                unset($themes[$folder]['theme_edit_settings_temp_']);
             }
         }
 
@@ -464,9 +523,13 @@ return $theme;
             $this->save_theme_customizations( $slideshow_id, $theme );
         }
 
-        // We don't want to store customization manifest in metaslider_slideshow_theme postmeta
+        // We don't want to store customization manifest and edit_settings 
+        // in metaslider_slideshow_theme postmeta
         if (isset($theme['customize'])) {
             unset($theme['customize']);
+        }
+        if (isset($theme['edit_settings'])) {
+            unset($theme['edit_settings']);
         }
 
         // This will return false if the data is the same, unfortunately
@@ -705,7 +768,7 @@ return $theme;
          *  '/path/to/wp-content/themes/my-theme/ms-themes/'
          * )
          */
-        $extra_themes = apply_filters('metaslider_extra_themes', array(), $slideshow_id);
+        $extra_themes = apply_filters('metaslider_extra_themes', array());
         foreach ($extra_themes as $location) {
             if (file_exists(trailingslashit($location) . $theme['folder'])) {
                 $theme_dir = trailingslashit($location) . $theme['folder'];

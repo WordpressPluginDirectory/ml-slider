@@ -23,6 +23,12 @@
 	.flexslider {
 	  margin-bottom: 0;
 	  width: 100%;
+
+	  	.flex-pauseplay a {
+			top: 20px;
+			bottom: unset;
+			left: 25px;
+		}
 	}
   
 	.flex-control-nav {

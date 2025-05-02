@@ -21,14 +21,14 @@ return array(
                         'name' => 'arrows_color',
                         'type' => 'color',
                         'default' => '#fff',
-                        'css' => '[ms_id] .flexslider .flex-direction-nav li { background-color: [ms_value] }'
+                        'css' => '[ms_id] .flexslider .flex-direction-nav a { background-color: [ms_value] }'
                     ),
                     array(
                         'label' => esc_html__('Hover', 'ml-slider'),
                         'name' => 'arrows_color_hover',
                         'type' => 'color',
                         'default' => '#07383C',
-                        'css' => '[ms_id] .flexslider .flex-direction-nav li:hover { background-color: [ms_value] }'
+                        'css' => '[ms_id] .flexslider .flex-direction-nav a:hover { background-color: [ms_value] }'
                     )
                 )
             ),
@@ -41,14 +41,14 @@ return array(
                         'name' => 'arrows_icon',
                         'type' => 'color',
                         'default' => '#50585C',
-                        'css' => '[ms_id] .flexslider .flex-direction-nav li a.flex-prev, [ms_id] .flexslider .flex-direction-nav li a.flex-next { background-color: [ms_value] }'
+                        'css' => '[ms_id] .flexslider .flex-direction-nav li a.flex-prev::after, [ms_id] .flexslider .flex-direction-nav li a.flex-next::after { background-color: [ms_value] }'
                     ),
                     array(
                         'label' => esc_html__('Hover', 'ml-slider'),
                         'name' => 'arrows_icon_hover',
                         'type' => 'color',
                         'default' => '#fff',
-                        'css' => '[ms_id] .flexslider .flex-direction-nav li a.flex-prev:hover, [ms_id] .flexslider .flex-direction-nav li a.flex-next:hover { background-color: [ms_value] }'
+                        'css' => '[ms_id] .flexslider .flex-direction-nav li a.flex-prev:hover::after, [ms_id] .flexslider .flex-direction-nav li a.flex-next:hover::after { background-color: [ms_value] }'
                     )
                 )
             ),
@@ -61,7 +61,7 @@ return array(
                         'name' => 'arrows_border',
                         'type' => 'color',
                         'default' => '#888888',
-                        'css' => '[ms_id] .flexslider .flex-direction-nav li { border-color: [ms_value] }'
+                        'css' => '[ms_id] .flexslider .flex-direction-nav li a{ border-color: [ms_value] }'
                     )
                 )
             ),

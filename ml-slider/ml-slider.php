@@ -5,7 +5,7 @@
  * Plugin Name: MetaSlider
  * Plugin URI:  https://www.metaslider.com
  * Description: MetaSlider gives you the power to create a beautiful slideshow, carousel, or gallery on your WordPress site.
- * Version:     3.96.0
+ * Version:     3.98.0
  * Author:      MetaSlider
  * Author URI:  https://www.metaslider.com
  * License:     GPL-2.0+
@@ -42,7 +42,7 @@ if (! class_exists('MetaSliderPlugin')) {
          *
          * @var string
          */
-        public $version = '3.96.0';
+        public $version = '3.98.0';
 
         /**
          * Pro installed version number
@@ -298,6 +298,7 @@ if (! class_exists('MetaSliderPlugin')) {
         {
             add_shortcode('metaslider', array($this, 'register_shortcode'));
             add_shortcode('ml-slider', array($this, 'register_shortcode')); // backwards compatibility
+            add_shortcode('metaslider_hide', array($this, 'metaslider_hide_shortcode'));
         }
 
 
@@ -375,11 +376,15 @@ if (! class_exists('MetaSliderPlugin')) {
         {
             add_filter('media_upload_tabs', array($this, 'custom_media_upload_tab_name'), 998);
             add_filter('media_view_strings', array($this, 'custom_media_uploader_tabs'), 5);
+            add_action('media_buttons', array($this, 'insert_metaslider_button'));
             add_filter("plugin_row_meta", array($this, 'get_extra_meta_links'), 10, 4);
             add_action('admin_head', array($this, 'add_star_styles'));
 
             // html5 compatibility for stylesheets enqueued within <body>
             add_filter('style_loader_tag', array($this, 'add_property_attribute_to_stylesheet_links'), 11, 2);
+        
+            //add body class for mobile settings to prevent other plugins from overwriting
+            add_filter('body_class', array($this, 'metaslider_add_body_class'));
         }
 
         /**
@@ -563,7 +568,8 @@ if (! class_exists('MetaSliderPlugin')) {
                     'id' => false,
                     'title' => false,
                     'restrict_to' => false,
-                    'theme' => null
+                    'theme' => null,
+                    'hide_on' => '', // Accepts desktop, laptop, tablet, smartphone
                 ],
                 $atts,
                 'metaslider'
@@ -636,7 +642,7 @@ if (! class_exists('MetaSliderPlugin')) {
                     $atts['theme'] = $custom_themes[$theme['folder']]['base'];
                 }
             }
-
+            
             // Set up the slideshow and load the slideshow theme
             $this->set_slider($id, $atts);
             MetaSlider_Themes::get_instance()->load_theme($id, $atts['theme']);
@@ -644,6 +650,23 @@ if (! class_exists('MetaSliderPlugin')) {
             return $this->slider->render_public_slides();
         }
 
+        /**
+         * Shortcode used to hide elements on devices
+         * @since 3.97
+        */
+        public function metaslider_hide_shortcode($atts, $content = null) {
+            $atts = shortcode_atts(['devices' => ''], $atts);
+            
+            if (empty($content)) {
+                return '';
+            }
+
+            $devices = preg_replace('/\s*,\s*/', ',', $atts['devices']);
+            $device_classes = !empty($devices) ? 'hide-' . str_replace(',', ' hide-', $devices) : '';
+        
+            return '<div class="metaslider-hidden-content ' . esc_attr($device_classes) . '">' . $content . '</div>';
+        }
+        
         /**
          * Initialise translations
          */
@@ -1188,6 +1211,10 @@ if (! class_exists('MetaSliderPlugin')) {
                         case 'local_video':
                             $msQuickstartPro->set_slideshow_theme( $id, 'blend' );
                             break;
+
+                        case 'custom_html':
+                            $msQuickstartPro->set_slideshow_theme( $id, 'blend' );
+                            break;
                     }
 
                 } elseif ( in_array( $sampleType, $quickstart_free_slugs ) ) {
@@ -1347,6 +1374,33 @@ if (! class_exists('MetaSliderPlugin')) {
             uasort($settings, array($this, "compare_elems"));
             $output = "";
 
+            /*
+                Hide legacy settings if:
+                - $global_settings['legacy'] doesn't exist
+                - $global_settings['legacy'] = true
+                - all slides use FlexSlider
+
+                Show legacy settings if:
+                - $global_settings['legacy'] = false
+                - one or more doesn't use flexslider
+            */
+
+            $global_settings = $this->get_global_settings();
+            $slideshow = new MetaSlider_Slideshows();
+            $count_sliders = $slideshow->get_legacy_slideshows();
+            $new_install = get_option('metaslider_new_user');
+
+            if ((isset($global_settings['legacy']) && $global_settings['legacy'] === false) || $count_sliders !== 0) {
+                $is_legacy_disabled = false;
+            } else {
+                $is_legacy_disabled = (
+                    !isset($global_settings['legacy']) ||
+                    $global_settings['legacy'] === true ||
+                    $count_sliders === 0 ||
+                    (isset($new_install)  && 'new' == $new_install)
+                );
+            }
+
             // loop through the array and build the settings HTML
             foreach ($settings as $id => $row) {
                 $helptext       = isset($row['helptext']) ? htmlentities2($row['helptext']) : '';
@@ -1369,50 +1423,57 @@ if (! class_exists('MetaSliderPlugin')) {
                 if (isset($row['after'])) {
                     $after = '<span class="">' . $row['after'] . '</span>';
                 }
+                
+                $hide_legacy_row = isset( $row['is_legacy'] ) && $row['is_legacy'] ? true : false;
+                $hide_legacy = $is_legacy_disabled && $hide_legacy_row;
 
                 switch ($row['type']) {
                     // checkbox input type
                     case 'checkbox':
-                        $output .= '<tr class="' . esc_attr(
-                                $row["type"]
-                            ) . '"><td class="tipsy-tooltip" title="' . esc_attr($helptext) . '">' . esc_html(
-                                $row["label"]
-                            ) . '</td><td>';
-                        $output .= '<div class="ms-switch-button">
-                            <label>
-                                <input type="checkbox" id="" name="settings[' . esc_attr($id) . ']" ' . esc_attr(
-                                    $row["checked"]
-                                ) . ' class="' . esc_attr($row["class"]) . '"' . 
-                                $dependencies . '/>
-                                <span></span>
-                            </label>
-                        </div>';
-                        $output .= $after;
-                        $output .= '</td></tr>';
+                        if (!$hide_legacy) {
+                            $output .= '<tr class="' . esc_attr(
+                                    $row["type"]
+                                ) . '"><td class="tipsy-tooltip" title="' . esc_attr($helptext) . '">' . esc_html(
+                                    $row["label"]
+                                ) . '</td><td>';
+                            $output .= '<div class="ms-switch-button">
+                                <label>
+                                    <input type="checkbox" id="" name="settings[' . esc_attr($id) . ']" ' . esc_attr(
+                                        $row["checked"]
+                                    ) . ' class="' . esc_attr($row["class"]) . '"' . 
+                                    $dependencies . '/>
+                                    <span></span>
+                                </label>
+                            </div>';
+                            $output .= $after;
+                            $output .= '</td></tr>';
+                        }
                         break;
 
                     // navigation row
                     case 'radio':
-                        $navigation_row = '<tr class="' . esc_attr(
-                                $row["type"]
-                            ) . '"><td class="tipsy-tooltip" title="' . esc_attr($helptext) . '">' . esc_html(
-                                $row["label"]
-                            ) . '</td><td><ul>';
-                        foreach ($row['options'] as $option_name => $option_value) {
-                            $checked = checked($option_name, $row['value'], false);
-                            $class = isset($option_value['class']) ? $option_value['class'] : "";
-                            $navigation_row .= '<li><label><input type="radio" name="settings[' . esc_attr(
-                                    $id
-                                ) . ']" value="' . esc_attr(
-                                    $option_name
-                                ) . '" ' . $checked . ' class="radio ' . esc_attr($class) . '"/>' . esc_html(
-                                    $option_value["label"]
-                                ) . '</label></li>';
+                        if (!$hide_legacy) {
+                            $navigation_row = '<tr class="' . esc_attr(
+                                    $row["type"]
+                                ) . '"><td class="tipsy-tooltip" title="' . esc_attr($helptext) . '">' . esc_html(
+                                    $row["label"]
+                                ) . '</td><td><ul>';
+                            foreach ($row['options'] as $option_name => $option_value) {
+                                $checked = checked($option_name, $row['value'], false);
+                                $class = isset($option_value['class']) ? $option_value['class'] : "";
+                                $navigation_row .= '<li><label><input type="radio" name="settings[' . esc_attr(
+                                        $id
+                                    ) . ']" value="' . esc_attr(
+                                        $option_name
+                                    ) . '" ' . $checked . ' class="radio ' . esc_attr($class) . '"/>' . esc_html(
+                                        $option_value["label"]
+                                    ) . '</label></li>';
+                            }
+                            $navigation_row .= '</ul>';
+                            $navigation_row .= $after;
+                            $navigation_row .= '</td></tr>';
+                            $output .= apply_filters('metaslider_navigation_options', $navigation_row, $this->slider);
                         }
-                        $navigation_row .= '</ul>';
-                        $navigation_row .= $after;
-                        $navigation_row .= '</td></tr>';
-                        $output .= apply_filters('metaslider_navigation_options', $navigation_row, $this->slider);
                         break;
 
                     // header row
@@ -1436,42 +1497,55 @@ if (! class_exists('MetaSliderPlugin')) {
 
                     // slideshow select row
                     case 'slider-lib':
-                        $output .= '<tr class="' . esc_attr($row['type']) . '"><td colspan="2" class="slider-lib-row">';
-                        foreach ($row['options'] as $option_name => $option_value) {
-                            $checked = checked($option_name, $row['value'], false);
-                            $output .= '<input class="select-slider" id="' . esc_attr(
-                                    $option_name
-                                ) . '" rel="' . esc_attr(
-                                    $option_name
-                                ) . '" type="radio" name="settings[type]" value="' . esc_attr(
-                                    $option_name
-                                ) . '" ' . $checked . '  />'
-                                . '<label tabindex="0" for="' . esc_attr($option_name) . '">' . esc_html(
-                                    $option_value['label']
-                                ) . '</label>';
+                        if ($count_sliders != 0) {
+                            $link = esc_url('https://www.metaslider.com/docs/legacy-slideshow-options/');
+                            $output .= '<div class="notice notice-success ml-legacy-notice ml-move-notice"><p>' . 
+                                wp_kses_post(
+                                    sprintf(
+                                        __('Please consider moving your slides to <b>FlexSlider</b>. We\'re adding all new MetaSlider features to this option. <a href="%s">Find out more</a>.', 'ml-slider'),
+                                        $link
+                                    )
+                                ) . 
+                            '</p></div>';
                         }
+                        $output .= '<tr class="' . esc_attr($row['type']) . '" style="' . ($hide_legacy ? esc_attr('display: none;') : '') . '"><td colspan="2" class="slider-lib-row">';
+                            foreach ($row['options'] as $option_name => $option_value) {
+                                $checked = checked($option_name, $row['value'], false);
+                                $output .= '<input class="select-slider" id="' . esc_attr(
+                                        $option_name
+                                    ) . '" rel="' . esc_attr(
+                                        $option_name
+                                    ) . '" type="radio" name="settings[type]" value="' . esc_attr(
+                                        $option_name
+                                    ) . '" ' . $checked . '  />'
+                                    . '<label tabindex="0" for="' . esc_attr($option_name) . '">' . esc_html(
+                                        $option_value['label']
+                                    ) . '</label>';
+                            }
                         $output .= $after;
                         $output .= '</td></tr>';
-                        $output .= '</table><table class="ms-settings-table">';
+                        $output .= '</table><table class="ms-settings-table" style="' . ($hide_legacy ? esc_attr('margin-top: -20px;') : '') . '">';
                         break;
 
                     // number input type
                     case 'number':
-                        $output .= '<tr class="' . esc_attr(
-                                $row["type"]
-                            ) . '"><td class="tipsy-tooltip" title="' . esc_attr($helptext) . '">' . esc_html(
-                                $row["label"]
-                            ) . '</td><td class="flex items-center justify-start"><input class="option ' . esc_attr(
-                                $row["class"]
-                            ) . ' ' . esc_attr($id) . ' w-20" type="number" min="' . esc_attr(
-                                $row["min"]
-                            ) . '" max="' . esc_attr($row["max"]) . '" step="' . esc_attr(
-                                $row["step"]
-                            ) . '" name="settings[' . esc_attr($id) . ']" value="' . esc_attr(
-                                $row["value"]
-                            ) . '" /><span class="text-base ml-1 rtl:ml-0 rtl:mr-1">' . '</span>';
-                        $output .= $after;
-                        $output .= '</td></tr>';
+                        if (!$hide_legacy) {
+                            $output .= '<tr class="' . esc_attr(
+                                    $row["type"]
+                                ) . '"><td class="tipsy-tooltip" title="' . esc_attr($helptext) . '">' . esc_html(
+                                    $row["label"]
+                                ) . '</td><td class="flex items-center justify-start"><input class="option ' . esc_attr(
+                                    $row["class"]
+                                ) . ' ' . esc_attr($id) . ' w-20" type="number" min="' . esc_attr(
+                                    $row["min"]
+                                ) . '" max="' . esc_attr($row["max"]) . '" step="' . esc_attr(
+                                    $row["step"]
+                                ) . '" name="settings[' . esc_attr($id) . ']" value="' . esc_attr(
+                                    $row["value"]
+                                ) . '" /><span class="text-base ml-1 rtl:ml-0 rtl:mr-1">' . '</span>';
+                            $output .= $after;
+                            $output .= '</td></tr>';
+                        }
                         break;
 
                     // select drop down
@@ -1489,11 +1563,19 @@ if (! class_exists('MetaSliderPlugin')) {
                             $selected = selected($option_name, $row['value'], false);
                             $disabled = isset( $option_value['addon_required'] ) && $option_value['addon_required'] 
                                         ? ' disabled="disabled"' : '';
-                            $output .= '<option class="' . (
-                                    isset( $option_value['class'] ) ? esc_attr( $option_value['class'] ) : '' 
-                                ) . '" value="' . esc_attr(
-                                    $option_name
-                                ) . '" ' . $selected . $disabled . '>' . esc_html($option_value['label']) . '</option>';
+                            $legacy_option_value = isset( $option_value['is_legacy'] ) && $option_value['is_legacy'] ? true : false;
+                            $hide_legacy_option_value = $is_legacy_disabled && $legacy_option_value;
+
+                            if (!$hide_legacy_option_value) {
+                                $output .= sprintf(
+                                    '<option class="%s" value="%s" %s %s>%s</option>',
+                                    isset($option_value['class']) ? esc_attr($option_value['class']) : '',
+                                    esc_attr($option_name),
+                                    $selected,
+                                    $disabled,
+                                    esc_html($option_value['label'])
+                                );
+                            }
                         }
                         $output .= '</select>';
                         $output .= $after;
@@ -1528,36 +1610,40 @@ if (! class_exists('MetaSliderPlugin')) {
 
                     // text input type
                     case 'text':
-                        $output .= '<tr class="' . esc_attr(
-                                $row["type"]
-                            ) . '"><td class="tipsy-tooltip" title="' . esc_attr($helptext) . '">' . esc_html(
-                                $row["label"]
-                            ) . '</td><td class="flex items-center justify-start"><input class="option ' . esc_attr(
-                                $row["class"]
-                            ) . ' ' . esc_attr(
-                                $id
-                            ) . ' width w-40" type="text" autocomplete="off" data-lpignore="true" name="settings[' . esc_attr(
-                                $id
-                            ) . ']" value="' . esc_attr($row["value"]) . '" />';
-                        $output .= $after;
-                        $output .= '</td></tr>';
+                        if (!$hide_legacy) {
+                            $output .= '<tr class="' . esc_attr(
+                                    $row["type"]
+                                ) . '"><td class="tipsy-tooltip" title="' . esc_attr($helptext) . '">' . esc_html(
+                                    $row["label"]
+                                ) . '</td><td class="flex items-center justify-start"><input class="option ' . esc_attr(
+                                    $row["class"]
+                                ) . ' ' . esc_attr(
+                                    $id
+                                ) . ' width w-40" type="text" autocomplete="off" data-lpignore="true" name="settings[' . esc_attr(
+                                    $id
+                                ) . ']" value="' . esc_attr($row["value"]) . '" />';
+                            $output .= $after;
+                            $output .= '</td></tr>';
+                        }
                         break;
 
                     // text input type
                     case 'textarea':
-                        $output .= '<tr class="' . esc_attr(
-                                $row["type"]
-                            ) . '"><td class="tipsy-tooltip" title="' . esc_attr(
-                                $helptext
-                            ) . '" colspan="2">' . esc_html(
-                                $row["label"]
-                            ) . '</td></tr><tr><td colspan="2"><textarea class="option ' . esc_attr(
-                                $row["class"]
-                            ) . ' ' . esc_attr($id) . '" name="settings[' . esc_attr($id) . ']" />' . esc_html(
-                                $row["value"]
-                            ) . '</textarea>';
-                        $output .= $after;
-                        $output .= '</td></tr>';
+                        if (!$hide_legacy) {
+                            $output .= '<tr class="' . esc_attr(
+                                    $row["type"]
+                                ) . '"><td class="tipsy-tooltip" title="' . esc_attr(
+                                    $helptext
+                                ) . '" colspan="2">' . esc_html(
+                                    $row["label"]
+                                ) . '</td></tr><tr><td colspan="2"><textarea class="option ' . esc_attr(
+                                    $row["class"]
+                                ) . ' ' . esc_attr($id) . '" name="settings[' . esc_attr($id) . ']" />' . esc_html(
+                                    $row["value"]
+                                ) . '</textarea>';
+                            $output .= $after;
+                            $output .= '</td></tr>';
+                        }
                         break;
 
                     // text input type
@@ -1856,25 +1942,12 @@ if (! class_exists('MetaSliderPlugin')) {
                                     </div>
                                     <?php
                                 } else {
-                                    $global_settings = $this->get_global_settings();
-                                    $new_install = get_option('metaslider_new_user');
                             ?>
                                     <metaslider-settings-viewer inline-template>
                                         <div>
                                             <div id="metaslider_configuration">
                                                 <?php
-                                                if (
-                                                    (isset($global_settings['legacy']) && true == $global_settings['legacy']) ||
-                                                    (isset($new_install)  && 'new' == $new_install)
-                                                ) {
-                                                    if($this->slider->get_setting('type') == 'flex') {
-                                                        include METASLIDER_PATH . "admin/views/pages/parts/slider-settings.php";
-                                                    } else {
-                                                        include METASLIDER_PATH . "admin/views/pages/parts/slider-settings-legacy.php";
-                                                    }
-                                                } else {
-                                                    include METASLIDER_PATH . "admin/views/pages/parts/slider-settings-legacy.php";
-                                                }
+                                                include METASLIDER_PATH . "admin/views/pages/parts/slider-settings.php";
                                                 ?>
                                             </div>
                                         </div>
@@ -1906,6 +1979,39 @@ if (! class_exists('MetaSliderPlugin')) {
                 </metaslider>
             </div>
             <?php
+        }
+
+        /**
+         * Append the 'Add Slideshow' button to selected admin pages (classic editor)
+         * Uses the media_buttons filter
+         */
+        public function insert_metaslider_button()
+        {
+            $capability = apply_filters('metaslider_capability', self::DEFAULT_CAPABILITY_EDIT_SLIDES);
+            if (! current_user_can($capability)) {
+                return;
+            }
+
+            global $pagenow;
+            if (! in_array($pagenow, array('post.php', 'page.php', 'post-new.php', 'post-edit.php'))) {
+                return;
+            }
+
+            if (
+                (defined('ELEMENTOR_VERSION') && \Elementor\Plugin::$instance->editor->is_edit_mode()) ||
+                (isset($_GET['action']) && $_GET['action'] === 'elementor')
+            ) {
+                return;
+            }
+
+            printf(
+                '
+                <a href="#TB_inline?&width=783&inlineId=choose-meta-slider" class="thickbox button">
+                    <span class="wp-media-buttons-icon"
+                        style="background:url(%simages/metaslider_logo.png);background-repeat:no-repeat;background-position:left -2px;background-size: 20px;position: relative;margin-left:0;"></span>%s</a>',
+                esc_url(METASLIDER_ADMIN_URL),
+                esc_html__("Add slideshow", "ml-slider")
+            );
         }
 
         /**
@@ -2444,6 +2550,10 @@ if (! class_exists('MetaSliderPlugin')) {
             return $tag;
         }
 
+        public function metaslider_add_body_class($classes) {
+            $classes[] = 'metaslider-plugin';
+            return $classes;
+        }
 
         public function quickstart_params(){ 
             if (isset($_REQUEST['page']) && 'metaslider-start' == $_REQUEST['page']) {
@@ -2484,23 +2594,37 @@ if (! class_exists('MetaSliderPlugin')) {
                 });
                 uploader.init();
                 uploader.bind('FilesAdded', function(up, files){
+                  $('#drag-drop-area').css({
+                    'opacity': '0'
+                  });
+                  $('#sampleslider-options, #sampleslider-btn').css({
+                    'pointer-events': 'none',
+                    'user-select': 'none',
+                    'opacity': '0.5'
+                  });
+                  $('#loading-add-sample-slides-notice').css({
+                    'padding-top': '90px',
+                    'position': 'absolute'
+                  }).show();
+
                   var hundredmb = 100 * 1024 * 1024, max = parseInt(up.settings.max_file_size, 10);
                   plupload.each(files, function(file){
                     if (max > hundredmb && file.size > hundredmb && up.runtime != 'html5'){
                      $("#quickstart-status").html("Error");
                     }else{
-                        $("#media-items").append('<div class="media-item child-of-0 open"><div class="media-item-wrapper"><div class="attachment-details"><div class="filename new"><span class="media-list-title"><strong>'+file.name+'</strong></span><span class="media-list-subtitle"></span></div></div><div class="attachment-tools"><span class="media-item-copy-container copy-to-clipboard-container edit-attachment"></span><b id="'+file.id+'"><div class="progress"><div class="percent">100%</div><div class="bar" style="width: 200px;"></div></div></b></div></div></div>');
+                        $("#media-items").append('<div class="media-item child-of-0 open"><div class="media-item-wrapper"><div class="attachment-details"><div class="filename new"><span class="media-list-title"><strong>'+file.name+'</strong></span><span class="media-list-subtitle"></span></div></div><div class="attachment-tools"><span class="media-item-copy-container copy-to-clipboard-container edit-attachment"></span><b id="'+file.id+'"><div class="progress-dis"><div class="percent-dis"><span style="font-weight: 400; font-style: italic;"><?php 
+                            esc_html_e( 'Uploading...', 'ml-slider' ) ?></span></div><!--div class="bar" style="width: 200px;"></div--></div></b></div></div></div>');
                     }
                   })
                   up.refresh();
                   up.start();
                 });
                 uploader.bind('FileUploaded', function(up, file, response) {
-                    $("#"+file.id).text("Upload Complete");
+                    $("#"+file.id).html("<?php esc_html_e( 'Upload Complete', 'ml-slider' ) ?> <span class=\"dashicons dashicons-saved\" style=\"color:green;\"></span>");
                     $("#"+file.id).attr("data-slide", response.response);
                 });
                 uploader.bind("UploadComplete", function (up, files, response) {
-                    $("#media-items").append('<div class="updated below-h2" id="message"><p>Creating slideshow.</p></div>');
+                    $('#loading-add-sample-slides-notice span span').html(metaslider.creating_slideshow_language);
                     var file_details = [];
                     $.each(files, function(key, value) {
                         file_details.push($("#"+value.id).data("slide"));

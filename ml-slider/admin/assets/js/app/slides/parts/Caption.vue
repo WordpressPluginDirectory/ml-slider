@@ -122,14 +122,13 @@ export default {
 					}
 
 					const id = `caption_override_${this.$parent.id}`;
-					
 					// Add Image data to metaslider.tinymce
 					if (typeof metaslider.tinymce.find(obj => obj.type === 'image') === 'undefined') {
 						metaslider.tinymce.push({
 							type: 'image',
 							configuration: {
 								toolbar: [
-									'undo redo bold italic forecolor link unlink alignleft aligncenter alignright styles code'
+									'undo redo bold italic forecolor link unlink alignleft aligncenter alignright styles code device_options'
 								],
 								menubar: false,
 								plugins: 'code link',
@@ -140,6 +139,58 @@ export default {
 								forced_root_block: 'div',
 								convert_urls: false,
 								setup: function (editor) {
+									if (typeof metaslider !== 'undefined' && metaslider.mobile_settings) {
+										editor.on('BeforeSetContent', function (event) {
+											event.content = event.content
+												.replace(/\n/g, ' ')
+												.replace(/<div>\s*(\[metaslider_hide[^\]]*\])\s*<\/div>/g, '$1')
+												.replace(/<div>\s*(\[\/metaslider_hide\])\s*<\/div>/g, '$1'); 
+										});
+
+										editor.on('PostProcess', function (event) {
+											event.content = event.content
+												.replace(/\n/g, ' ')
+												.replace(/<div>\s*(\[metaslider_hide[^\]]*\])\s*<\/div>/g, '$1')
+												.replace(/<div>\s*(\[\/metaslider_hide\])\s*<\/div>/g, '$1');
+										});
+										let selectedOptions = [];
+										editor.ui.registry.addMenuButton('device_options', {
+											text: metaslider.device_options_dropdown,
+											fetch: function(callback) {
+												callback([
+													{
+														type: 'togglemenuitem',
+														text: metaslider.hide_on_mobile,
+														onAction: function(api) {
+															toggleSelection(editor, api, 'smartphone', selectedOptions);
+														}
+													},
+													{
+														type: 'togglemenuitem',
+														text: metaslider.hide_on_tablet,
+														onAction: function(api) {
+															toggleSelection(editor, api, 'tablet', selectedOptions);
+														}
+													},
+													{
+														type: 'togglemenuitem',
+														text: metaslider.hide_on_laptop,
+														onAction: function(api) {
+															toggleSelection(editor, api, 'laptop', selectedOptions);
+														}
+													},
+													{
+														type: 'togglemenuitem',
+														text: metaslider.hide_on_desktop,
+														onAction: function(api) {
+															toggleSelection(editor, api, 'desktop', selectedOptions);
+														}
+													}
+												]);
+											}
+										});
+									}
+
 									editor.on('input', function () {
 										updateContent(editor);
 									});
@@ -148,8 +199,8 @@ export default {
 										updateContent(editor);
 									});
 
-									const updateContent = function (editor) {
-										const el = document.getElementById(editor.id);
+									var updateContent = function (editor) {
+										var el = document.getElementById(editor.id);
 										if (el) {
 											el.value = editor.getContent();
 										}
@@ -157,6 +208,35 @@ export default {
 								}
 							}
 						});
+
+						function toggleSelection(editor, api, option, selectedOptions) {
+							let selectedText = editor.selection.getContent()
+
+							// Check if text is already wrapped in [metaslider-hide] shortcode
+							let hideRegex = /\[metaslider_hide devices="(.*?)"\]([\s\S]*?)\[\/metaslider_hide\]/;
+							let match = selectedText.match(hideRegex);
+							let currentOptions = [];
+
+							if (match) {
+								currentOptions = match[1].split(", ").map(opt => opt.trim());
+								selectedText = match[2].trim();
+							}
+
+							if (currentOptions.includes(option)) {
+								currentOptions = currentOptions.filter(item => item !== option);
+								api.setActive(false);
+							} else {
+								currentOptions.push(option);
+								api.setActive(true);
+							}
+
+							let newTag = currentOptions.length > 0
+        						? `[metaslider_hide devices="${currentOptions.join(", ")}"]${selectedText}[/metaslider_hide]`
+        						: selectedText;
+
+							editor.selection.setContent(newTag);
+							editor.execCommand('mceUpdateContent');
+						}
 
 					}
 

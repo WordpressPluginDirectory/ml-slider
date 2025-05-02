@@ -681,7 +681,7 @@ class MetaSlider_Slideshows
             return $slideshows;
         }
 
-        $slideshows_formatted = array_map('self::build_slideshow_object', $slideshows->posts);
+        $slideshows_formatted = array_map([self::class, 'build_slideshow_object'], $slideshows->posts);
 
         $remaining_pages = intval($slideshows->max_num_pages) - intval($page);
         if ($remaining_pages > 0) {
@@ -742,6 +742,29 @@ class MetaSlider_Slideshows
         $slideshows = get_posts(apply_filters('metaslider_all_meta_sliders_args', $args));
 
         return array_map(array($this, 'build_slideshow_object_simple'), $slideshows);
+    }
+
+    /**
+     * Method to get slideshows that uses legacy libraries
+     * 
+     * @return int
+     */
+    public function get_legacy_slideshows()
+    {
+        $slideshows = $this->get();
+        $count_sliders = 0;
+        foreach ($slideshows as $slideshow) {
+            if(isset($slideshow['id'])) {
+                $settings = get_post_meta($slideshow['id'], 'ml-slider_settings', true);
+                if (is_array($settings) && isset($settings['type'])) {
+                    $type = $settings['type'];
+                    if($type !== 'flex'){
+                        $count_sliders++;
+                    }
+                }
+            }
+        }
+        return $count_sliders;
     }
 
     /**

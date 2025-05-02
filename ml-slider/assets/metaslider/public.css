@@ -92,6 +92,7 @@ body .metaslider .flexslider .flex-direction-nav li {
 }
 
 .metaslider .flex-pauseplay a {
+    box-sizing: border-box;
 	height: 30px;
 	width: 30px;
 }
@@ -119,6 +120,14 @@ body .metaslider .flexslider .flex-direction-nav li {
 	bottom: -27px;
     line-height: 11px;
     z-index: 2;
+}
+
+.metaslider.has-dots-onhover-navigation .flexslider .flex-control-paging {
+    opacity: 1;
+    transition: opacity .3s ease;
+}
+.metaslider.has-dots-onhover-navigation:hover .flexslider .flex-control-paging {
+    opacity: 1 !important;
 }
 
 .metaslider-flex.ms-theme-default .flex-next:focus {
@@ -223,7 +232,7 @@ body .metaslider .flexslider .flex-direction-nav li {
 .metaslider.has-onhover-arrows .flexslider .flex-direction-nav li a {
     opacity: 0;
 }
-.metaslider.has-onhover-arrows .flexslider .flex-direction-nav li a:hover {
+.metaslider.has-onhover-arrows:hover .flexslider .flex-direction-nav li a{
     opacity: 1;
 }
 
@@ -438,6 +447,14 @@ div.metaslider .slider-wrapper .nivo-controlNav a {
     background-color: #fff;
     transition: width 2s linear;
     z-index: 999;
+}
+/* Carousel */
+.ms-carousel-force-height .slides > li {
+    overflow: hidden;
+}
+.ms-carousel-force-height .slides > li.ms-image img {
+    height: 100%;
+    width: auto;
 }
 @media only screen and (max-width : 767px) {
     .metaslider.ms-theme-precognition .flex-control-nav li a {

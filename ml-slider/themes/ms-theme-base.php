@@ -79,6 +79,7 @@ class MetaSlider_Theme_Base
         add_filter('metaslider_responsive_slider_parameters', array($this, 'update_parameters'), 99, 3);
         add_filter('metaslider_nivo_slider_parameters', array($this, 'update_parameters'), 99, 3);
         add_filter('metaslider_coin_slider_parameters', array($this, 'update_parameters'), 99, 3);
+        add_filter('metaslider_flex_slider_parameters', array($this, 'responsive_arrows'), 99, 3);
 
         // Pro - override the arrows markup for the filmstrip
         add_filter('metaslider_flex_slider_filmstrip_parameters', array($this, 'update_parameters'), 99, 3);
@@ -123,6 +124,65 @@ class MetaSlider_Theme_Base
                 wp_enqueue_script('metaslider_' . $this->id . '_theme_script', METASLIDER_THEMES_URL . $this->id . $asset['file'], isset($asset['dependencies']) ? $asset['dependencies'] : array(), $this->version, isset($asset['in_footer']) ? $asset['in_footer'] : true);
             }
         }
+    }
+
+    /**
+     * Adjust arrows in mobile when negative value is in place to avoid horizontal scrollbar
+     *
+     * @since 3.98
+     * 
+     * @param array      $options      The slider plugin options
+     * @param int|string $slideshow_id The slideshow options
+     * @param array      $settings     The slideshow settings
+     */
+    public function responsive_arrows( $options, $slideshow_id, $settings ) {
+        $enable     = apply_filters( 'metaslider_flex_slider_responsive_arrows_enable', false );
+        $prev_class = apply_filters( 'metaslider_flex_slider_responsive_arrows_prev_class', '.flex-prev' );
+        $next_class = apply_filters( 'metaslider_flex_slider_responsive_arrows_next_class', '.flex-next' );
+        
+        if ( ! is_admin() && $enable ) {
+            $options['start'] = isset( $options['start'] ) ? $options['start'] : array();
+            $options['start'] = array_merge( $options['start'], array(
+                "function responsive_arrows__slide_width() {
+                    var width = parseInt($('#metaslider_{$slideshow_id}').width());
+                    if ( width > 0 ) {
+                        return width;
+                    }
+                    return $('#metaslider-id-{$slideshow_id}').attr('data-width');
+                }
+                function responsive_arrows__adjust_arrows(prevStartVal, nextStartVal) {
+                    if ( ! prevStartVal || ! nextStartVal) {
+                        return;
+                    }
+
+                    var screenWidth = $(window).innerWidth();
+                    var parentContainer = $('#metaslider_container_{$slideshow_id}');
+                    var liWidth = responsive_arrows__slide_width();
+                    var prev = parentContainer.find('{$prev_class}');
+                    var next = parentContainer.find('{$next_class}');
+
+                    /* 200 = give some breathe considering arrow size and position from edge */
+                    if ((screenWidth - 200) < liWidth && (parseInt(prevStartVal, 10) < 0 || parseInt(nextStartVal, 10) < 0)) {
+                        prev.css('left', '10px');
+                        next.css('right', '10px');
+                    } else {
+                        prev.css('left', prevStartVal);
+                        next.css('right', nextStartVal);
+                    }
+                }
+                    
+                var parentContainer = $('#metaslider_container_{$slideshow_id}');
+                var prevStartVal = parentContainer.find('{$prev_class}').css('left') || null;
+                var nextStartVal = parentContainer.find('{$next_class}').css('right') || null;
+                responsive_arrows__adjust_arrows(prevStartVal, nextStartVal);
+
+                $(window).on('resize', function() {
+                    responsive_arrows__adjust_arrows(prevStartVal, nextStartVal);
+                });"
+            ));
+        }
+
+        return $options;
     }
 
     /**

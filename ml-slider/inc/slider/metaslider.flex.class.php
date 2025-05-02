@@ -35,6 +35,7 @@ class MetaFlexSlider extends MetaSlider
         add_filter('metaslider_flex_slider_parameters', array( $this, 'manage_progress_bar' ), 99, 3);
         add_filter('metaslider_flex_slider_parameters', array( $this, 'manage_tabbed_slider' ), 99, 3);
         add_filter('metaslider_flex_slider_parameters', array( $this, 'manage_pausePlay_button' ), 99, 3);
+        add_filter('metaslider_flex_slider_parameters', array( $this, 'manage_dots_onhover' ), 10, 3);
 
         if(metaslider_pro_is_active() == false) {
             add_filter('metaslider_flex_slider_parameters', array( $this, 'metaslider_flex_loop'), 99, 3);
@@ -75,7 +76,7 @@ class MetaFlexSlider extends MetaSlider
                 $options["itemWidth"] = $this->get_setting('width');
                 $options["animation"] = "'slide'";
                 $options["direction"] = "'horizontal'";
-                $options["minItems"] = 1;
+                $options["minItems"] = $this->get_setting('minItems');
                 $options["move"] = 1;
                 $options["itemMargin"] = apply_filters('metaslider_carousel_margin', $this->get_setting('carouselMargin'), $slider_id);
                 //activate infinite loop when carousel is set to 'continously' and 'autoplay'
@@ -88,7 +89,22 @@ class MetaFlexSlider extends MetaSlider
                         var ul = $('#metaslider_" . $slider_id . " .slides');
                         ul.find('li').clone(true).appendTo(ul);
                     "));
-                }                
+                }
+                
+                if ( (int) $options['minItems'] > 1 && $this->get_setting('forceHeight') == 'true' ) {
+                    $options['init'] = isset( $options['init'] ) ? $options['init'] : array();
+                    $options['init'] = array_merge( $options['init'], array("
+                        var container = $('#metaslider-id-" . $slider_id . "');
+                        var height = container.attr('data-height') || false;
+
+                        if (height) {
+                            container.addClass('ms-carousel-force-height');
+                            container.find('.slides > li').each(function () {
+                                $(this).css({height: height + 'px'});
+                            });
+                        }
+                    "));
+                }
             }
             unset($options["carouselMode"]);
         }
@@ -444,6 +460,7 @@ class MetaFlexSlider extends MetaSlider
                     "
                     $('#metaslider_" . $slider_id . " .flex-control-nav').attr('role', 'tablist');
                     $('#metaslider_" . $slider_id . " .flex-control-nav a:not(.flex-active)').attr('tabindex', '-1');
+                    $('#metaslider_" . $slider_id . " .slides li:not(.flex-active-slide) a').attr('tabindex', '-1');
                     "
                 )
             );
@@ -455,6 +472,8 @@ class MetaFlexSlider extends MetaSlider
                     "
                     $('#metaslider_" . $slider_id . " .flex-control-nav a.flex-active').removeAttr('tabindex');
                     $('#metaslider_" . $slider_id . " .flex-control-nav a:not(.flex-active)').attr('tabindex', '-1');
+                    $('#metaslider_" . $slider_id . " .slides li.flex-active-slide a.flex-active').removeAttr('tabindex');
+                    $('#metaslider_" . $slider_id . " .slides li:not(.flex-active-slide) a').attr('tabindex', '-1');
                     "
                 )
             );
@@ -589,9 +608,40 @@ class MetaFlexSlider extends MetaSlider
                 $script .= "$('.flex-pauseplay a').text('" . addslashes($settings['playText']) . "');";
             }
         
+            $options['start'] = isset($options['start']) ? $options['start'] : array();
             $options['start'] = array_merge($options['start'], [$script]);
+        }
+        /* @since 3.97 - disable hover on pause when play button is enabled */
+        if (isset($settings['pausePlay']) && $settings['pausePlay'] === 'true') {
+            unset($options['pauseOnHover']);
         }
         
         return $options;
     }
+
+    /**
+     * Modify the JavaScript parameters to delay the navigation fade out
+     *
+     * @since 2.46
+     * 
+     * @param array $options - javascript parameters
+     * @param integer $slider_id - slideshow ID
+     * @param array $settings - slideshow settings
+     *
+     * @return array modified javascript parameters
+     */
+    public function manage_dots_onhover( $options, $slider_id, $settings )
+    {
+        if ( 'dots_onhover' === $settings['navigation'] ) {
+            $options['start'] = isset( $options['start'] ) ? $options['start'] : array();
+            $options['start'] = array_merge( $options['start'], array(
+                "setTimeout(function() {
+                    slider.find('.flex-control-paging').css('opacity', '0');
+                }, 2000);"
+            ));
+        }
+
+        return $options;
+    }
 }
+

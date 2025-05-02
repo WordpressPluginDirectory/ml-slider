@@ -2,15 +2,26 @@
 	
 	.flexslider {
 
+		.slides {
+			.metaslider_image_link:focus img {
+				outline: 2px solid;
+				outline-offset: -2px;
+			}
+		}
+
 		.flex-direction-nav li a {
 			width: 26px;
-			  height: 26px;
+			height: 26px;
 			background: #333;
 			background-image: none;
 			border-radius: 50%;
 			transform: translateY(-50%);
 			top: calc(50% + 20px);  // 20px is the margin-bottom / 2 from .flexslider
 	
+			&:focus {
+				outline: 2px solid #fff;
+			}
+
 			&:after {
 				background-color: #fff;
 				mask-repeat: no-repeat;
@@ -33,8 +44,23 @@
 			}
 		}
 
+		.flex-control-nav li a{
+			&:focus {
+				outline: 2px solid;
+			}
+		}
+
 		.caption-wrap .caption a {
 			color: #fff;
+		}
+
+		.flex-pauseplay a {
+			top: 10px;
+			bottom: unset;
+
+			&:focus {
+				outline: 3px solid #fff;
+			}
 		}
 	}
 }

@@ -155,6 +155,12 @@
 				}
 			}
 		}
+
+		.flex-pauseplay a {
+			right: 30px;
+			left: unset;
+			bottom: 22px;
+		}
 	}
 
 	&.has-onhover-arrows {

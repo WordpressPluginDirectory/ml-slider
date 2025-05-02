@@ -27,10 +27,7 @@
 			<p
 				v-if="(hasThemeSet && unsupportedSliderType)"
 				class="slider-not-supported-warning">
-                <svg class="inline w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                </svg>
-				{{ __('This theme is not officially supported by the slider you chose. Your results might vary.', 'ml-slider') }}
+				{{ __('This theme was designed for FlexSlider. Please choose the FlexSlider option for the best display.', 'ml-slider') }}
 			</p>
 
 			<!-- If there's a theme already set -->
@@ -314,10 +311,7 @@
 						<span
 							v-if="sliderTypeNotSupported"
 							class="slider-not-supported-warning">
-                            <svg class="inline w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                            </svg>
-							{{ __('This theme is not officially supported by the slider you chose. Your results might vary.', 'ml-slider') }}</span>
+							{{ __('This theme was designed for FlexSlider. Please choose the FlexSlider option for the best display.', 'ml-slider') }}</span>
 					</div>
 					<div class="flex items-center">
 						<button
@@ -370,7 +364,8 @@ export default {
 			hoveredTheme: {},
 			is_open: false,
 			revealThemeAd: null,
-			theme_customize: []
+			theme_customize: [], // @TODO Maybe declare as {} ?
+			theme_edit_settings: {}
 		}
 	},
 	watch: {
@@ -586,6 +581,11 @@ export default {
 					}, 1000);
 
 					this.notifySuccess('metaslider/theme-updated', this.__('Theme saved', 'ml-slider'), true)
+
+					if (typeof metaslider.autoThemeConfig !== 'undefined' && parseInt(metaslider.autoThemeConfig, 10)) {
+						this.theme_edit_settings = this.selectedTheme.edit_settings ?? {};
+						this.updateEditSettings();
+					}
 				}).catch(error => {
 					this.notifyError('metaslider/theme-error', error, true)
 				})
@@ -626,6 +626,41 @@ export default {
 						$(this).wpColorPicker('color', newColor);
 					}
 				});
+			});
+		},
+		updateEditSettings() {
+			this.$nextTick( function () {
+
+				if (Object.keys(this.theme_edit_settings).length > 0) {
+					var $ = window.jQuery;
+
+					for (const [key,value] of Object.entries(this.theme_edit_settings)) {
+						const field = $(`#metaslider_configuration [name="settings[${key}]"]`);
+
+						if (field.length == 1) {
+							if (field.is('select')) {
+								// select
+								if (field.find(`option[value="${value}"]`).length) {
+									field.val(value).trigger('change');
+								}
+							} else if (field.is(':checkbox')) {
+								// checkbox
+								field.prop('checked', value).trigger('change');
+							} else if (field.is('input')) {
+								// input
+								const fieldType = field.attr('type');
+								if (fieldType === 'text' || fieldType === 'number') {
+									field.val(value).trigger('change');
+								}
+							}
+							field.attr('data-edit-setting', true); // Not requied. We add it just for reference
+						}
+					}
+
+					setTimeout(function () {
+						EventManager.$emit('metaslider/save');
+					}, 1000);
+				}
 			});
 		},
 		openModal() {
@@ -961,7 +996,10 @@ export default {
 		color: $brand;
 	}
 	#metaslider-ui .theme-select-module .slider-not-supported-warning {
+		background-color: #f9edc9;
+		border: 1px solid #f2a561;
 		margin-bottom: 1em;
+		padding: 10px 15px;
 		svg {
 			color: $red !important;
 		}

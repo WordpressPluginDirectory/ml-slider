@@ -971,6 +971,9 @@ input[type="radio"] {
 .tox.tox-tinymce-aux {
     z-index: 9999;
 }
+.tox-tinymce-aux .tox-menu h1, .tox-tinymce-aux .tox-menu p {
+	margin-bottom: 0 !important;
+}
 
  /* Spin an svg */
  .ms-spin {
@@ -1451,6 +1454,16 @@ input.no_last_pass {
 .ml-legacy-notice p {
 	margin: 10px 0 !important;
 }
+.ml-legacy-notice.ml-move-notice {
+	margin: 0 0 10px !important;
+	border: 1px solid #f2a561;
+	background-color: #f9edc9;
+}
+.ml-move-notice a {
+	color: #016FB9;
+	font-weight: bold;
+	text-decoration: underline;
+}
 
 #metaslider-ui, 
 .container {
@@ -1490,6 +1503,61 @@ input.no_last_pass {
     overflow: hidden;
     width: 150px;
     height: 150px;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    display: none;
+}
+.shortcode-modal {
+	background: #fff;
+	border: 1px solid #ccc;
+	box-shadow: 0 0 10px rgba(0,0,0,.2);
+	display: none;
+	left: 50%;
+	max-width: 500px;
+	min-width: 300px;
+	padding: 20px;
+	position: fixed;
+	top: 50%;
+	transform: translate(-50%,-50%);
+	width: 400px;
+	z-index: 1000;
+	max-height: 400px;
+	overflow: auto;
+}
+.shortcode-modal .modal-content {
+    position: relative;
+    padding: 10px;
+}
+.shortcode-modal .close-modal {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    cursor: pointer;
+    font-size: 20px;
+    font-weight: bold;
+}
+.shortcode-modal ul {
+	list-style: disc;
+	padding-left: 20px;
+}
+.shortcode-modal li {
+	margin: 0;
+	font-size: 14px;
+	line-height: 21px;
+}
+.shortcode-modal h5 {
+	margin: 10px 0 0 0;
+	text-transform: uppercase;
+	font-size: 14px;
+	letter-spacing: 1px;
 }
 
 /* Force CSS properties overriden by core for .form-select class */
@@ -1571,14 +1639,18 @@ input.no_last_pass {
 	align-items: flex-start;
 }
 #mobile-settings .dashicons {
-	padding: 25px 10px;
-	width: 55px;
-	height: 75px;
-	font-size: 25px;
 	color: #606060;
+	font-size: 35px;
+	height: 35px;
+	padding: 0;
+	width: 45px;
 }
 #mobile-settings form input {
-	width: 80px !important;
+	width: 60px !important;
+}
+#mobile-settings .mobile-icon-wrap {
+	padding: 20px 5px 0 5px;
+	text-align: center;
 }
 #dashboard-settings form {
 	box-shadow: none !important;
@@ -1713,7 +1785,7 @@ td .dot.available {
     background: #fff;
 }
 
-#loading-add-sample-slides-notice span {
+#loading-add-sample-slides-notice > span {
     padding-left: 30px;
     background-repeat: no-repeat;
     background-size: contain;
@@ -1749,6 +1821,10 @@ td .dot.available {
                 }
             }
 
+            &.customizer-slide {
+                display: none !important;
+            }
+            
             td {
                 padding-left: 10px;
                 padding-right: 10px;
@@ -1770,6 +1846,8 @@ td .dot.available {
                         font-weight: 500;
                         color: #50575e;
                         font-size: 0.9rem;
+                        margin: 0 !important;
+                        padding: 0 !important;
                     }
                 }
 

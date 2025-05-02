@@ -133,6 +133,8 @@ class MetaSlider
             'smoothHeight' => false,
             'carouselMode' => false,
             'carouselMargin' => 5,
+            'minItems' => 1,
+            'forceHeight' => false,
             'firstSlideFadeIn' => false,
             'easing' => 'linear',
             'autoPlay' => true,
@@ -151,6 +153,10 @@ class MetaSlider
             'mobileNavigation_tablet' => false,
             'mobileNavigation_laptop' => false,
             'mobileNavigation_desktop' => false,
+            'mobileSlideshow_smartphone' => false,
+            'mobileSlideshow_tablet' => false,
+            'mobileSlideshow_laptop' => false,
+            'mobileSlideshow_desktop' => false,
             'ariaLive' => false,
             'tabIndex' => false,
             'pausePlay' => false,
@@ -301,7 +307,7 @@ class MetaSlider
             $slideshow_title = 'Slideshow';
         }
 
-        $html[] = '<div id="metaslider-id-' . esc_attr($this->id) . '" style="' . esc_attr($this->get_container_style()) . '" class="' . esc_attr($this->get_container_class()) . '" role="region" aria-roledescription="Slideshow" aria-label="' . esc_attr($slideshow_title) . '">';
+        $html[] = '<div id="metaslider-id-' . esc_attr($this->id) . '" style="' . esc_attr($this->get_container_style()) . '" class="' . esc_attr($this->get_container_class()) . '" role="region" aria-roledescription="Slideshow" aria-label="' . esc_attr($slideshow_title) . '"' . $this->extra_container_attributes() . '>';
         $html[] = '    <div id="' . esc_attr($this->get_container_id()) . '">';
         $html[] = '        ' . $this->get_html();
         $html[] = '        ' . $this->get_html_after();
@@ -361,29 +367,25 @@ class MetaSlider
         }
 
         //add mobile settings class
-        if ('false' != $this->get_setting('mobileArrows_smartphone')) {
-            $class .= ' hide-arrows-smartphone';
+        $devices = ['smartphone', 'tablet', 'laptop', 'desktop'];
+        $features = ['mobileSlideshow' => 'hide-slideshow', 'mobileArrows' => 'hide-arrows', 'mobileNavigation' => 'hide-navigation'];
+        
+        foreach ($features as $setting_prefix => $css_prefix) {
+            foreach ($devices as $device) {
+                if ('false' != $this->get_setting("{$setting_prefix}_{$device}")) {
+                    $class .= " {$css_prefix}-{$device}";
+                }
+            }
         }
-        if ('false' != $this->get_setting('mobileArrows_tablet')) {
-            $class .= ' hide-arrows-tablet';
-        }
-        if ('false' != $this->get_setting('mobileArrows_laptop')) {
-            $class .= ' hide-arrows-laptop';
-        }
-        if ('false' != $this->get_setting('mobileArrows_desktop')) {
-            $class .= ' hide-arrows-desktop';
-        }
-        if ('false' != $this->get_setting('mobileNavigation_smartphone')) {
-            $class .= ' hide-navigation-smartphone';
-        }
-        if ('false' != $this->get_setting('mobileNavigation_tablet')) {
-            $class .= ' hide-navigation-tablet';
-        }
-        if ('false' != $this->get_setting('mobileNavigation_laptop')) {
-            $class .= ' hide-navigation-laptop';
-        }
-        if ('false' != $this->get_setting('mobileNavigation_desktop')) {
-            $class .= ' hide-navigation-desktop';
+
+        if (!empty($this->settings['hide_on'])) {
+            $hide_on = explode(',', $this->settings['hide_on']);
+            foreach ($hide_on as $device) {
+                $device = trim($device);
+                if (in_array($device, $devices)) {
+                    $class .= " hide-slideshow-{$device}";
+                }
+            }
         }
 
         //arrows class
@@ -391,9 +393,47 @@ class MetaSlider
             $class .= ' has-onhover-arrows';
         }
 
+        // Navigation class
+        if ( 'dots_onhover' == $this->get_setting( 'navigation' ) ) {
+            $class .= ' has-dots-onhover-navigation';
+        }
+
         // handle any custom classes
         $class = apply_filters('metaslider_css_classes', $class, $this->id, $this->settings);
         return $class;
+    }
+
+    /**
+     * Generate container data attributes
+     * 
+     * @since 3.97
+     * 
+     * @return string attributes with values
+     */
+    public function extra_container_attributes()
+    {
+        $attrs = array();
+
+        // Height
+        if ( isset( $this->settings['minItems'] ) ) {
+            $minItems = $this->settings['minItems'];
+
+            if ( (int) $minItems > 1 ) {
+                $attrs['data-height'] = $this->settings['height'];
+            }
+        }
+
+        // Width
+        if ( isset( $this->settings['width'] ) && (int) $this->settings['width'] > 0 ) {
+            $attrs['data-width'] = (int) $this->settings['width'];
+        }
+
+        $html = "";
+        foreach ( $attrs as $att => $val ) {
+            $html .= " " . $att . '="' . esc_attr( $val ) . '"';
+        }
+
+        return $html;
     }
 
     /**
@@ -672,6 +712,12 @@ class MetaSlider
         $class .= ' .hide-navigation-' . $device . ' .flex-control-paging,';
         $class .= ' .hide-navigation-' . $device . ' .flex-control-nav,';
         $class .= ' .hide-navigation-' . $device . ' .filmstrip,';
+
+        //hide slideshow @since 3.97
+        $class .= ' .hide-slideshow-' . $device . ',';
+
+        //hide elements @since 3.97
+        $class .= ' .metaslider-hidden-content.hide-' . $device . ',';
         
         if(!empty($class)) {
             $class = rtrim($class, ',');
@@ -697,27 +743,28 @@ class MetaSlider
             $desktop = $breakpoints[3];
 
             $css .= '@media only screen and (max-width: ' . ($tablet - 1) . 'px) {'; 
-            $css .= 'body:after { display: none; content: "smartphone"; }';
+            $css .= 'body.metaslider-plugin:after { display: none; content: "smartphone"; }';
             $css .= $this->build_mobile_css('smartphone');
 
             $css .= '}';
 
             $css .= '@media only screen and (min-width : ' . $tablet . 'px) and (max-width: ' .( $laptop - 1) . 'px) {';
-            $css .= 'body:after { display: none; content: "tablet"; }';
+            $css .= 'body.metaslider-plugin:after { display: none; content: "tablet"; }';
             $css .= $this->build_mobile_css('tablet');
             $css .= '}';
 
             $css .= '@media only screen and (min-width : ' . $laptop . 'px) and (max-width: ' . ($desktop - 1) . 'px) {';
-            $css .= 'body:after { display: none; content: "laptop"; }';
+            $css .= 'body.metaslider-plugin:after { display: none; content: "laptop"; }';
             $css .= $this->build_mobile_css('laptop');
             $css .= '}';
 
             $css .= '@media only screen and (min-width : ' . $desktop . 'px) {';
-            $css .= 'body:after { display: none; content: "desktop"; }';
+            $css .= 'body.metaslider-plugin:after { display: none; content: "desktop"; }';
             $css .= $this->build_mobile_css('desktop');
             $css .= '}';
+        } else {
+            $css .= 'body.metaslider-plugin:after { display: none; content: ""; }';
         }
-
         return $css;
     }
 

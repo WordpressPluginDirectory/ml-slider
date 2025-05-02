@@ -15,5 +15,5 @@ jQuery(document).ready(function($){
     }
 
     //Accessibility
-    $('.metaslider .flex-next, .metaslider .flex-prev, .metaslider .flex-control-nav li a, .metaslider .flex-pauseplay a').attr('role', 'button');
+    $('.metaslider .flex-next, .metaslider .flex-prev, .metaslider .flex-pauseplay a').attr('role', 'button');
 });
