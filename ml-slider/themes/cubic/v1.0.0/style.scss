@@ -26,15 +26,6 @@
 			&:not(.flex-control-thumbs) {
 				background: transparent;
 				bottom: 15px;
-				-webkit-box-pack: center;
-				display: -webkit-box;
-				display: -ms-flexbox;
-				display: flex;
-				-ms-flex-pack: center;
-				-ms-flex-wrap: wrap;
-				flex-wrap: wrap;
-				justify-content: center;
-				justify-content: center;
 				line-height: 15px;
 				margin: 0;
 				padding: 0;
@@ -45,7 +36,7 @@
 				li {
 					a {
 						background: rgba(255, 255, 255, 0.8);
-						border: 0;
+						border: 2px solid transparent;
 						border-radius: 0;
 						-webkit-box-shadow: none !important;
 						box-shadow: none !important;
@@ -55,7 +46,8 @@
 						line-height: 15px;
 						margin: 0 5px;
 						padding: 5px 0 5px 10px;
-						text-indent: -9999px;
+						text-indent: 9999px;
+						overflow: hidden;
 						-webkit-transition: background 0.2s ease-in-out;
 						transition: background 0.2s ease-in-out;
 						width: 15px;

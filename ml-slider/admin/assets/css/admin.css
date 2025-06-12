@@ -33,6 +33,13 @@ pre#shortcode *::selection {
 	@apply bg-blue-highlight text-gray-darker;
 }
 
+#metaslider-ui button:disabled,
+#metaslider-ui button:disabled:hover {
+    cursor: default;
+    opacity: 0.8;
+}
+
+
 /* Consider everything after this a legacy style with the intent to
 eventually be removed/refactored */
 .metaslider.wrap div.updated,
@@ -973,6 +980,13 @@ input[type="radio"] {
 }
 .tox-tinymce-aux .tox-menu h1, .tox-tinymce-aux .tox-menu p {
 	margin-bottom: 0 !important;
+}
+.mce-content-body .ms-custom-button {
+    background-color: #DD6923;
+    border-radius: 9px;
+    color: #000;
+    display: inline-block;
+    padding: 10px 20px;
 }
 
  /* Spin an svg */
@@ -1990,6 +2004,32 @@ td .dot.available {
 .metaslider .ms-settings-table tr.customizer-pausePlay,
 .metaslider .ms-settings-table tr.customizer-progressBar {
 	display: none;
+}
+
+.metaslider .ms-settings-table .is-pro-setting {
+    width: 30px;
+    opacity: 1;
+    color: #333;
+}
+
+.metaslider .ms-settings-table .is-pro-setting:hover {
+    color: #333;
+}
+
+.metaslider .ms-settings-table .is-pro-setting:focus {
+    box-shadow: none;
+}
+
+.metaslider .ms-settings-table .is-pro-setting:before {
+    background: #feb123;
+    padding: 4px;
+    border-radius: 50%;
+}
+
+/* Force display inline-block when flex class (for FlexSlider) conflicts */
+.metaslider .ms-settings-table select.flex.inline-block,
+.metaslider .ms-settings-table input.flex.inline-block {
+    display: inline-block !important;
 }
 
 @media only screen and (min-width : 320px) {

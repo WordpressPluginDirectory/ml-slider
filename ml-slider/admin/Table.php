@@ -232,9 +232,10 @@ class MetaSlider_Admin_Table extends WP_List_table
 
     public function get_slides($slideshowId, $status)
     {
+        $post_status = $status === 'trash' ? array('trash', 'publish') : array($status);
         $slides = get_posts(array(
             'post_type' => array('ml-slide'),
-            'post_status' => array($status),
+            'post_status' => $post_status,
             'orderby' => 'menu_order',
             'order' => 'ASC',
             'lang' => '',

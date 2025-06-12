@@ -113,6 +113,7 @@ class MetaSlider
             'opacity' => 0.7,
             'titleSpeed' => 500,
             'effect' => 'random',
+            'extra_effect' => 'none',
             'navigation' => true,
             'filmstrip_delay' => 7000,
             'filmstrip_animationSpeed' => 600,
@@ -307,7 +308,7 @@ class MetaSlider
             $slideshow_title = 'Slideshow';
         }
 
-        $html[] = '<div id="metaslider-id-' . esc_attr($this->id) . '" style="' . esc_attr($this->get_container_style()) . '" class="' . esc_attr($this->get_container_class()) . '" role="region" aria-roledescription="Slideshow" aria-label="' . esc_attr($slideshow_title) . '"' . $this->extra_container_attributes() . '>';
+        $html[] = '<div id="metaslider-id-' . esc_attr($this->id) . '" style="' . esc_attr($this->get_container_style()) . '" class="' . esc_attr($this->get_container_class()) . '" role="region" aria-label="' . esc_attr($slideshow_title) . '"' . $this->extra_container_attributes() . '>';
         $html[] = '    <div id="' . esc_attr($this->get_container_id()) . '">';
         $html[] = '        ' . $this->get_html();
         $html[] = '        ' . $this->get_html_after();
@@ -819,6 +820,7 @@ class MetaSlider
             wp_enqueue_style('metaslider-public', METASLIDER_ASSETS_URL . 'metaslider/public.css', false, METASLIDER_ASSETS_VERSION);
 
             $extra_css = apply_filters("metaslider_css", "", $this->settings, $this->id);
+            $extra_css .= apply_filters("metaslider_theme_css", "", $this->settings, $this->id);
             $extra_css .= $this->get_mobile_css();
             wp_add_inline_style('metaslider-public', $extra_css);
         }

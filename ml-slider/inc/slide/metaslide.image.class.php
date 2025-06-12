@@ -715,7 +715,7 @@ class MetaImageSlide extends MetaSlide
             'link-alt' => $link_alt,
             'caption' => html_entity_decode(do_shortcode($caption), ENT_NOQUOTES, 'UTF-8'),
             'caption_raw' => do_shortcode($caption),
-            'class' => "slider-{$this->slider->ID} slide-{$this->slide->ID}",
+            'class' => "slider-{$this->slider->ID} slide-{$this->slide->ID} msDefaultImage",
             'rel' => "",
             'data-thumb' => ""
         );
@@ -863,7 +863,6 @@ class MetaImageSlide extends MetaSlide
                 'style' => "display: none; width: 100%;",
                 'class' => "slide-{$this->slide->ID} ms-image {$mobile_class}",
                 'aria-roledescription' => "slide",
-                'aria-label' =>"slide-{$this->slide->ID}",
                 'data-date' => $this->slide->post_date
             ), $slide, $this->slider->ID);
 

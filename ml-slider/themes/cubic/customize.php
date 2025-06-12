@@ -53,6 +53,68 @@ return array(
                 )
             ),
             array(
+                'label' => esc_html__('Icon Size', 'ml-slider'),
+                'name' => 'arrows_icon_size',
+                'type' => 'range',
+                'default' => 47,
+                'metric' => 'px',
+                'min' => 10,
+                'max' => 60,
+                'css' => '[ms_id] .flexslider ul.flex-direction-nav li a:before { mask-size: [ms_value]px auto }'
+            ),
+            array(
+                'label' => esc_html__('Border Color', 'ml-slider'),
+                'type' => 'fields',
+                'fields' => array(
+                    array(
+                        'label' => esc_html__('Default', 'ml-slider'),
+                        'name' => 'arrows_border',
+                        'type' => 'color',
+                        'default' => 'rgba(0,0,0,0)',
+                        'css' => '[ms_id] .flexslider .flex-direction-nav li a { border-color: [ms_value] }'
+                    ),
+                    array(
+                        'label' => esc_html__('Hover', 'ml-slider'),
+                        'name' => 'arrows_border_hover',
+                        'type' => 'color',
+                        'default' => 'rgba(0,0,0,0)',
+                        'css' => '[ms_id] .flexslider .flex-direction-nav li a:hover { border-color: [ms_value] }'
+                    )
+                ),
+                'slideshow_edit' => false
+            ),
+            array(
+                'label' => esc_html__('Border Width', 'ml-slider'),
+                'name' => 'arrows_border_width',
+                'type' => 'range',
+                'default' => 0,
+                'metric' => 'px',
+                'min' => 0,
+                'max' => 6,
+                'css' => '[ms_id] .flexslider .flex-direction-nav li a { border-width: [ms_value]px }'
+            ),
+            array(
+                'label' => esc_html__('Border Style', 'ml-slider'),
+                'name' => 'arrows_border_style',
+                'type' => 'select',
+                'default' => 'solid',
+                'options' => array(
+                    array(
+                        'label' => esc_html__('Solid', 'ml-slider'),
+                        'value' => 'solid'
+                    ),
+                    array(
+                        'label' => esc_html__('Dotted', 'ml-slider'),
+                        'value' => 'dotted'
+                    ),
+                    array(
+                        'label' => esc_html__('Dashed', 'ml-slider'),
+                        'value' => 'dashed'
+                    )
+                ),
+                'css' => '[ms_id] .flexslider .flex-direction-nav li a { border-style: [ms_value] }'
+            ),
+            array(
                 'label' => esc_html__('Distance from Edge', 'ml-slider'),
                 'name' => 'arrows_distance_edge',
                 'type' => 'range',
@@ -98,6 +160,16 @@ return array(
                 'css' => 'css_field', // Use the CSS from another field defined at 'css_field'
                 'css_field' => 'arrows_vertical_position'
             ),
+            /*array(
+                'label' => esc_html__('Width', 'ml-slider'),
+                'name' => 'arrows_width',
+                'type' => 'range',
+                'default' => 11,
+                'metric' => '%',
+                'min' => 5,
+                'max' => 20,
+                'css' => '[ms_id] .flexslider .flex-direction-nav li a { width: [ms_value]% }'
+            ),*/
             array(
                 'label' => esc_html__('Height', 'ml-slider'),
                 'name' => 'arrows_height',
@@ -109,16 +181,6 @@ return array(
                 'css' => '[ms_id] .flexslider .flex-direction-nav li a { height: [ms_value]px }'
             ),
             array(
-                'label' => esc_html__('Icon Size', 'ml-slider'),
-                'name' => 'arrows_icon_size',
-                'type' => 'range',
-                'default' => 47,
-                'metric' => 'px',
-                'min' => 10,
-                'max' => 60,
-                'css' => '[ms_id] .flexslider ul.flex-direction-nav li a:before { mask-size: [ms_value]px auto }'
-            ),
-            array(
                 'label' => esc_html__('Border Radius', 'ml-slider'),
                 'name' => 'arrows_border_radius',
                 'type' => 'range',
@@ -127,8 +189,28 @@ return array(
                 'min' => 0,
                 'max' => 50,
                 'css' => '[ms_id] .flexslider .flex-direction-nav li a { border-radius: [ms_value]% }'
+            ),
+            array(
+                'label' => esc_html__('Opacity (default)', 'ml-slider'),
+                'name' => 'arrows_opacity',
+                'type' => 'range',
+                'default' => 1,
+                'min' => 0.1,
+                'max' => 1,
+                'step' => 0.1,
+                'css' => '[ms_id] .flexslider .flex-direction-nav li a { opacity: [ms_value] }'
+            ),
+            array(
+                'label' => esc_html__('Opacity (hover)', 'ml-slider'),
+                'name' => 'arrows_opacity_hover',
+                'type' => 'range',
+                'default' => 1,
+                'min' => 0.1,
+                'max' => 1,
+                'step' => 0.1,
+                'css' => '[ms_id] .flexslider .flex-direction-nav li a:hover { opacity: [ms_value] }'
             )
-        )
+        ),
     ),
     array(
         'label' => esc_html__('Navigation', 'ml-slider'),
@@ -164,7 +246,7 @@ return array(
                 )
             ),
             array(
-                'label' => esc_html__('Border', 'ml-slider'),
+                'label' => esc_html__('Border Color', 'ml-slider'),
                 'type' => 'fields',
                 'fields' => array(
                     array(
@@ -189,6 +271,38 @@ return array(
                         'css' => '[ms_id] .flexslider ol.flex-control-nav li a.flex-active { border-color: [ms_value] }'
                     )
                 )
+            ),
+            array(
+                'label' => esc_html__('Dots Border Width', 'ml-slider'),
+                'info' => esc_html__('Visible in active and hover navigation dot', 'ml-slider'),
+                'name' => 'navigation_border_width',
+                'type' => 'range',
+                'default' => 2,
+                'metric' => 'px',
+                'min' => 1,
+                'max' => 10,
+                'css' => '[ms_id] .flexslider .flex-control-nav li a { border-width: [ms_value]px }'
+            ),
+            array(
+                'label' => esc_html__('Dots Border Style', 'ml-slider'),
+                'name' => 'navigation_border_style',
+                'type' => 'select',
+                'default' => 'solid',
+                'options' => array(
+                    array(
+                        'label' => esc_html__('Solid', 'ml-slider'),
+                        'value' => 'solid'
+                    ),
+                    array(
+                        'label' => esc_html__('Dotted', 'ml-slider'),
+                        'value' => 'dotted'
+                    ),
+                    array(
+                        'label' => esc_html__('Dashed', 'ml-slider'),
+                        'value' => 'dashed'
+                    )
+                ),
+                'css' => '[ms_id] .flexslider .flex-control-nav li a { border-style: [ms_value] }'
             ),
             array(
                 'label' => esc_html__('Position', 'ml-slider'),
@@ -224,6 +338,27 @@ return array(
                 'css_field' => 'navigation_vertical_position'
             ),
             array(
+                'label' => esc_html__('Alignment', 'ml-slider'),
+                'name' => 'navigation_align',
+                'type' => 'select',
+                'default' => 'center',
+                'options' => array(
+                    array(
+                        'label' => esc_html__('Left', 'ml-slider'),
+                        'value' => 'left'
+                    ),
+                    array(
+                        'label' => esc_html__('Right', 'ml-slider'),
+                        'value' => 'right'
+                    ),
+                    array(
+                        'label' => esc_html__('Center', 'ml-slider'),
+                        'value' => 'center'
+                    )
+                ),
+                'css' => '[ms_id] .flexslider .flex-control-nav { text-align: [ms_value] }'
+            ),
+            array(
                 'label' => esc_html__('Dots Border Radius', 'ml-slider'),
                 'name' => 'navigation_border_radius',
                 'type' => 'range',
@@ -234,46 +369,34 @@ return array(
                 'css' => '[ms_id] .flexslider .flex-control-nav li a { border-radius: [ms_value]px }'
             ),
             array(
-                'label' => esc_html__('Dots Size', 'ml-slider'),
-                'name' => 'navigation_size',
+                'label' => esc_html__('Dots Width', 'ml-slider'),
+                'name' => 'navigation_width',
                 'type' => 'range',
                 'default' => 15,
                 'metric' => 'px',
                 'min' => 5,
                 'max' => 30,
-                'css' => '[ms_id] .flexslider .flex-control-nav li a { width: [ms_value]px; height: [ms_value]px }'
+                'css' => '[ms_id] .flexslider .flex-control-nav li a { width: [ms_value]px }'
             ),
             array(
-                'label' => esc_html__('Dots Border Width', 'ml-slider'),
-                'info' => esc_html__('Visible in active and hover navigation dot', 'ml-slider'),
-                'name' => 'navigation_border_width',
+                'label' => esc_html__('Dots Height', 'ml-slider'),
+                'name' => 'navigation_height',
                 'type' => 'range',
-                'default' => 2,
+                'default' => 15,
                 'metric' => 'px',
-                'min' => 1,
-                'max' => 10,
-                'css' => '[ms_id] .flexslider .flex-control-nav li a { border-width: [ms_value]px }'
+                'min' => 5,
+                'max' => 30,
+                'css' => '[ms_id] .flexslider .flex-control-nav li a { height: [ms_value]px }'
             ),
             array(
-                'label' => esc_html__('Dots Border Style', 'ml-slider'),
-                'name' => 'navigation_border_style',
-                'type' => 'select',
-                'default' => 'solid',
-                'options' => array(
-                    array(
-                        'label' => esc_html__('Solid', 'ml-slider'),
-                        'value' => 'solid'
-                    ),
-                    array(
-                        'label' => esc_html__('Dotted', 'ml-slider'),
-                        'value' => 'dotted'
-                    ),
-                    array(
-                        'label' => esc_html__('Dashed', 'ml-slider'),
-                        'value' => 'dashed'
-                    )
-                ),
-                'css' => '[ms_id] .flexslider .flex-control-nav li a { border-style: [ms_value] }'
+                'label' => esc_html__('Distance Between Dots', 'ml-slider'),
+                'name' => 'navigation_between',
+                'type' => 'range',
+                'default' => 5,
+                'metric' => 'px',
+                'min' => 0,
+                'max' => 20,
+                'css' => '[ms_id] .flexslider .flex-control-nav li a { margin: 0 [ms_value]px }'
             ),
         )
     ),

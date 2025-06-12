@@ -63,7 +63,7 @@ class MetaSlider_Theme_Base
         $this->init();
 
         // Customize theme design
-        add_filter('metaslider_css', array($this, 'theme_customize'), 10, 3);
+        add_filter('metaslider_theme_css', array($this, 'theme_customize'), 10, 3);
     }
 
     /**
@@ -354,6 +354,9 @@ return $options;
      */
     public function theme_customize($css, $settings, $slideshow_id)
     {
+        // @since 3.98 - Reset css to avoid including css from a previous slideshow's instance
+        $css = '';
+
         // /wp-admin/admin.php?page=metaslider-theme-editor&theme_slug=<slug>1&version=v2
         $is_theme_editor_screen = is_admin() 
             && function_exists('get_current_screen') 
@@ -372,15 +375,11 @@ return $options;
             return $css;
         }
 
-        $css .= $this->theme_customize_css(
+        $css = $this->theme_customize_css(
             $this->id,
             $settings,
             $slideshow_id
         );
-
-        // Commented to solve an issue:
-        // can't have more than one slideshow based on the same theme on the same page
-        //remove_filter('metaslider_css', array($this, 'theme_customize'), 10, 3);
 
         return $css;
     }

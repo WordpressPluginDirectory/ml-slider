@@ -191,7 +191,7 @@ return array(
     ),
     'architekt' => array(
         'folder' => 'architekt',
-        'title' => 'The Architekt',
+        'title' => 'Architekt',
         'type' => 'free',
         'supports' => array('flex', 'responsive', 'nivo'),
         'tags' => array('light', 'minimalist'),

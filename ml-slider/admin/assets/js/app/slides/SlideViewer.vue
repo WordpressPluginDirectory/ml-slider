@@ -32,14 +32,14 @@ export default {
                 handle: "td.col-1",
                 start: (e, ui) => {
                     if (typeof tinymce !== 'undefined') {
-                        $('#metaslider-slides-list').find('textarea.wysiwyg').each(function() {
+                        $('#metaslider-slides-list').find('textarea.wysiwyg, textarea[class^="wysiwyg-"]').each(function() {
                             tinymce.get($(this).attr('id')).destroy();
                             $(this).attr('disabled', true);
                         });
                     }
                 },
                 stop: (e, ui) => {
-                    $('#metaslider-slides-list').find('textarea.wysiwyg').each(function() {
+                    $('#metaslider-slides-list').find('textarea.wysiwyg, textarea[class^="wysiwyg-"]').each(function() {
                         const slide_type = $(this).data('type');
                         const slide_id = $(this).attr('id');
 

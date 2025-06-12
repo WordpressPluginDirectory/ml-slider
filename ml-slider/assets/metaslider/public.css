@@ -147,6 +147,8 @@ body .metaslider .flexslider .flex-direction-nav li {
 .metaslider .flex-control-nav li a {
 	margin: 0 6px;
 	padding: 0;
+	text-indent: 9999px;
+	overflow: hidden;
 }
 
 .metaslider .flexslider .slides li {
@@ -300,6 +302,7 @@ body .metaslider .flexslider .flex-direction-nav li {
 .metaslider .flexslider .flex-pauseplay .flex-pause:focus {
     background: #000;
     color: #fff;
+	outline: 2px solid #fff;
 }
 .metaslider .flexslider .flex-pauseplay .flex-play:before {
     margin-left: 4px;
@@ -455,6 +458,25 @@ div.metaslider .slider-wrapper .nivo-controlNav a {
 .ms-carousel-force-height .slides > li.ms-image img {
     height: 100%;
     width: auto;
+}
+
+/* Custom button */
+.ms-custom-button {
+	display: inline-block;
+	background-color: #0073aa;
+	color: #fff;
+	cursor: pointer;
+	padding: 8px 14px;
+	border-radius: 4px;
+	text-decoration: none;
+	transition: background-color 0.2s ease;
+}
+.ms-custom-button:hover {
+	opacity: 0.8;
+}
+.slides li:focus-within {
+	outline: 2px solid #007cba;
+	outline-offset: -2px;
 }
 @media only screen and (max-width : 767px) {
     .metaslider.ms-theme-precognition .flex-control-nav li a {

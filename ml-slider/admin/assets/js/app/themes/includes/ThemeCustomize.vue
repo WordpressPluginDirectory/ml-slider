@@ -12,7 +12,8 @@
                 </tr>
                 <template v-for="(row_item, row_index) in section_item.settings" 
                     :key="row_index">
-                    <tr v-if="row_item.type === 'color' || row_item.type === 'fields'"
+                    <!-- Skip fields settings that has slideshow_edit as false  -->
+                    <tr v-if="(row_item.type === 'color' || row_item.type === 'fields') && (typeof row_item.slideshow_edit === 'undefined' || row_item.slideshow_edit)"
                         :class="section_item.name ? 'customizer-' + section_item.name : ''">
                         <td>
                             {{ row_item.label }}

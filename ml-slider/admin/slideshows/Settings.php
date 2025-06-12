@@ -71,6 +71,7 @@ class MetaSlider_Slideshow_Settings
             'opacity' => 0.7,
             'titleSpeed' => 500,
             'effect' => 'slide',
+            'extra_effect' => 'none',
             'navigation' => true,
             'filmstrip_delay' => 7000,
             'filmstrip_animationSpeed' => 600,

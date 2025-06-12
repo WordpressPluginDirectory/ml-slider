@@ -31,6 +31,7 @@ class MetaFlexSlider extends MetaSlider
         add_filter('metaslider_flex_slider_parameters', array( $this, 'enable_carousel_mode' ), 10, 2);
         add_filter('metaslider_flex_slider_parameters', array( $this, 'manage_easing' ), 10, 2);
         add_filter('metaslider_flex_slider_parameters', array( $this, 'manage_tabindex' ), 99, 3);
+        add_filter('metaslider_flex_slider_parameters', array( $this, 'manage_aria_hidden_accessibility' ), 99, 3);
         add_filter('metaslider_flex_slider_parameters', array( $this, 'manage_aria_current' ), 99, 3);
         add_filter('metaslider_flex_slider_parameters', array( $this, 'manage_progress_bar' ), 99, 3);
         add_filter('metaslider_flex_slider_parameters', array( $this, 'manage_tabbed_slider' ), 99, 3);
@@ -458,9 +459,67 @@ class MetaFlexSlider extends MetaSlider
                 $options['start'],
                 array(
                     "
-                    $('#metaslider_" . $slider_id . " .flex-control-nav').attr('role', 'tablist');
-                    $('#metaslider_" . $slider_id . " .flex-control-nav a:not(.flex-active)').attr('tabindex', '-1');
-                    $('#metaslider_" . $slider_id . " .slides li:not(.flex-active-slide) a').attr('tabindex', '-1');
+                    // Wait for DOM to be ready and FlexSlider to render controls
+                    setTimeout(function() {
+                        var nav = $('#metaslider_" . $slider_id . " .flex-control-nav');
+                        if (nav.length) {
+                            nav.attr('role', 'tablist');
+                        }
+
+                        function updateSliderTabindex() {
+                            var slider = $('#metaslider_" . $slider_id . "');
+                            var isSliderHidden = slider.closest('[aria-hidden=\"true\"]').length > 0 || 
+                                                slider.is('[aria-hidden=\"true\"]') || 
+                                                !slider.is(':visible');
+                            
+                            if (isSliderHidden) {
+                                slider.find('a, button, [tabindex]').attr('tabindex', '-1');
+                            } else {
+                                slider.find('.slides li[aria-hidden=\"true\"] a, .slides li[aria-hidden=\"true\"] button, .slides li[aria-hidden=\"true\"] [tabindex]').attr('tabindex', '-1');
+                                slider.find('.slides li.clone a, .slides li.clone button, .slides li.clone [tabindex]').attr('tabindex', '-1');
+                                slider.find('.flex-control-nav a:not(.flex-active)').attr('tabindex', '-1');
+                                slider.find('.flex-control-nav a.flex-active').removeAttr('tabindex');
+                                slider.find('.slides li:not(.flex-active-slide):not([aria-hidden=\"true\"]):not(.clone) a').attr('tabindex', '-1');
+                                slider.find('.slides li.flex-active-slide:not([aria-hidden=\"true\"]):not(.clone) a').removeAttr('tabindex');
+                            }
+                        }
+
+                        updateSliderTabindex();
+
+                        if (typeof MutationObserver !== 'undefined') {
+                            var observer = new MutationObserver(function(mutations) {
+                                var shouldUpdate = false;
+                                mutations.forEach(function(mutation) {
+                                    if (mutation.type === 'attributes' &&
+                                        (mutation.attributeName === 'aria-hidden' || mutation.attributeName === 'style' || mutation.attributeName === 'class')) {
+                                        shouldUpdate = true;
+                                    }
+                                    if (mutation.type === 'childList') {
+                                        shouldUpdate = true;
+                                    }
+                                });
+                                if (shouldUpdate) {
+                                    updateSliderTabindex();
+                                }
+                            });
+
+                            var targetNode = $('#metaslider_" . $slider_id . "')[0];
+                            if (targetNode) {
+                                observer.observe(targetNode, { 
+                                    attributes: true, 
+                                    attributeFilter: ['aria-hidden', 'style', 'class'],
+                                    childList: true,
+                                    subtree: true
+                                });
+
+                                var parent = targetNode.parentNode;
+                                while (parent && parent !== document.body) {
+                                    observer.observe(parent, { attributes: true, attributeFilter: ['aria-hidden', 'style'] });
+                                    parent = parent.parentNode;
+                                }
+                            }
+                        }
+                    }, 0);
                     "
                 )
             );
@@ -470,14 +529,119 @@ class MetaFlexSlider extends MetaSlider
                 $options['after'],
                 array(
                     "
-                    $('#metaslider_" . $slider_id . " .flex-control-nav a.flex-active').removeAttr('tabindex');
-                    $('#metaslider_" . $slider_id . " .flex-control-nav a:not(.flex-active)').attr('tabindex', '-1');
-                    $('#metaslider_" . $slider_id . " .slides li.flex-active-slide a.flex-active').removeAttr('tabindex');
-                    $('#metaslider_" . $slider_id . " .slides li:not(.flex-active-slide) a').attr('tabindex', '-1');
+                    // Update tabindex after slide change, respecting aria-hidden state
+                    var slider = $('#metaslider_" . $slider_id . "');
+                    var isSliderHidden = slider.closest('[aria-hidden=\"true\"]').length > 0 || 
+                                       slider.is('[aria-hidden=\"true\"]') || 
+                                       !slider.is(':visible');
+                    
+                    if (!isSliderHidden) {
+                        // Disable focusable elements in slides with aria-hidden='true'
+                        slider.find('.slides li[aria-hidden=\"true\"] a, .slides li[aria-hidden=\"true\"] button, .slides li[aria-hidden=\"true\"] [tabindex]').attr('tabindex', '-1');
+                        
+                        // Disable focusable elements in cloned slides
+                        slider.find('.slides li.clone a, .slides li.clone button, .slides li.clone [tabindex]').attr('tabindex', '-1');
+                        
+                        // Normal focus management for navigation
+                        slider.find('.flex-control-nav a.flex-active').removeAttr('tabindex');
+                        slider.find('.flex-control-nav a:not(.flex-active)').attr('tabindex', '-1');
+                        
+                        // Only allow focus on active slide that's not aria-hidden or cloned
+                        slider.find('.slides li:not(.flex-active-slide):not([aria-hidden=\"true\"]):not(.clone) a').attr('tabindex', '-1');
+                        slider.find('.slides li.flex-active-slide:not([aria-hidden=\"true\"]):not(.clone) a').removeAttr('tabindex');
+                    }
                     "
                 )
             );
         }
+
+        return $options;
+    }
+
+    /**
+     * Fix accessibility issues with aria-hidden elements containing focusable descendants
+     *
+     * @param array $options SLide options
+     * @param integer $slider_id Slider ID
+     * @param array $settings Slide settings
+     * @return array
+     */
+    public function manage_aria_hidden_accessibility($options, $slider_id, $settings)
+    {
+        $options['start'] = isset($options['start']) ? $options['start'] : array();
+        $options['start'] = array_merge(
+            $options['start'],
+            array(
+                "
+                // Function to disable focusable elements in aria-hidden slides
+                function disableAriaHiddenFocusableElements() {
+                    var slider = $('#metaslider_" . $slider_id . "');
+                    
+                    // Disable focusable elements in slides with aria-hidden='true'
+                    slider.find('.slides li[aria-hidden=\"true\"] a, .slides li[aria-hidden=\"true\"] button, .slides li[aria-hidden=\"true\"] input, .slides li[aria-hidden=\"true\"] select, .slides li[aria-hidden=\"true\"] textarea, .slides li[aria-hidden=\"true\"] [tabindex]:not([tabindex=\"-1\"])').attr('tabindex', '-1');
+                    
+                    // Disable focusable elements in cloned slides (these should never be focusable)
+                    slider.find('.slides li.clone a, .slides li.clone button, .slides li.clone input, .slides li.clone select, .slides li.clone textarea, .slides li.clone [tabindex]:not([tabindex=\"-1\"])').attr('tabindex', '-1');
+                }
+                
+                // Initial setup
+                disableAriaHiddenFocusableElements();
+                
+                // Observer for aria-hidden and clone changes
+                if (typeof MutationObserver !== 'undefined') {
+                    var ariaObserver = new MutationObserver(function(mutations) {
+                        var shouldUpdate = false;
+                        mutations.forEach(function(mutation) {
+                            if (mutation.type === 'attributes' && mutation.attributeName === 'aria-hidden') {
+                                shouldUpdate = true;
+                            }
+                            if (mutation.type === 'childList') {
+                                // Check if cloned slides were added/removed
+                                for (var i = 0; i < mutation.addedNodes.length; i++) {
+                                    if (mutation.addedNodes[i].nodeType === 1 && 
+                                        (mutation.addedNodes[i].classList.contains('clone') || 
+                                         mutation.addedNodes[i].querySelector && mutation.addedNodes[i].querySelector('.clone'))) {
+                                        shouldUpdate = true;
+                                        break;
+                                    }
+                                }
+                            }
+                        });
+                        if (shouldUpdate) {
+                            setTimeout(disableAriaHiddenFocusableElements, 10);
+                        }
+                    });
+                    
+                    var targetNode = $('#metaslider_" . $slider_id . "')[0];
+                    if (targetNode) {
+                        ariaObserver.observe(targetNode, { 
+                            attributes: true, 
+                            attributeFilter: ['aria-hidden'],
+                            childList: true,
+                            subtree: true
+                        });
+                    }
+                }
+                "
+            )
+        );
+
+        $options['after'] = isset($options['after']) ? $options['after'] : array();
+        $options['after'] = array_merge(
+            $options['after'],
+            array(
+                "
+                // Re-disable focusable elements after slide transitions
+                var slider = $('#metaslider_" . $slider_id . "');
+                
+                // Disable focusable elements in slides with aria-hidden='true'
+                slider.find('.slides li[aria-hidden=\"true\"] a, .slides li[aria-hidden=\"true\"] button, .slides li[aria-hidden=\"true\"] input, .slides li[aria-hidden=\"true\"] select, .slides li[aria-hidden=\"true\"] textarea, .slides li[aria-hidden=\"true\"] [tabindex]:not([tabindex=\"-1\"])').attr('tabindex', '-1');
+                
+                // Disable focusable elements in cloned slides
+                slider.find('.slides li.clone a, .slides li.clone button, .slides li.clone input, .slides li.clone select, .slides li.clone textarea, .slides li.clone [tabindex]:not([tabindex=\"-1\"])').attr('tabindex', '-1');
+                "
+            )
+        );
 
         return $options;
     }

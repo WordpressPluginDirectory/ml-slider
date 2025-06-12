@@ -11,6 +11,7 @@
   
     &.metaslider-flex {
       padding-bottom: 60px;
+      overflow: visible;
     }
   }
   
@@ -189,7 +190,49 @@
       width: 300px;
     }
   
-    .flexslider ul.flex-direction-nav li a, a.rslides_nav, div.nivoSlider div.nivo-directionNav a, .coin-slider .coin-slider div a {
+    .flexslider ul.flex-direction-nav li a {
+      height: 30px;
+      width: 44px;
+      top: 23px;
+      background-image: none;
+
+      &:after {
+        background-color: #000;
+        mask-repeat: no-repeat;
+        mask-size: 32px auto;
+        content: '';
+        display: table;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        mask-position: center;
+      }
+
+      &:focus {
+        background: transparent;
+      }
+
+      &.flex-prev {
+        left: -7px;
+
+        &:after {
+          mask-image: url(images/left.svg);
+          //mask-position: left center;
+        }
+      }
+
+      &.flex-next {
+        right: -7px;
+
+        &:after {
+          mask-image: url(images/right.svg);
+          //mask-position: right center;
+        }
+      }
+    }
+
+    a.rslides_nav, div.nivoSlider div.nivo-directionNav a, .coin-slider .coin-slider div a {
       background: transparent;
       -webkit-box-shadow: none;
       box-shadow: none;
@@ -202,8 +245,8 @@
       transform: none;
       width: 34px;
     }
-  
-    .flexslider ul.flex-direction-nav li a::before, a.rslides_nav::before, div.nivoSlider div.nivo-directionNav a::before, .coin-slider .coin-slider div a::before {
+
+    a.rslides_nav::before, div.nivoSlider div.nivo-directionNav a::before, .coin-slider .coin-slider div a::before {
       border-bottom: 2px solid;
       border-left: 2px solid;
       content: '' !important;
@@ -216,8 +259,8 @@
       transform: rotate(45deg);
       width: 8px;
     }
-  
-    .flexslider ul.flex-direction-nav li a::after, a.rslides_nav::after, div.nivoSlider div.nivo-directionNav a::after, .coin-slider .coin-slider div a::after {
+
+    a.rslides_nav::after, div.nivoSlider div.nivo-directionNav a::after, .coin-slider .coin-slider div a::after {
       border-bottom: 2px solid;
       content: '' !important;
       display: block;
@@ -251,7 +294,7 @@
       }
     }
   
-    .flexslider ul.flex-direction-nav li a.flex-prev, div.nivoSlider div.nivo-directionNav a.nivo-prevNav {
+    div.nivoSlider div.nivo-directionNav a.nivo-prevNav {
       left: 0;
     }
   
@@ -260,7 +303,7 @@
       right: auto;
     }
   
-    .flexslider ul.flex-direction-nav li a.flex-next, .rslides_nav.next, div.nivoSlider div.nivo-directionNav a.nivo-nextNav {
+    .rslides_nav.next, div.nivoSlider div.nivo-directionNav a.nivo-nextNav {
       right: 0;
       -webkit-transform: scaleX(-1);
       transform: scaleX(-1);
@@ -276,7 +319,27 @@
       display: block !important;
     }
   
-    .flexslider ul.slides .caption-wrap, .rslides .caption-wrap, div.nivoSlider .nivo-caption {
+    .flexslider ul.slides .caption-wrap {
+      background: transparent;
+      color: inherit;
+      margin: 0;
+      opacity: 1;
+      padding: 0;
+      position: relative;
+      -webkit-transition: .5s all;
+      transition: .5s all;
+      width: 100%;
+
+      .caption {
+        width: calc(100% - 300px);
+
+        @media (max-width: 599px) {
+          width: 100%;
+        }
+      }
+    }
+
+    .rslides .caption-wrap, div.nivoSlider .nivo-caption {
       background: transparent;
       color: inherit;
       margin: 0;

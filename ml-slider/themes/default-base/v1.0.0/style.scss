@@ -45,6 +45,9 @@
 		}
 
 		.flex-control-nav li a{
+			overflow: hidden;
+			text-indent: 9999px;
+
 			&:focus {
 				outline: 2px solid;
 			}

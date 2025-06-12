@@ -194,6 +194,8 @@ window.jQuery(function ($) {
         // Remove filters to don't allow to insert other media type different to images
         $('#media-attachment-filters').remove();
     })
+    create_slides.on('all', function (){ $('.media-button').text( APP.__('Add to slideshow', 'ml-slider') ); });
+
     APP && create_slides.on('open', function () {
         APP.notifyInfo('metaslider/add-slide-opening-ui', APP.__('Opening add slide UI...', 'ml-slider'))
     })
@@ -645,6 +647,15 @@ window.jQuery(function ($) {
         showHideCustomProgressBarColor();
     });
 
+    /**
+     * When Extra Effect changes
+     * 
+     * @since 3.99
+     */
+    $('.metaslider').on('change', '.ms-settings-table input[name="settings[carouselMode]"], .ms-settings-table select[name="settings[effect]"], .ms-settings-table select[name="settings[extra_effect]"]', function () {
+        showHideExtraEffect();
+    });
+
     // Make sure to be in sync when selecting another theme
     window.metaslider.app.EventManager.$on("metaslider/theme-updated", function () {
         setTimeout(() => {
@@ -672,6 +683,22 @@ window.jQuery(function ($) {
         showHideCustomProgressBarColor();
     }, 100);
     
+/**
+     * Show/hide extra effect
+     * 
+     * @since 3.99
+     */
+    var showHideExtraEffect = function () {
+        var carouselMode = $('.ms-settings-table input[name="settings[carouselMode]"]');
+        var effect = $('.ms-settings-table select[name="settings[effect]"]');
+        var extraEffect = $('.ms-settings-table select[name="settings[extra_effect]"]');
+
+        var showExtraEffect = (!carouselMode.is(':checked') && ['fade', 'zooming', 'flip'].includes(effect.val()) ) ? true : false;
+        extraEffect.parents('tr').toggle(showExtraEffect);
+    }
+    setTimeout(function () {
+        showHideExtraEffect();
+    }, 100);
 
     /**
      * Add all the image APIs. Add events everytime the modal is open

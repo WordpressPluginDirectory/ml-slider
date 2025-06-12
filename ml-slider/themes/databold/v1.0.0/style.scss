@@ -121,6 +121,10 @@
 		.flex-pauseplay a {
 			bottom: 12px;
 			left: 20px;
+
+			&:focus{
+				outline: 3px solid #fff;
+			}
 		}
 	}
 

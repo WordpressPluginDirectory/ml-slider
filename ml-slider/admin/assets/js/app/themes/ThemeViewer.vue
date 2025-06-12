@@ -96,7 +96,7 @@
 			<!-- If no theme then we render the theme select button -->
 			<div v-else>
 				<p>
-					{{ __('Change the design your slideshow with a stylish MetaSlider theme!', 'ml-slider') }}
+					{{ __('Change the design of your slideshow with a stylish MetaSlider theme!', 'ml-slider') }}
 				</p>
 				<button
 					v-if="Object.keys(themes).length || Object.keys(customThemes).length"

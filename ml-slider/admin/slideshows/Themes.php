@@ -1073,6 +1073,9 @@ return $theme;
      */
     public function adjust_css_placeholders($css, $id, $value)
     {
+        // @since 3.99
+        $css = apply_filters( 'metaslider_load_font', $css, $value );
+
         $search = array(
             '[ms_id]',
             '[ms_value]',
@@ -1294,6 +1297,9 @@ return $theme;
             break;
             case 'range':
                 return $this->sanitize_range( $value, $item['min'], $item['max'] );
+            break;
+            case 'font':
+                return sanitize_text_field( $value );
             break;
         }
 

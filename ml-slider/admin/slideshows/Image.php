@@ -54,7 +54,7 @@ self::$instance = new self();
         );
         */
         if (empty($images)) {
-$images = $this->get_theme_images($theme_id, 4, $extra);
+            $images = $this->get_theme_images($theme_id, 4, $extra);
         }
 
         // Get an array or sucessful image ids

@@ -1,7 +1,13 @@
 <?php
-    if (!defined('ABSPATH')) {
-        die('No direct access.');
-    }
+if (!defined('ABSPATH')) {
+    die('No direct access.');
+}
+
+$is_pro_text = __( 'Some of these features are available in MetaSlider Pro', 'ml-slider' );
+$is_pro_link = 'https://www.metaslider.com/upgrade?utm_source=lite&utm_medium=banner&utm_campaign=pro';
+$is_pro_btn  = '<a class="dashicons dashicons-lock is-pro-setting tipsy-tooltip-top" original-title="' . 
+                esc_attr( $is_pro_text ) . '" href="' . 
+                esc_url( $is_pro_link ) . '" target="_blank"></a>'
 ?>
 <table class="ms-settings-table border-0">
     <tbody>
@@ -85,7 +91,7 @@
                 'priority' => 60,
                 'type' => 'navigation',
                 'label' => __("Navigation", "ml-slider"),
-                'class' => 'option coin flex nivo responsive',
+                'class' => 'option coin flex nivo responsive inline-block',
                 'value' => $this->slider->get_setting('navigation'),
                 'helptext' => __(
                     "Show navigation options so that users can browse the slides.",
@@ -135,7 +141,8 @@
                             'filmstrip'
                         )
                     ),
-                )
+                ),
+                'after' => $is_pro_btn
             ),
             'fullWidth' => array(
                 'priority' => 70,
@@ -431,6 +438,24 @@
             'value' => $this->slider->get_setting('easing'),
             'options' => $this->get_easing_options()
         ),
+        'extra_effect' => array( // Don't target 'extra_effect' to show/hide with 'dependencies' array key
+            'priority' => 81,
+            'type' => 'select',
+            'label' => __( 'Extra Effect', 'ml-slider' ),
+            'class' => 'option flex inline-block',
+            'helptext' => __( 'Extra effect for slides.', 'ml-slider' ),
+            'value' => $this->slider->get_setting( 'extra_effect' ),
+            'options' => array(
+                'none' => array( 
+                    'label' => __( 'None', 'ml-slider' )
+                ),
+                'kenburns' => array( 
+                    'label' => __( 'Ken Burns (Pro)', 'ml-slider' ),
+                    'addon_required' => true
+                )
+            ),
+            'after' => $is_pro_btn
+        ),
         'firstSlideFadeIn' => array(
             'priority' => 90,
             'type' => 'checkbox',
@@ -453,6 +478,117 @@
         $this->slider
     );
     
+    // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+    echo $this->build_settings_rows($aFields);
+    ?>
+    <tr class="empty-row-spacing carouselOptions">
+        <td colspan="2"></td>
+    </tr>
+    <?php
+    $aFields = array(
+        'carouselOptions' => array(
+            'priority' => 1,
+            'type' => 'highlight',
+            'value' => esc_html__( 'Carousel Options', 'ml-slider' )
+        ),
+        'carouselMode' => array(
+            'priority' => 10,
+            'type' => 'checkbox',
+            'label' => esc_html__("Carousel Mode", "ml-slider"),
+            'class' => 'option flex showNextWhenChecked',
+            'checked' => $this->slider->get_setting(
+                'carouselMode'
+            ) == 'true' ? 'checked' : '',
+            'helptext' => esc_html__(
+                "Display multiple slides at once. The slideshow output will default to using 100% width and the 'Slide' Transition Effect.",
+                "ml-slider"
+            ),
+            'dependencies' => array(
+                array(
+                    'show' => 'infiniteLoop', // Show Infinite loop
+                    'when' => true // When carouselMode is true
+                ),
+                array(
+                    'show' => 'loop', // Show Loop
+                    'when' => false // When carouselMode is false
+                ),
+                array(
+                    'show' => 'carouselMargin',
+                    'when' => true
+                ),
+                array(
+                    'show' => 'minItems', // Show Carousel items
+                    'when' => true // When carouselMode is true
+                ),
+                array(
+                    'show' => 'forceHeight', // Show Force height
+                    'when' => true // When carouselMode is true
+                )
+            )
+        ),
+        'infiniteLoop' => array(
+            'priority' => 20,
+            'type' => 'checkbox',
+            'label' => esc_html__("Loop Carousel Continuously", "ml-slider"),
+            'class' => 'option flex',
+            'checked' => $this->slider->get_setting(
+                'infiniteLoop'
+            ) == 'true' ? 'checked' : '',
+            'helptext' => esc_html__(
+                "Infinite loop of slides when Carousel Mode is enabled. This option disables arrows and navigation.",
+                "ml-slider"
+            )
+        ),
+        'carouselMargin' => array(
+            'priority' => 30,
+            'min' => 0,
+            'max' => 9999,
+            'step' => 1,
+            'type' => 'number',
+            'label' => esc_html__("Carousel Margin", "ml-slider"),
+            'class' => 'option flex',
+            'value' => $this->slider->get_setting('carouselMargin'),
+            'helptext' => esc_html__(
+                "Pixel margin between slides in carousel.",
+                "ml-slider"
+            ),
+            'after' => esc_html__("px", "ml-slider")
+        ),
+        'minItems' => array(
+            'priority' => 40,
+            'type' => 'number',
+            'size' => 3,
+            'min' => 1,
+            'max' => 6,
+            'step' => 1,
+            'value' => $this->slider->get_setting('minItems'),
+            'label' => esc_html__("Carousel Items", "ml-slider"),
+            'class' => 'flex',
+            'helptext' => esc_html__(
+                "Minimum number of slides to be displayed at once in the carousel.",
+                "ml-slider"
+            ),
+            'after' => ''
+        ),
+        'forceHeight' => array(
+            'priority' => 50,
+            'type' => 'checkbox',
+            'label' => esc_html__("Force Height", "ml-slider"),
+            'class' => 'option flex',
+            'checked' => $this->slider->get_setting(
+                'forceHeight'
+            ) == 'true' ? 'checked' : '',
+            'helptext' => esc_html__(
+                "If the slideshow looks small, force slideshow height when using Carousel mode. Please note when is enabled slides may look cropped.",
+                "ml-slider"
+            )
+        )
+    );
+    $aFields = apply_filters(
+        'metaslider_carousel_settings',
+        $aFields,
+        $this->slider
+    );
     // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
     echo $this->build_settings_rows($aFields);
 
@@ -827,98 +963,6 @@
             ) == 'true' ? 'checked' : '',
             'helptext' => __(
                 "Allow navigation to follow the slide's height smoothly.",
-                "ml-slider"
-            )
-        ),
-        'carouselMode' => array(
-            'priority' => 40,
-            'type' => 'checkbox',
-            'label' => esc_html__("Carousel Mode", "ml-slider"),
-            'class' => 'option flex showNextWhenChecked',
-            'checked' => $this->slider->get_setting(
-                'carouselMode'
-            ) == 'true' ? 'checked' : '',
-            'helptext' => esc_html__(
-                "Display multiple slides at once. Slideshow output will be 100% wide. Carousel Mode only uses the 'Slide' Transition Effect.",
-                "ml-slider"
-            ),
-            'dependencies' => array(
-                array(
-                    'show' => 'infiniteLoop', // Show Infinite loop
-                    'when' => true // When carouselMode is true
-                ),
-                array(
-                    'show' => 'loop', // Show Loop
-                    'when' => false // When carouselMode is false
-                ),
-                array(
-                    'show' => 'carouselMargin',
-                    'when' => true
-                ),
-                array(
-                    'show' => 'minItems', // Show Carousel items
-                    'when' => true // When carouselMode is true
-                ),
-                array(
-                    'show' => 'forceHeight', // Show Force height
-                    'when' => true // When carouselMode is true
-                )
-            )
-        ),
-        'infiniteLoop' => array(
-            'priority' => 43,
-            'type' => 'checkbox',
-            'label' => esc_html__("Loop Carousel Continuously", "ml-slider"),
-            'class' => 'option flex',
-            'checked' => $this->slider->get_setting(
-                'infiniteLoop'
-            ) == 'true' ? 'checked' : '',
-            'helptext' => esc_html__(
-                "Infinite loop of slides when Carousel Mode is enabled. This option disables arrows and navigation.",
-                "ml-slider"
-            )
-        ),
-        'carouselMargin' => array(
-            'priority' => 45,
-            'min' => 0,
-            'max' => 9999,
-            'step' => 1,
-            'type' => 'number',
-            'label' => esc_html__("Carousel Margin", "ml-slider"),
-            'class' => 'option flex',
-            'value' => $this->slider->get_setting('carouselMargin'),
-            'helptext' => esc_html__(
-                "Pixel margin between slides in carousel.",
-                "ml-slider"
-            ),
-            'after' => esc_html__("px", "ml-slider")
-        ),
-        'minItems' => array(
-            'priority' => 46,
-            'type' => 'number',
-            'size' => 3,
-            'min' => 1,
-            'max' => 6,
-            'step' => 1,
-            'value' => $this->slider->get_setting('minItems'),
-            'label' => esc_html__("Carousel Items", "ml-slider"),
-            'class' => 'flex',
-            'helptext' => esc_html__(
-                "Minimum number of slides to be displayed at once in the carousel.",
-                "ml-slider"
-            ),
-            'after' => ''
-        ),
-        'forceHeight' => array(
-            'priority' => 48,
-            'type' => 'checkbox',
-            'label' => esc_html__("Force Height", "ml-slider"),
-            'class' => 'option flex',
-            'checked' => $this->slider->get_setting(
-                'forceHeight'
-            ) == 'true' ? 'checked' : '',
-            'helptext' => esc_html__(
-                "If the slideshow looks small, force slideshow height when using Carousel mode. Please note when is enabled slides may look cropped.",
                 "ml-slider"
             )
         ),

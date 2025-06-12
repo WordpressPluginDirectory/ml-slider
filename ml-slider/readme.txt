@@ -2,7 +2,7 @@
 Contributors: andergmartins, htmgarcia, publishpress, stevejburge, rochdesigns
 Tags: slider, video slider, image slider, carousel slider, gallery
 Requires at least: 5.0
-Stable tag: 3.98.0
+Stable tag: 3.99.0
 Requires PHP: 7.0
 Tested up to: 6.8
 License: GPLv2 or later
@@ -14,7 +14,7 @@ Slider, gallery, carousel plugin for WordPress. Build your image slider, video s
 
 With MetaSlider, you can create a powerful, SEO-optimized slider, slideshow, carousel, or gallery in minutes. MetaSlider is world’s #1 responsive WordPress slider plugin. MetaSlider is the best choice for image, photo, video (YouTube, Vimeo, TikTok, local, and external), layer, WooCommerce products, and post feed sliders!
 
-[youtube https://www.youtube.com/watch?v=yuRh0FsanaY]
+[youtube https://www.youtube.com/watch?v=zBFMhVjlGhs]
 
 ### Introducing MetaSlider
 
@@ -320,7 +320,38 @@ Yes, you can build Elementor slides and Beaver Builder slideshows. You can creat
 The format is based on [Keep a Changelog recommendations](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-= [3.98.0] - Apr 30, 2025 =
+= [3.99.0] - Jun 11, 2025 =
+
+* ADDED: Make it easier to add buttons for users, #1658;
+* FIXED: FlexSlider (Nexus): Cropped slide caption, #1581;
+* FIXED: CSS conclicts when there are more than one slideshow on same page, #1635;
+* FIXED: Number of slides is zero in trash listing, #1494;
+* FIXED: Text change, #1669;
+* FIXED: Clarity arrows are buggy in Theme editor, #1683;
+* FIXED: Update Link on Export Page, #1682;
+* FIXED: Remove "The" to "The Architekt" theme, #1681;
+* FIXED: Button label in quickstart page, #1639;
+* FIXED: Bubble Theme Arrow Misalignment, #1678;
+* FIXED: Databold theme: Add focus indicator on Play / Pause button, #1643;
+* FIXED: Architekt recommended transition: fade, #1671;
+* FIXED: Sanitize aria-label through JS, #1696;
+* FIXED: On Thanks for using MetaSlider popup, the email text box accepts NULL value, #1650;
+* FIXED: Promote the Ken Burns etc effects in Free version, #1706;
+* FIXED: ReferenceError: __ is not defined, #1710;
+* FIXED: Is carousel tooltip correct?, #1708;
+* FIXED: Unable to close the "Thanks for using MetaSlider" and "Add a Slide" popups using the ESC key, #1651;
+* FIXED: Accessibility improvements, #1630, #1640, #1665;
+* FIXED: UI elements displays Incorrectly with multiple FlexSlider slideshows (navigation arrows as white boxes), #1579;
+* FIXED: When importing a carousel slideshow with captions, the default General>Caption should be Media Caption instead of Manual Entry, #1717;
+* FIXED: Disable "Insert" button when no text or link is added, #1715;
+* FIXED: Disable border-color in slideshow edit page when default border-width is 0, #1721;
+* FIXED: Fails to Process/Store Very Long URLs (Buffer/Parsing Limit Exceeded) in URL field, #1728;
+* FIXED: Sanitize 'Add Button' Inputs, #1725;
+* CHANGED: Add a tooltip on Theme > Caption > Color to explain color override, #1594;
+* CHANGED: Group carousel settings in a separate section, #1508;
+* CHANGED: Should we lead with the manual caption?, #1076;
+
+= [3.98.0] - May 01, 2025 =
 
 * ADDED: Allow to change slideshow settings through a theme, #1597;
 * ADDED: Message for Legacy users, #1575;
