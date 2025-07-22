@@ -139,6 +139,10 @@ class MetaSlider_Theme_Base
         $enable     = apply_filters( 'metaslider_flex_slider_responsive_arrows_enable', false );
         $prev_class = apply_filters( 'metaslider_flex_slider_responsive_arrows_prev_class', '.flex-prev' );
         $next_class = apply_filters( 'metaslider_flex_slider_responsive_arrows_next_class', '.flex-next' );
+
+        // @since 3.100 - Use these filters to add custom JS
+        $mobile_on_js   = apply_filters( 'metaslider_flex_slider_responsive_arrows_mobile_on_js', '' );
+        $mobile_off_js  = apply_filters( 'metaslider_flex_slider_responsive_arrows_mobile_off_js', '' );
         
         if ( ! is_admin() && $enable ) {
             $options['start'] = isset( $options['start'] ) ? $options['start'] : array();
@@ -165,9 +169,11 @@ class MetaSlider_Theme_Base
                     if ((screenWidth - 200) < liWidth && (parseInt(prevStartVal, 10) < 0 || parseInt(nextStartVal, 10) < 0)) {
                         prev.css('left', '10px');
                         next.css('right', '10px');
+                        {$mobile_on_js}
                     } else {
                         prev.css('left', prevStartVal);
                         next.css('right', nextStartVal);
+                        {$mobile_off_js}
                     }
                 }
                     
@@ -224,7 +230,9 @@ return $options;
 
     /**
      * Add manual controls to this theme
-     *
+     * Important: be careful when using as it will override 
+     * the default dots navigation of other slideshows in same page.
+     * 
      * @param array  $html         - The flexslider options
      * @param string $slideshow_id - the id of the slideshow
      * @param array  $settings     - the id of the slideshow

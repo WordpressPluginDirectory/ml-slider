@@ -88,12 +88,15 @@ class MetaSlider_Slideshow_Settings
             'slices' => 15,
             'center' => false,
             'smartCrop' => true,
+            'smartCropSource' => 'slideshow',
+            'imageWidth' => 400,
+            'imageHeight' => 400,
             'cropMultiply' => 1,
             'smoothHeight' => false,
             'carouselMode' => false,
             'infiniteLoop' => false,
             'carouselMargin' => 5,
-            'minItems' => 1,
+            'minItems' => 2,
             'forceHeight' => false,
             'firstSlideFadeIn' => false,
             'easing' => 'linear',
@@ -117,9 +120,9 @@ class MetaSlider_Slideshow_Settings
             'mobileSlideshow_tablet' => false,
             'mobileSlideshow_laptop' => false,
             'mobileSlideshow_desktop' => false,
-            'ariaLive' => false,
-            'ariaCurrent' => false,
-            'tabIndex' => false,
+            'ariaLive' => true,
+            'ariaCurrent' => true,
+            'tabIndex' => true,
             'pausePlay' => false,
             'progressBar' => false,
             'playText' => '',
@@ -142,7 +145,7 @@ class MetaSlider_Slideshow_Settings
     public static function adjust_settings($settings)
     {
         // Convert submitted checkbox values from 'on' or 'off' to boolean values in string format (e.g. true becomes 'true')
-        $checkboxes = array('noConflict', 'fullWidth', 'hoverPause', 'reverse', 'printCss', 'printJs', 'smoothHeight', 'center', 'carouselMode', 'autoPlay', 'firstSlideFadeIn', 'responsive_thumbs', 'keyboard', 'touch', 'infiniteLoop',  'mobileArrows_smartphone', 'mobileArrows_tablet','mobileArrows_laptop', 'mobileArrows_desktop', 'mobileNavigation_smartphone', 'mobileNavigation_tablet', 'mobileNavigation_laptop', 'mobileNavigation_desktop', 'mobileSlideshow_smartphone', 'mobileSlideshow_tablet', 'mobileSlideshow_laptop', 'mobileSlideshow_desktop', 'ariaLive', 'tabIndex', 'pausePlay', 'showPlayText', 'ariaCurrent', 'progressBar', 'forceHeight');
+        $checkboxes = array('noConflict', 'fullWidth', 'hoverPause', 'reverse', 'printCss', 'printJs', 'smoothHeight', 'center', 'carouselMode', 'autoPlay', 'firstSlideFadeIn', 'responsive_thumbs', 'keyboard', 'touch', 'infiniteLoop',  'mobileArrows_smartphone', 'mobileArrows_tablet','mobileArrows_laptop', 'mobileArrows_desktop', 'mobileNavigation_smartphone', 'mobileNavigation_tablet', 'mobileNavigation_laptop', 'mobileNavigation_desktop', 'mobileSlideshow_smartphone', 'mobileSlideshow_tablet', 'mobileSlideshow_laptop', 'mobileSlideshow_desktop', 'ariaLive', 'tabIndex', 'pausePlay', 'showPlayText', 'ariaCurrent', 'progressBar', 'forceHeight', 'lightbox');
 
         foreach ($checkboxes as $checkbox) {
             $settings[$checkbox] = (isset($settings[$checkbox]) && 'on' == $settings[$checkbox]) ? 'true' : 'false';

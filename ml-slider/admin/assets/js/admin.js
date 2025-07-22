@@ -1433,7 +1433,28 @@ window.jQuery(function ($) {
         let id = $(this).data("id") || $(this).attr("id").replace("overlay-", "");
         $("#modal-" + id).fadeOut();
         $("#overlay-" + id).fadeOut();
-    });  
+    }); 
+    
+    /**
+     * Hide slide
+     */
+    // Stop propagation
+    $(".metaslider").on('click', 'button.hide-slide input[type=checkbox]', function(e){
+        e.stopPropagation();
+    });
+    // Button click handler
+    $(".metaslider").on('click', 'button.hide-slide', function(e) {
+        e.stopPropagation();
+        $(this).find('input[type=checkbox]').trigger('click');
+        $(this).closest('tr.slide').toggleClass('slide-is-hidden', $(this).find('input[type=checkbox]').is(':checked'));
+    });
+
+    /**
+     * Set Hiden slide class on page load
+     */
+    $(".metaslider button.hide-slide input[type=checkbox]").each(function(i) {
+        $(this).closest('tr.slide').toggleClass('slide-is-hidden', $(this).is(':checked'));
+    });
 });
 
 /**

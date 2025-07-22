@@ -1018,7 +1018,7 @@ export default {
 		@include custom-theme-box();
 
 		.custom-theme-single {
-			min-height: 177px;
+			height: 100%;
 		}
 	}
 	#metaslider-ui .ms-current-theme .custom-theme-single .custom-subtitle {
@@ -1030,7 +1030,6 @@ export default {
 	}
 	#metaslider-ui .custom-theme-single {
 		width: 100%;
-		min-height: 216px;
 		height: 100%;
 		line-height: normal;
 		display: flex;

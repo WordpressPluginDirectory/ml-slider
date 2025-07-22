@@ -343,7 +343,7 @@ $is_pro_btn  = '<a class="dashicons dashicons-lock is-pro-setting tipsy-tooltip-
             'label' => esc_html__("Transition Speed", "ml-slider"),
             'class' => 'option flex responsive nivo',
             'helptext' => esc_html__(
-                'Choose the speed of the animation in milliseconds. You can select the animation in the "Effect" field.',
+                'Choose the speed of the animation in milliseconds. You can select the animation in the "Transition Effect" field.',
                 'ml-slider'
             ),
             'after' => esc_html_x(
@@ -424,6 +424,19 @@ $is_pro_btn  = '<a class="dashicons dashicons-lock is-pro-setting tipsy-tooltip-
                     ),
                     'class' => ''
                 ),
+            )
+        ),
+        'reverse' => array(
+            'priority' => 70,
+            'type' => 'checkbox',
+            'label' => esc_html__("Reverse", "ml-slider"),
+            'class' => 'option flex',
+            'checked' => $this->slider->get_setting(
+                'reverse'
+            ) == 'true' ? 'checked' : '',
+            'helptext' => esc_html__(
+                "Reverse the animation direction.",
+                "ml-slider"
             )
         ),
         'easing' => array(
@@ -933,6 +946,27 @@ $is_pro_btn  = '<a class="dashicons dashicons-lock is-pro-setting tipsy-tooltip-
                 )
             )
         ),
+        'smartCropSource' => array(
+            'priority' => 31,
+            'type' => 'select',
+            'label' => __('Image Crop Source', 'ml-slider'),
+            'class' => 'option flex inline-block',
+            'value' => $this->slider->get_setting( 'smartCropSource' ),
+            'options' => array(
+                'slideshow' => array( 
+                    'label' => __('Slideshow width/height', 'ml-slider' ) 
+                ),
+                'image' => array( 
+                    'label' => __('Custom width/height (Pro)', 'ml-slider' ),
+                    'addon_required' => true
+                )
+            ),
+            'helptext' => __(
+                'By default, MetaSlider will crop images using the main width and height of the slideshow. If you want smaller images, select Custom width/height and make sure the values are less than the main width and height.',
+                'ml-slider'
+            ),
+            'after' => $is_pro_btn
+        ),
         'cropMultiply' => array(
             'priority' => 34,
             'type' => 'select',
@@ -988,19 +1022,6 @@ $is_pro_btn  = '<a class="dashicons dashicons-lock is-pro-setting tipsy-tooltip-
             ),
             'helptext' => esc_html__(
                 "Select the order in which slides appear in the slideshow. This impacts the frontend view.",
-                "ml-slider"
-            )
-        ),
-        'reverse' => array(
-            'priority' => 70,
-            'type' => 'checkbox',
-            'label' => esc_html__("Reverse", "ml-slider"),
-            'class' => 'option flex',
-            'checked' => $this->slider->get_setting(
-                'reverse'
-            ) == 'true' ? 'checked' : '',
-            'helptext' => esc_html__(
-                "Reverse the animation direction.",
                 "ml-slider"
             )
         ),

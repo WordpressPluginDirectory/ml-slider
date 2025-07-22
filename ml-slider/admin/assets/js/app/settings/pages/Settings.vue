@@ -289,7 +289,7 @@ export default {
 
 			},
 			proSettings: {
-				postFeedFields: 30,
+				postFeedFields: 100,
 				legacyThemeEditor: false // false means legacy Theme editor is disabled
 			},
 			legacySlideshows: {}

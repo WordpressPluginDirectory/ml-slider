@@ -2,7 +2,7 @@
 Contributors: andergmartins, htmgarcia, publishpress, stevejburge, rochdesigns
 Tags: slider, video slider, image slider, carousel slider, gallery
 Requires at least: 5.0
-Stable tag: 3.99.0
+Stable tag: 3.100.0
 Requires PHP: 7.0
 Tested up to: 6.8
 License: GPLv2 or later
@@ -319,6 +319,23 @@ Yes, you can build Elementor slides and Beaver Builder slideshows. You can creat
 
 The format is based on [Keep a Changelog recommendations](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
+
+= [3.100.0] - Jul 21, 2025 =
+
+* ADDED: Slide visibility support, #1667;
+* ADDED: Ad for new custom width/height crop settings, #1765;
+* ADDED: Ad for Advanced tab, #1764;
+* FIXED: Margin for thumbnails is gone, #1742;
+* FIXED: slider is undefined, #1752;
+* FIXED: Active slide class doesn't match with visible slide when reverse is enabled, #1518;
+* FIXED: Slide delay tooltip is out of date, #1758;
+* FIXED: Theme promos overlap in medium to small screensizes, #1763;
+* FIXED: Call to member function add_page in null, #1767;
+* FIXED: Website overflow to improve touch swipe, #1781;
+* FIXED: Precognition theme propagates its navigation to other slideshows, #1780;
+* CHANGED: Move "Reverse" to Transition Options, #1540;
+* CHANGED: Set Carousel mode default to more than 1, #1732;
+* CHANGED: Enable all Accessibility options by default, #1753;
 
 = [3.99.0] - Jun 11, 2025 =
 

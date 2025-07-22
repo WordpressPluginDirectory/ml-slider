@@ -130,11 +130,14 @@ class MetaSlider
             'slices' => 15,
             'center' => false,
             'smartCrop' => true,
+            'smartCropSource' => 'slideshow',
+            'imageWidth' => 400,
+            'imageHeight' => 400,
             'cropMultiply' => 1,
             'smoothHeight' => false,
             'carouselMode' => false,
             'carouselMargin' => 5,
-            'minItems' => 1,
+            'minItems' => 2,
             'forceHeight' => false,
             'firstSlideFadeIn' => false,
             'easing' => 'linear',
@@ -205,6 +208,9 @@ class MetaSlider
         $args = apply_filters('metaslider_populate_slides_args', $args, $slideshow_id, $slideshow_settings);
 
         $the_query = new WP_Query($args);
+
+        // Skip hidden image slides - Pro slides are handled through 'metaslider_get_slides_query'
+        $the_query = $this->skip_hidden_slides($the_query);
 
         // Filter to alter the query itself if needed
         return apply_filters('metaslider_get_slides_query', $the_query, $slideshow_id, $slideshow_settings);
@@ -416,12 +422,8 @@ class MetaSlider
         $attrs = array();
 
         // Height
-        if ( isset( $this->settings['minItems'] ) ) {
-            $minItems = $this->settings['minItems'];
-
-            if ( (int) $minItems > 1 ) {
-                $attrs['data-height'] = $this->settings['height'];
-            }
+        if ( isset( $this->settings['height'] ) && (int) $this->settings['height'] > 0 ) {
+            $attrs['data-height'] = (int) $this->settings['height'];
         }
 
         // Width
@@ -834,5 +836,52 @@ class MetaSlider
         );
 
         do_action('metaslider_register_public_styles');
+    }
+
+    /**
+     * Loops through each slide and returns the query without the hidden slides.
+     *
+     * @since 3.100
+     * 
+     * @param object $slides_query The wp query
+     * 
+     * @return object
+     */
+    public function skip_hidden_slides($slides_query)
+    {
+        $page = is_admin() && isset( $_GET['page'] ) ? sanitize_key( $_GET['page'] ) : '';
+
+        // Hide invisible slides in frotend and theme editor page in admin
+        if ( ! is_admin() || $page === 'metaslider-theme-editor' ) {
+
+            $slides_to_hide = array();
+            foreach ($slides_query->posts as $slide) {
+                
+                // Determine the slides that we want to hide
+                $is_hidden = metaslider_option_is_enabled(get_post_meta($slide->ID, '_meta_slider_slide_is_hidden', true));
+
+                if (filter_var($is_hidden, FILTER_VALIDATE_BOOLEAN)) {
+                    $slides_to_hide[] = $slide->ID;
+                }
+            }
+
+            // If no slides were determined to hide, return the original query
+            if (empty($slides_to_hide)) {
+                return $slides_query;
+            }
+
+            // Return a new wp_query with just the slides needed
+            $args = $slides_query->query_vars;
+            $args['post__not_in'] = $slides_to_hide;
+
+            // WP will set defaults using fill_query_vars() and when duplicating
+            // a query will then cause issues. For example, the default ['s' => ''] will
+            // set is_search() to true as they just use isset() to test it.
+            $args = array_filter($args, 'metaslider_remove_empty_vars');
+
+            return new WP_Query($args);
+        }
+
+        return $slides_query;
     }
 }

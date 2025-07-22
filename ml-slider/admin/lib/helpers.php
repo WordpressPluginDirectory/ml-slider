@@ -250,3 +250,74 @@ function metaslider_optimize_url($url, $text, $html = null, $class = '')
         return sprintf('<a class="ml-upgrade-button %1$s" href="%2$s">%3$s</a>', esc_attr($class), esc_url($url), htmlspecialchars($text));
     }
 }
+
+/**
+ * Check if meta value is enabled
+ * 
+ * @since 3.100
+ * 
+ * @param mixed $value
+ * 
+ * @return bool
+ */
+function metaslider_option_is_enabled( $value ) 
+{
+    return $value === 'yes' || $value === 'on' || $value === true || $value == 1;
+}
+
+/**
+ * Used to filter out empty strings/arrays with array_filter()
+ *
+ * @since 3.100
+ * 
+ * @param mixed $item The item being tested
+ * 
+ * @return bool - Will return whether empty on arrays/strings
+ */
+function metaslider_remove_empty_vars($item)
+{
+    // If it's an array and not empty, keep it (return true)
+    if (is_array($item)) {
+        return ! empty($item);
+    }
+
+    // If it's a string and not '', keep it (return true)
+    if (is_string($item)) {
+        return ('' !== trim($item));
+    }
+
+    // Not likely to get this far but just in case, keep everything else
+    return true;
+}
+
+/**
+ * Check if we're using native width/height from slideshow main options
+ * or custom image width/height
+ * 
+ * @since 3.100
+ * 
+ * @param $side string          'width' or 'height' only
+ * @param $settings array|null  Slideshow settings
+ * 
+ * @return int|bool
+ */
+function metaslider_image_cropped_size( $side, $settings ) 
+{
+    if ( ! in_array( $side, array( 'width', 'height' ) ) ) {
+        return false;
+    }
+
+    $Side = ucfirst( $side ); // e.g 'width' -> 'Width'
+
+    if ( metaslider_pro_is_active() 
+        && isset( $settings['smartCropSource'] ) 
+        && $settings['smartCropSource'] == 'image' 
+    ) {
+        // e.g. we look for 'imageWidth' settings
+        if ( isset( $settings['image' . $Side] ) && absint( $settings['image' . $Side] ) > 0 ) {
+            return absint( $settings['image' . $Side] );
+        }
+    }
+
+    return isset( $settings[$side] ) ? $settings[$side] : 0; // Slideshow width or height setting
+}

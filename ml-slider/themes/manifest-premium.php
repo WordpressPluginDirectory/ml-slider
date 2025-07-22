@@ -36,7 +36,7 @@ return array(
         'type' => 'premium',
         'supports' => array( 'flex' ),
         'description' => __( 'A dynamic slideshow theme that emphasizes the active slide by scaling it larger than the surrounding slides, creating a hero-like focal point that draws the viewer\'s attention.', 'ml-slider' ),
-        'instructions' => __( 'This is the Beta version of the Hero Theme. It should also be used with 100% Width and Carousel Mode disabled, Transition Effect set to Slide and Center Align enabled. Currently works on all slide types except External Image and Tiktok Videos.', 'ml-slider' )
+        'instructions' => __( 'It should be used with 100% Width and Carousel Mode disabled, Transition Effect set to Slide and Center Align enabled. Currently works on all slide types except External Image and Tiktok Videos.', 'ml-slider' )
     ),
     'revelio' => array(
         'folder' => 'revelio',
@@ -60,6 +60,30 @@ return array(
         'type' => 'premium',
         'supports' => array( 'flex' ),
         'description' => __( 'A dynamic slideshow theme that emphasizes the active slide by using grayscale and opacity for the surrounding slides, creating a focal point that draws the viewer\'s attention.', 'ml-slider' ),
-        'instructions' => __( 'This is the Beta version of the Focus Theme. It should also be used with 100% Width and Carousel Mode disabled, Transition Effect set to Slide and Center Align enabled. Currently works on all slide types except External Image and Tiktok Videos.', 'ml-slider' )
+        'instructions' => __( 'It should be used with 100% Width and Carousel Mode disabled, Transition Effect set to Slide and Center Align enabled. Currently works on all slide types except External Image and Tiktok Videos.', 'ml-slider' )
+    ),
+    'praise-loop' => array(
+        'folder' => 'praise-loop',
+        'title' => 'Praise Loop',
+        'type' => 'premium',
+        'supports' => array( 'flex' ),
+        'description' => __( 'A dynamic slideshow theme to display testimonials that emphasizes the active slide by using grayscale for the surrounding slides, creating a focal point that draws the viewer\'s attention.', 'ml-slider' ),
+        'instructions' => __( 'Image, External Image and Post Feed slides are displayed in 2 rows, while the others slide types are displayed in 1 row. It should also be used with 100% Width and Carousel Mode disabled, Transition Effect set to Slide and Center Align enabled.', 'ml-slider' ),
+    ),
+    'parallel' => array(
+        'folder' => 'parallel',
+        'title' => 'Parallel',
+        'type' => 'premium',
+        'supports' => array( 'flex' ),
+        'description' => __( 'A 2 columns minimalistic theme to split your images and captions.', 'ml-slider' ),
+        'instructions' => __( 'Image, External Image and Post Feed slides are displayed in 2 columns, while the others slide types are displayed in 1 column.', 'ml-slider' ),
+    ),
+    'tandem' => array(
+        'folder' => 'tandem',
+        'title' => 'Tandem',
+        'type' => 'premium',
+        'supports' => array( 'flex' ),
+        'description' => __( 'A 2 columns minimalistic theme to split your images and captions.', 'ml-slider' ),
+        'instructions' => __( 'Image, External Image and Post Feed slides are displayed in 2 columns, while the others slide types are displayed in 1 column.', 'ml-slider' ),
     ),
 );

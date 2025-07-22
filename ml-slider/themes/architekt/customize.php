@@ -128,7 +128,7 @@ return array(
                 )
             ),
             /*array(
-                'label' => esc_html__('Position', 'ml-slider'),
+                'label' => esc_html__('Vertical Position', 'ml-slider'),
                 'name' => 'arrows_vertical_position',
                 'type' => 'select',
                 'default' => 'top',
@@ -150,7 +150,7 @@ return array(
                 )
             ),
             array(
-                'label' => esc_html__('Position Offset', 'ml-slider'),
+                'label' => esc_html__('Vertical Position Offset', 'ml-slider'),
                 'info' => esc_html__('Based on "Position".', 'ml-slider'),
                 'name' => 'arrows_vertical_position_offset',
                 'type' => 'range',
@@ -364,6 +364,16 @@ return array(
                         'css' => '[ms_id] .flexslider .caption-wrap a { color: [ms_value] }'
                     )
                 )
+            ),
+            array(
+                'label' => esc_html__('Width', 'ml-slider'),
+                'name' => 'caption_width',
+                'type' => 'range',
+                'default' => 100,
+                'metric' => '%',
+                'min' => 0,
+                'max' => 100,
+                'css' => '[ms_id] .flexslider .caption-wrap .caption { width: calc([ms_value]% - 300px) }'
             ),
             array(
                 'label' => esc_html__('Font Size', 'ml-slider'),

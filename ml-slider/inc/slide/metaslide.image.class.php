@@ -344,8 +344,8 @@ class MetaImageSlide extends MetaSlide
         // Create a copy of the correct sized image
         $imageHelper = new MetaSliderImageHelper(
             $slide_id,
-            isset($settings['width']) ? $settings['width'] : 0,
-            isset($settings['height']) ? $settings['height'] : 0,
+            $this->image_cropped_size( 'width' ),
+            $this->image_cropped_size( 'height' ),
             isset($settings['smartCrop']) ? $settings['smartCrop'] : 'false',
             $this->use_wp_image_editor(),
             null,
@@ -453,6 +453,7 @@ class MetaImageSlide extends MetaSlide
         echo $this->get_delete_button_html(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
         echo $this->get_update_image_button_html(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
         echo $this->get_duplicate_slide_button_html(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+        echo $this->get_hide_slide_button_html(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
         do_action('metaslider-slide-edit-buttons', 'image', $this->slide->ID, $attachment_id);
         $edit_buttons = ob_get_clean();
 
@@ -603,6 +604,17 @@ class MetaImageSlide extends MetaSlide
             'content' => $schedule_tab
         );
 
+        // Adds Advanced tab
+        ob_start();
+        include METASLIDER_PATH . 'admin/views/slides/tabs/advanced.php';
+        $advanced_tab = ob_get_contents();
+        ob_end_clean();
+
+        $tabs['advanced'] = array(
+            'title' => __('Advanced', 'ml-slider'),
+            'content' => $advanced_tab
+        );
+
         return apply_filters("metaslider_image_slide_tabs", $tabs, $this->slide, $this->slider, $this->settings);
     }
 
@@ -652,8 +664,8 @@ class MetaImageSlide extends MetaSlide
         // disable wp_image_editor if metadata does not exist for the slide
         $imageHelper = new MetaSliderImageHelper(
             $this->slide->ID,
-            $this->settings['width'],
-            $this->settings['height'],
+            $this->image_cropped_size( 'width' ),
+            $this->image_cropped_size( 'height' ),
             isset($this->settings['smartCrop']) ? $this->settings['smartCrop'] : 'false',
             $this->use_wp_image_editor(),
             null,
@@ -709,8 +721,8 @@ class MetaImageSlide extends MetaSlide
             'target' => get_post_meta($this->slide->ID, 'ml-slider_new_window', true) ? '_blank' : '_self',
             'src' => $thumb,
             'thumb' => $thumb, // backwards compatibility with Vantage
-            'width' => $this->settings['width'],
-            'height' => $this->settings['height'],
+            'width' => $this->image_cropped_size( 'width' ),
+            'height' => $this->image_cropped_size( 'height' ),
             'alt' => $alt,
             'link-alt' => $link_alt,
             'caption' => html_entity_decode(do_shortcode($caption), ENT_NOQUOTES, 'UTF-8'),
@@ -1111,6 +1123,13 @@ class MetaImageSlide extends MetaSlide
             $this->slide->ID,
             'hide_caption_desktop',
             isset($fields['hide_caption_desktop']) && $fields['hide_caption_desktop'] === 'on'
+        );
+
+        // Is slide hidden?
+        update_post_meta(
+            $this->slide->ID,
+            '_meta_slider_slide_is_hidden',
+            isset( $fields['hide_slide'] ) && $fields['hide_slide'] === 'on'
         );
 
     }

@@ -718,12 +718,12 @@ eventually be removed/refactored */
 	padding-top: 1rem;
 }
 
-.metaslider .tabs-content .schedule_placeholder {
+.metaslider .tabs-content .pro-feature_placeholder {
 	text-align: center;
 	padding-top: 10px;
 }
 
-.metaslider .tabs-content .schedule_placeholder h4 {
+.metaslider .tabs-content .pro-feature_placeholder h4 {
 	font-weight: normal;
 }
 
@@ -1743,7 +1743,7 @@ td .dot.available {
 	background-color: #F0F0F1;
 	padding: 30px 0;
 }
-.css-manager-ad-container .probutton, .schedule_placeholder .probutton{
+.css-manager-ad-container .probutton, .pro-feature_placeholder .probutton{
 	color: #fff;
 	background: #dd6923;
 	padding: 12px 30px !important;
@@ -1757,26 +1757,26 @@ td .dot.available {
 	line-height: 1.8 !important;
 	white-space: unset;
 }
-.schedule_placeholder .probutton {
+.pro-feature_placeholder .probutton {
 	margin-top: 0!important;
 	margin-bottom: 15px;
 }
 .css-manager-ad-container .dashicons.dashicons-external,
-.schedule_placeholder .dashicons.dashicons-external{
+.pro-feature_placeholder .dashicons.dashicons-external{
 	margin-top: 5px;
 }
-.css-manager-ad-container h1, .schedule_placeholder h1 {
+.css-manager-ad-container h1, .pro-feature_placeholder h1 {
 	color: #29375b;
 	font-size: 28px;
 	line-height: 1.2;
 	font-weight: 600 !important;
 }
-.schedule_placeholder h1 {
+.pro-feature_placeholder h1 {
     margin-bottom: 5px!important;
 }
 .css-manager-ad-container li,
 .css-manager-ad-container p,
-.schedule_placeholder p {
+.pro-feature_placeholder p {
 	font-size: 16px !important;
 	font-style: normal !important;
 	color: #3c434a !important;
@@ -2024,6 +2024,10 @@ td .dot.available {
     background: #feb123;
     padding: 4px;
     border-radius: 50%;
+}
+
+.metaslider-ui .metaslider-slides-container .slide.slide-is-hidden td > *:not(.metaslider-ui-controls) {
+	opacity: .2;
 }
 
 /* Force display inline-block when flex class (for FlexSlider) conflicts */

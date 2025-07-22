@@ -34,7 +34,6 @@ class MetaSlider_Theme_Precognition extends MetaSlider_Theme_Base
     {
         parent::__construct($this->id, $this->version);
         add_filter('metaslider_flex_slider_parameters', array($this, 'use_manual_controls'), 10, 3);
-        add_filter('metaslider_flex_slider_get_html', array($this, 'add_title_to_replace_dots'), 10, 3);
     }
 
     /**
@@ -49,7 +48,7 @@ class MetaSlider_Theme_Precognition extends MetaSlider_Theme_Base
     public function use_manual_controls($options, $slideshow_id, $settings)
     {
         // Only enable this for dots nav
-        if ('true' === $settings['navigation']) {
+        if (('true' === $settings['navigation'] || 'dots_onhover' === $settings['navigation']) && 'false' === $settings['carouselMode']) {
             $options['manualControls'] = "'.titleNav-{$slideshow_id} li a'";
         }
         return $options;

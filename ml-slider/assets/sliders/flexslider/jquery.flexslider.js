@@ -738,13 +738,17 @@
           master.direction = slider.direction;
 
           if (Math.ceil((target + 1)/slider.visible) - 1 !== slider.currentSlide && target !== 0) {
+            var visualIndex = reverse ? (slider.count - 1 - target) : target;
+
             slider.currentItem = target;
-            slider.slides.removeClass(namespace + "active-slide").eq(target).addClass(namespace + "active-slide");
+            slider.slides.removeClass(namespace + "active-slide").eq(visualIndex).addClass(namespace + "active-slide");
             slider.slides.attr('aria-hidden', 'true').eq(target).removeAttr('aria-hidden');
             target = Math.floor(target/slider.visible);
           } else {
+            var visualIndex = reverse ? (slider.count - 1 - target) : target;
+
             slider.currentItem = target;
-            slider.slides.removeClass(namespace + "active-slide").eq(target).addClass(namespace + "active-slide");
+            slider.slides.removeClass(namespace + "active-slide").eq(visualIndex).addClass(namespace + "active-slide");
             slider.slides.attr('aria-hidden', 'true').eq(target).removeAttr('aria-hidden');
             return false;
           }
@@ -768,7 +772,10 @@
         // !CAROUSEL:
         // CANDIDATE: slide active class (for add/remove slide)
         if (!carousel) {
-          slider.slides.removeClass(namespace + 'active-slide').eq(target).addClass(namespace + 'active-slide');
+          // For "slide", use visualIndex if reverse; for others, always use target
+          var activeIndex = (animation === "slide" && reverse) ? (slider.count - 1 - target) : target;
+
+          slider.slides.removeClass(namespace + 'active-slide').eq(activeIndex).addClass(namespace + 'active-slide');
           slider.slides.attr('aria-hidden', 'true').eq(target).removeAttr('aria-hidden');
         }
 
@@ -1093,7 +1100,9 @@
       // !CAROUSEL:
       // CANDIDATE: active slide
       if (!carousel) {
-        slider.slides.removeClass(namespace + "active-slide").eq(slider.currentSlide).addClass(namespace + "active-slide");
+        var visualCurrent = reverse ? (slider.count - 1 - slider.currentSlide) : slider.currentSlide;
+        
+        slider.slides.removeClass(namespace + "active-slide").eq(visualCurrent).addClass(namespace + "active-slide");
         slider.slides.attr('aria-hidden', 'true').eq(slider.currentSlide).removeAttr('aria-hidden');
       }
 

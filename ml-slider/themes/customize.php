@@ -93,7 +93,7 @@ return array(
                 'css' => '[ms_id] .flexslider .flex-pauseplay a:hover { opacity: [ms_value] }'
             ),
             /*array(
-                'label' => esc_html__('Position', 'ml-slider'),
+                'label' => esc_html__('Vertical Position', 'ml-slider'),
                 'name' => 'play_button_position',
                 'type' => 'select',
                 'default' => 'bottom-left',
@@ -133,10 +133,11 @@ return array(
         'settings' => array(
             array(
                 'label' => esc_html__('Background', 'ml-slider'),
+                'info' => esc_html__("Fallback background for slideshow.", 'ml-slider'),
                 'name' => 'slideshow_background',
                 'type' => 'color',
-                'default' => '#fff',
-                'css' => '[ms_id] .slides li { background-color: [ms_value] }'
+                'default' => 'rgba(255,255,255,0)',
+                'css' => '[ms_id] .flex-viewport, [ms_id] .slides { background: [ms_value] }'
             ),
             array(
                 'label' => esc_html__('Progress Bar', 'ml-slider'),

@@ -1,7 +1,7 @@
 <?php if (!defined('ABSPATH')) {
 die('No direct access.');
 } ?>
-<div class="schedule_placeholder">
+<div class="pro-feature_placeholder">
     <?php if (metaslider_pro_is_installed()) : ?>
         <p style="mb-0 text-base"><?php esc_html_e('Update or activate your MetaSlider Pro now to add a start/end date option to your slides', 'ml-slider'); ?></p>
     <?php else : ?>

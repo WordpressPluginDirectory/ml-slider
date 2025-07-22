@@ -186,8 +186,13 @@ body .metaslider .flexslider .flex-direction-nav li {
     opacity: 1.0 !important;
 }
 
+.metaslider .flex-control-thumbs {
+    margin: 5px -5px 0 -5px;
+}
+
 .metaslider .flex-control-thumbs li {
     width: auto;
+    margin: 5px;
 }
 
 .metaslider ol.flex-control-thumbs img,
