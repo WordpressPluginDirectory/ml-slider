@@ -37,7 +37,7 @@ class MetaFlexSlider extends MetaSlider
         add_filter('metaslider_flex_slider_parameters', array( $this, 'manage_tabbed_slider' ), 99, 3);
         add_filter('metaslider_flex_slider_parameters', array( $this, 'manage_pausePlay_button' ), 99, 3);
         add_filter('metaslider_flex_slider_parameters', array( $this, 'manage_dots_onhover' ), 10, 3);
-        add_filter('metaslider_flex_slider_parameters', array($this, 'fix_touch_swipe'), 10, 3);
+        //add_filter('metaslider_flex_slider_parameters', array($this, 'fix_touch_swipe'), 10, 3);
 
         if(metaslider_pro_is_active() == false) {
             add_filter('metaslider_flex_slider_parameters', array( $this, 'metaslider_flex_loop'), 99, 3);

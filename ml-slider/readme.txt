@@ -2,7 +2,7 @@
 Contributors: andergmartins, htmgarcia, publishpress, stevejburge, rochdesigns
 Tags: slider, video slider, image slider, carousel slider, gallery
 Requires at least: 5.0
-Stable tag: 3.100.0
+Stable tag: 3.100.1
 Requires PHP: 7.0
 Tested up to: 6.8
 License: GPLv2 or later
@@ -319,6 +319,10 @@ Yes, you can build Elementor slides and Beaver Builder slideshows. You can creat
 
 The format is based on [Keep a Changelog recommendations](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
+
+= [3.100.1] - Jul 24, 2025 =
+
+* FIXED: Remove body overflow when swipe is enabled, #1791;
 
 = [3.100.0] - Jul 21, 2025 =
 
