@@ -1,12 +1,60 @@
 <?php if (!defined('ABSPATH')) {
 die('No direct access.');
 } ?>
-<div class="pro-feature_placeholder">
-    <?php if (metaslider_pro_is_installed()) : ?>
-        <p style="mb-0 text-base"><?php esc_html_e('Update or activate your MetaSlider Pro now to add a custom delay and repeat options to your slides', 'ml-slider'); ?></p>
-    <?php else : ?>
-        <h1><?php esc_html_e('Get MetaSlider Pro', 'ml-slider'); ?></h1>
-        <p><?php esc_html_e('With MetaSlider Pro, you can add a custom delay and repeat options to your slides. You can choose to display your slides more time, and repeat your slides multiple times.', 'ml-slider'); ?></p>
-        <a href="<?php echo esc_url(metaslider_get_upgrade_link()); ?>" class="probutton button button-primary button-hero" target="_blank"><?php esc_html_e('Upgrade now', 'ml-slider'); ?> <span class='dashicons dashicons-external'></span></a>
-    <?php endif; ?>
+<div class="row delay advanced-setting">
+    <div class="ms-switch-button">
+        <label>
+            <input type="checkbox" class="delay-slide mr-0" disabled> <span class="opacity-50"></span>
+        </label>
+    </div>
+    <label class="delay-slide">
+        <?php esc_html_e('Custom delay for this slide', 'ml-slider') ?><span class="dashicons dashicons-info tipsy-tooltip-top" original-title="<?php esc_attr_e(
+            'Requires the Auto play setting to be enabled for this slideshow. When active on video slides, playback (by user or video autoplay) controls when the slideshow advances.', 
+            'ml-slider'
+        ) ?>" style="line-height: 1.2em;"></span>
+        <?php
+        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+        echo metaslider_upgrade_pro_small_btn(
+            __( 'Custom delay is available in MetaSlider Pro', 'ml-slider' )
+        );
+        ?> 
+    </label>
+</div>
+<div class="row repeat advanced-setting">
+    <div class="ms-switch-button">
+        <label>
+            <input type="checkbox" class="repeat-slide mr-0" disabled> <span class="opacity-50"></span>
+        </label>
+    </div>
+    <label class="repeat-slide">
+        <?php esc_html_e('Repeat this slide', 'ml-slider') ?><span class="dashicons dashicons-info tipsy-tooltip-top" original-title="<?php esc_attr_e(
+            'The slide is repeated after the specified number of original slides until the end of the slider. If multiple slides have this feature enabled, only the original (non-repeated) slides are considered when determining the positions of the repeated slides.', 
+            'ml-slider'
+        ) ?>" style="line-height: 1.2em;"></span>
+        <?php 
+        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+        echo metaslider_upgrade_pro_small_btn(
+            __( 'Repeat slide is available in MetaSlider Pro', 'ml-slider' )
+        );
+        ?> 
+    </label>
+</div>
+<div class="row thumbnail advanced-setting">
+    <div class="ms-switch-button">
+        <label>
+            <input type="checkbox" class="thumbnail-slide mr-0" disabled> <span class="opacity-50"></span>
+        </label>
+    </div>
+    <label class="thumbnail-slide">
+        <?php esc_html_e('Custom thumbnail', 'ml-slider') ?><span class="dashicons dashicons-info tipsy-tooltip-top" original-title="<?php esc_attr_e(
+            'When Navigation is Thumbnails or Filmstrip, select a thumbnail to replace the default one.', 
+            'ml-slider'
+        ) ?>" style="line-height: 1.2em;"></span>
+        <?php 
+        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+        echo metaslider_upgrade_pro_small_btn(
+            __( 'Custom thumbnail is available in MetaSlider Pro', 'ml-slider' )
+        );
+        ?> 
+    </label>
 </div>

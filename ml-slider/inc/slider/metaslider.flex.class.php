@@ -33,10 +33,13 @@ class MetaFlexSlider extends MetaSlider
         add_filter('metaslider_flex_slider_parameters', array( $this, 'manage_tabindex' ), 99, 3);
         add_filter('metaslider_flex_slider_parameters', array( $this, 'manage_aria_hidden_accessibility' ), 99, 3);
         add_filter('metaslider_flex_slider_parameters', array( $this, 'manage_aria_current' ), 99, 3);
+        add_filter('metaslider_flex_slider_parameters', array( $this, 'arrows_accessibility' ), 10, 3);
         add_filter('metaslider_flex_slider_parameters', array( $this, 'manage_progress_bar' ), 99, 3);
         add_filter('metaslider_flex_slider_parameters', array( $this, 'manage_tabbed_slider' ), 99, 3);
         add_filter('metaslider_flex_slider_parameters', array( $this, 'manage_pausePlay_button' ), 99, 3);
         add_filter('metaslider_flex_slider_parameters', array( $this, 'manage_dots_onhover' ), 10, 3);
+        add_filter('metaslider_flex_slider_parameters', array( $this, 'loading_status' ), 10, 3);
+        add_filter('metaslider_flex_slider_parameters', array( $this, 'lazy_load' ), 10, 3);
         //add_filter('metaslider_flex_slider_parameters', array($this, 'fix_touch_swipe'), 10, 3);
 
         if(metaslider_pro_is_active() == false) {
@@ -52,6 +55,7 @@ class MetaFlexSlider extends MetaSlider
         add_filter('metaslider_css', array( $this, 'show_hide_play_text' ), 11, 3);
         add_filter('metaslider_css', array( $this, 'show_hide_play_button' ), 11, 3);
         add_filter('metaslider_css_classes', array( $this, 'remove_bottom_margin' ), 11, 3);
+        add_filter( 'metaslider_flex_slider_parameters', array( $this, 'modify_carousel_css' ), 10, 3 );
 
         $global_settings = get_option( 'metaslider_global_settings' );
         if (
@@ -218,6 +222,15 @@ class MetaFlexSlider extends MetaSlider
             $margin = apply_filters('metaslider_carousel_margin', $this->get_setting('carouselMargin'), $slider_id);
             $css .= "\n        #metaslider_{$slider_id}.flexslider .slides li {margin-right: {$margin}px !important;}";
             if(isset($settings['infiniteLoop']) && $settings['infiniteLoop'] == 'true'){
+
+                $pause_on_hover = "";
+
+                if ( isset( $settings['hoverPause'] ) && $settings['hoverPause'] == 'true' ) {
+                    $pause_on_hover = "#metaslider_{$slider_id}.flexslider .slides:hover {
+                        animation-play-state: paused;
+                    }";
+                }
+
                 //check if theres mobile setting to subtract from the slide count
                 if($this->check_mobile_settings() == true) {
                     $slides = count($this->slides) - 1;
@@ -228,13 +241,16 @@ class MetaFlexSlider extends MetaSlider
                 $animationtime = ($settings['animationSpeed'] * $slides) + ($settings['delay'] * $slides);
                 $transform_width = $margin + $settings["width"];
                 $css .= "
+                    :root {
+                        --ms-slide-width: {$transform_width}px;
+                    }
                     @keyframes infiniteloop_" . $slider_id . " {
                         0% {
                             transform: translateX(0);
                             visibility: visible;
                         }
                         100% {
-                            transform: translateX(calc(-" . $transform_width . "px * " . $slides . "));
+                            transform: translateX(calc(var(--ms-slide-width) * -" . $slides . "));
                             visibility: visible;
                         }
                     }
@@ -242,11 +258,9 @@ class MetaFlexSlider extends MetaSlider
                         -webkit-animation: infiniteloop_" . $slider_id . " " . $animationtime . "ms linear infinite;
                                 animation: infiniteloop_" . $slider_id . " " . $animationtime . "ms linear infinite;
                         display: flex;
-                        width: calc(" . $transform_width . "px * " . $double . ");
+                        width: calc(var(--ms-slide-width) * " . $double . ") !important;
                     }
-                    #metaslider_{$slider_id}.flexslider .slides:hover{
-                        animation-play-state: paused;
-                    }
+                    {$pause_on_hover}
                 ";
             }
         }
@@ -339,10 +353,7 @@ class MetaFlexSlider extends MetaSlider
             'pausePlay' => 'pausePlay',
             'showPlayText' => 'showPlayText',
             'playText' => 'playText',
-            'pauseText' => 'pauseText',
-            'tabIndex' => true,
-            'ariaLive' => true,
-            'ariaCurrent' => true
+            'pauseText' => 'pauseText'
         );
         return isset($params[$param]) ? $params[$param] : false;
     }
@@ -366,6 +377,7 @@ class MetaFlexSlider extends MetaSlider
      */
     protected function get_html()
     {
+        $check_mobile_settings = $this->check_mobile_settings();
         $class = $this->get_setting('noConflict') == 'true' ? "" : ' class="flexslider"';
 
         //accessibility option
@@ -378,7 +390,7 @@ class MetaFlexSlider extends MetaSlider
         }
         
         $return_value = '';
-        if($this->check_mobile_settings() == true) {
+        if($check_mobile_settings == true) {
             $return_value .= '<div id="temp_' . $this->get_identifier() . '" class="flexslider">';
             $return_value .= "<ul" . $aria_live . " class='slides'></ul></div>";
         }
@@ -392,23 +404,31 @@ class MetaFlexSlider extends MetaSlider
             if (strpos($slide, '<li') === 0) {
                 $return_value .= "\n                " . $slide;
             } else {
-                $return_value .= "\n                <li style=\"display: none;\" >" . $slide . "</li>";
+                $return_value .= "\n                <li style=\"display: none;\">" . $slide . "</li>";
             }
         }
 
         $return_value .= "\n            </ul>";
 
-        if ($this->get_setting('autoPlay') == 'true' 
-            && $this->get_setting('progressBar') == 'true' 
-            && ($this->get_setting('infiniteLoop') == 'false' || $this->get_setting('carouselMode') == 'false')
+        if ($this->get_setting('loading') == 'true') {
+            $return_value .= "\n        <div class='ms-slider-loading'><img src='" . 
+                admin_url('images/spinner.gif') . "' alt='" . 
+                esc_attr__('Loading...', 'ml-slider') . "'></div>";
+        }
+
+        if ( ( $this->get_setting( 'autoPlay' ) == 'true' 
+                && $this->get_setting( 'progressBar' ) == 'true' 
+                && ( $this->get_setting( 'infiniteLoop' ) == 'false' || $this->get_setting( 'carouselMode' ) == 'false' ) 
+            ) || apply_filters( 'metaslider_flex_slider_force_progressbar', false )
         ) {
             $return_value .= "\n        <div class='flex-progress-bar'></div>";
         }
 
         $return_value .= "\n        </div>";
 
-        // show the first slide
-        if ($this->get_setting('carouselMode') != 'true') {
+        // show the first slide if device settings is not available 
+        // for any slide (to skip blink on load for first slide)
+        if ($this->get_setting('carouselMode') != 'true' && !$check_mobile_settings) {
             $return_value =  preg_replace('/none/', 'block', $return_value, 1);
         }
 
@@ -428,18 +448,49 @@ class MetaFlexSlider extends MetaSlider
             (isset($global_settings['mobileSettings']) && true == $global_settings['mobileSettings'])
         ) {
             if($this->check_mobile_settings() == true) {
+                $breakpoints = $this->get_breakpoints();
+                $smartphone = $breakpoints[0];
+                $tablet = $breakpoints[1];
+                $laptop = $breakpoints[2];
+                $desktop = $breakpoints[3];
+
                 $js .= "
+                var ms_deviceType = function () {
+                    let device = '';
+                    if (window.matchMedia('(max-width: " . ($tablet - 1) . "px)').matches) {
+                        device = 'smartphone';
+                    } else if (window.matchMedia('(min-width: " . $tablet . "px) and (max-width: " . ($laptop - 1) . "px)').matches) {
+                        device = 'tablet';
+                    } else if (window.matchMedia('(min-width: " . $laptop . "px) and (max-width: " . ($desktop - 1) . "px)').matches) {
+                        device = 'laptop';
+                    } else if (window.matchMedia('(min-width: " . $desktop . "px)').matches) {
+                        device = 'desktop';
+                    }
+                    $('body').attr('data-msdevice', device);
+                    return device;
+                }
                 jQuery(document).ready(function($){
-                    var newBreakpoint = window.getComputedStyle(document.body, ':after').getPropertyValue('content');";
-                $js .= 'newBreakpoint = newBreakpoint.replace(/"/g, "");';
-                $js .= "
-                    var liHTML = $('#" . $identifier . " .slides li:not(.clone, .hidden_' + newBreakpoint + ')').removeAttr('style').toArray();
-                    $('#temp_" . $identifier . " .slides').append(liHTML);
-                    $('#" . $identifier . "').remove();
-                    $('#temp_" . $identifier . "')." . $this->js_function . "({" .   $this->_get_javascript_parameters() . "});
-                    $('#temp_" . $identifier . "').attr('id', '" . $identifier . "');
-                    $(document).trigger('metaslider/initialized', '#" . $identifier . "');
-                    $('#" . $identifier . "').show();
+                    var ms_initDeviceType = function (callback) {
+                        var device = ms_deviceType() || null;
+                        if (typeof callback === 'function') {
+                            callback(device);
+                        }
+                    }
+                    $(window).on('resize', function () {
+                        ms_deviceType();
+                    });
+                    ms_initDeviceType(function (result) {
+                        var newBreakpoint = result || null;
+                        var excludeHidden = newBreakpoint ? ', .hidden_' + newBreakpoint : '';";
+                    $js .= "
+                        var liHTML = $('#" . $identifier . " .slides li:not(.clone' + excludeHidden + ')').removeAttr('style').toArray();
+                        $('#temp_" . $identifier . " .slides').append(liHTML);
+                        $('#" . $identifier . "').remove();
+                        $('#temp_" . $identifier . "')." . $this->js_function . "({" .   $this->_get_javascript_parameters() . "});
+                        $('#temp_" . $identifier . "').attr('id', '" . $identifier . "');
+                        $(document).trigger('metaslider/initialized', '#" . $identifier . "');
+                        $('#" . $identifier . "').show();
+                    });
                 });";
             }
         }
@@ -695,6 +746,27 @@ class MetaFlexSlider extends MetaSlider
     }
 
     /**
+     * Add aria-label accessibility attributes to arrows
+     * 
+     * @since 3.102
+     */
+    public function arrows_accessibility( $options, $slider_id, $settings )
+    {
+        if ( isset( $settings['links'] ) && ( 'true' == $settings['links'] || 'onhover' == $settings['links'] ) ) {
+            $options['start'] = isset($options['start']) ? $options['start'] : array();
+            $options['start'] = array_merge(
+                $options['start'],
+                array(
+                    "slider.find('.flex-prev').attr('aria-label', '" . esc_html__( 'Previous', 'ml-slider' ) . "');
+                    slider.find('.flex-next').attr('aria-label', '" . esc_html__( 'Next', 'ml-slider' ) . "');"
+                )
+            );
+        }
+
+        return $options;
+    }
+
+    /**
      * Add JavaScript for progressBar
      *
      * @param array $options SLide options
@@ -704,10 +776,11 @@ class MetaFlexSlider extends MetaSlider
      */
     public function manage_progress_bar($options, $slider_id, $settings)
     {
-        if (isset($settings['progressBar']) 
-            && $settings['progressBar'] == 'true'
-            && $settings['autoPlay'] == 'true' 
-            && ($settings['infiniteLoop'] == 'false' || $settings['carouselMode'] == 'false')
+        if ( ( isset( $settings['progressBar'] ) 
+                && $settings['progressBar'] == 'true'
+                && $settings['autoPlay'] == 'true' 
+                && ( $settings['infiniteLoop'] == 'false' || $settings['carouselMode'] == 'false' ) 
+            ) || apply_filters( 'metaslider_flex_slider_force_progressbar', false )
         ) {
             $options['start'] = isset($options['start']) ? $options['start'] : array();
             $totalTime = $settings['delay'] - $settings['animationSpeed'];
@@ -821,6 +894,93 @@ class MetaFlexSlider extends MetaSlider
     }
 
     /**
+     * Add loading status gif
+     * 
+     * @since 3.101
+     */
+    public function loading_status($options, $slider_id, $settings)
+    {
+        if (isset($settings['loading']) && $settings['loading'] == 'true') {
+            $options['start'] = isset( $options['start'] ) ? $options['start'] : array();
+            $options['start'] = array_merge( $options['start'], array(
+                "$('#metaslider-id-{$slider_id}').find('.ms-slider-loading').fadeOut();"
+            ));
+        }
+
+        remove_filter('metaslider_flex_slider_parameters', array($this, 'loading_status'));
+        return $options;
+    }
+
+    /**
+     * If enabled, add lazy load JS logic
+     * 
+     * @since 3.101
+     */
+    public function lazy_load($options, $slider_id, $settings)
+    {
+        if ( isset( $settings['lazyLoad'] ) && $settings['lazyLoad'] == 'true' ) {
+
+            // Shortcircuit if both Carousel and Loop Carousel Continuously are enabled
+            if ( isset( $settings['carouselMode'] ) 
+                && $settings['carouselMode'] == 'true' 
+                && isset( $settings['infiniteLoop'] ) 
+                && $settings['infiniteLoop'] == 'true'
+            ) {
+                return $options;
+            }
+
+            $handle_clones = <<<'HTML'
+            slider.cloneCount && jQuery('.flexslider .slides .clone').each(function() {
+                var _this = jQuery(this);
+                var _img = _this.find('img:first');
+                var imgSrc = _img.data('ms-src');
+                imgSrc.length && _img.attr('src', imgSrc).removeAttr('data-ms-src')
+            });
+            HTML;
+
+            $threshold = 1; 
+            $load_images = <<<HTML
+            var load_images = function() {
+                var next = slider.animatingTo;
+                var carouselCount = Math.ceil(slider.w / slider.computedW);
+                for (var i = next; i < (next + carouselCount + {$threshold}); i++) {
+                    if (!slider.slides[i]) break;
+                    var img = slider.slides[i].querySelector('img.msDefaultImage') || null;
+                    if (!img) break;
+                    var _img = $(img);
+                    var imgSrc = _img.data('ms-src') || null;
+                    if (!imgSrc) break;
+                    var imgSrcset = _img.data('ms-srcset');
+                    imgSrc.length && _img.attr('src', imgSrc).removeAttr('data-ms-src');
+                    imgSrcset && imgSrcset.length && _img.attr('srcset', imgSrc).removeAttr('data-ms-srcset');
+                }
+            };
+            load_images();
+            var lastTime = 0;
+            $(window).resize(function() {
+                if (lastTime + 1000 < +new Date) {
+                    load_images();
+                    lastTime = +new Date;
+                }
+            });
+            HTML;
+
+            $options['before'] = isset( $options['before'] ) ? $options['before'] : array();
+            $options['before'] = array_merge( $options['before'], array(
+                $load_images
+            ));
+
+            $options['start'] = isset( $options['start'] ) ? $options['start'] : array();
+            $options['start'] = array_merge( $options['start'], array(
+                $handle_clones . $load_images
+            ));
+        }
+
+        remove_filter('metaslider_flex_slider_parameters', array($this, 'lazy_load'));
+        return $options;
+    }
+
+    /**
      * Fix touch swipe issues by preventing website horizontal scrolling
      * 
      * @since 3.100
@@ -835,6 +995,37 @@ class MetaFlexSlider extends MetaSlider
         }
 
         remove_filter('metaslider_flex_slider_parameters', array($this, 'fix_touch_swipe'));
+        return $options;
+    }
+
+    /**
+     * Modify carousel when Loop Carousel Continuously is enabled
+     * 
+     * @since 3.101
+     */
+    public function modify_carousel_css( $options, $slider_id, $settings )
+    {
+        if ( isset( $settings['carouselMode'] ) && $settings['carouselMode'] == 'true' 
+            && isset( $settings['infiniteLoop'] ) && $settings['infiniteLoop'] == 'true' 
+        ) {
+            $options['start'] = isset($options['start']) ? $options['start'] : array();
+            $options['start'] = array_merge($options['start'], array("
+                var ms_loop_carousel_continuously_adjust = function () {
+                    var li_width = parseFloat($('#metaslider_" . $slider_id . " .slides > li').first().css('width'));
+
+                    if (!isFinite(li_width)) {
+                        console.log('li_width is not valid');
+                        return;
+                    }
+                    
+                    var slide_width = li_width + " . $this->get_setting( 'carouselMargin' ) . " + 'px';
+                    $(':root').css('--ms-slide-width', slide_width);
+                }
+                ms_loop_carousel_continuously_adjust();
+            "));
+        }
+
+        remove_filter( 'metaslider_flex_slider_parameters', array( $this, 'modify_carousel_css' ) );
         return $options;
     }
 }

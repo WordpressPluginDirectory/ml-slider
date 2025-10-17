@@ -625,45 +625,8 @@ class MetaSlide
         if ( ! $attachment_id ) {
             $attachment_id  = get_post_thumbnail_id( $this->slide->ID );
         }
-        
-        $image_sizes = wp_get_attachment_image_src( $attachment_id, 'full' );
 
-        if ( is_array( $image_sizes ) && count( $image_sizes ) ) {
-            $original_width = $image_sizes[1]; // Image width value from array
-            
-            // Find the closest image size to $width in width
-            $sizes = get_intermediate_image_sizes(); // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.get_intermediate_image_sizes_get_intermediate_image_sizes
-
-            // Default if no smaller size is found
-            $closest_size = 'full'; 
-
-            foreach ( $sizes as $size ) {
-                $size_info  = image_get_intermediate_size( $attachment_id, $size );
-
-                if ( isset( $size_info['width'] ) 
-                    && $size_info['width'] >= $width 
-                    && $size_info['width'] < $original_width 
-                ) {
-                    $closest_size = $size;
-                    break;
-                }
-            }
-
-            // Get the URL of the closest image size.
-            $closest_image = wp_get_attachment_image_src( $attachment_id, $closest_size );
-            
-            // $closest_image[0] URL
-            // $closest_image[1] width
-            // $closest_image[2] height
-            // $closest_image[3] boolean for: is the image cropped?
-
-            if ( is_array( $closest_image ) ) {
-                $image_ = is_ssl() ? set_url_scheme( $closest_image[0], 'https' ) : set_url_scheme( $closest_image[0], 'http' );
-                return $image_;
-            }
-        }
-
-        return METASLIDER_ASSETS_URL . 'metaslider/placeholder-thumb.jpg';
+        return metaslider_intermediate_image_src( $width, $attachment_id );
     }
 
     /**
@@ -729,6 +692,53 @@ class MetaSlide
         $html .= ' /><span></span>
         </label>
         </div>';
+
+        return $html;
+    }
+
+    /**
+     * HTML output for select field
+     * 
+     * @since 3.102
+     * 
+     * @param string $name   Valid input name
+     * @param array $options Array of options. 
+     *                       e.g. array(
+     *                          array(
+     *                              'label' => 'Lorem', 
+     *                              'value' => 'lorem')
+     *                          ),
+     *                          array(
+     *                              'label' => 'Ipsum', 
+     *                              'value' => 'ipsum')
+     *                          )
+     *                       )
+     * @param bool $value    e.g. 'lorem'
+     * @param array $attrs   Optional array of attributes. e.g. array( 'lorem' => 'value' )
+     * @param string $class  Optional CSS classes for the select tag
+     * 
+     * @return html
+     */
+    public function dropdown_field( $name, $options, $value, $attrs = array(), $class = '' )
+    {
+        $html = '<select name="' . 
+                esc_attr( $name ) . '"';
+                // Append $attrs as valid HTML attributes
+                foreach( $attrs as $item => $value ) {
+                    $html .= ' ' . esc_attr( $item ) . '="' . esc_attr( $value ) . '"';
+                }
+        $html .= ' class="ms-dropdown-field' . 
+            esc_attr( ! empty( $class ) ? ' ' . $class : '' ) . '">';
+
+        // Append <option> tags
+        foreach( $options as $item ) {
+            $html .= '<option value="' . 
+                esc_attr( $item['value'] ) . '"' . 
+                ( $value == $item['value'] ? ' selected' : '' ) . '>' . 
+                esc_html( $item['label'] ) . '</option>';
+        }
+
+        $html .= '</select>';
 
         return $html;
     }

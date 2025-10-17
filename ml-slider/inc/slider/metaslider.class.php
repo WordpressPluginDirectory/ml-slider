@@ -29,6 +29,9 @@ class MetaSlider
         $this->settings = array_merge($shortcode_settings, $this->get_settings());
         $this->identifier = 'metaslider_' . $this->id;
         $this->populate_slides();
+
+        add_action('metaslider_admin_table_before', array($this, 'admin_table_before'));
+        add_action('metaslider_admin_table_after', array($this, 'admin_table_after'));
     }
 
     /**
@@ -167,7 +170,17 @@ class MetaSlider
             'ariaCurrent' => false,
             'showPlayText' => false,
             'playText' => '',
-            'pauseText' => ''
+            'pauseText' => '',
+            'loading' => false,
+            'lazyLoad' => false,
+            'container' => false,
+            'container_background' => 'rgba(255,255,255,0)',
+            'containerPadding_top' => 10,
+            'containerPadding_right' => 10,
+            'containerPadding_bottom' => 10,
+            'containerPadding_left' => 10,
+            'containerMargin_top' => 10,
+            'containerMargin_bottom' => 30
         );
         return apply_filters('metaslider_default_parameters', $params);
     }
@@ -181,6 +194,7 @@ class MetaSlider
     {
         $slideshow_id = $this->id;
         $slideshow_settings = $this->settings;
+        $page = is_admin() && isset( $_GET['page'] ) ? sanitize_key( $_GET['page'] ) : '';
         $args = array(
             'force_no_custom_order' => true,
             'orderby' => 'menu_order',
@@ -204,13 +218,26 @@ class MetaSlider
             $args['post_status'] = array('trash');
         }
 
+        // Skip invisible slides in frontend and theme editor page in admin
+        if ( ! is_admin() || $page === 'metaslider-theme-editor' ) {
+            $args['meta_query'] = array(
+                'relation' => 'OR',
+                array(
+                    'key'     => '_meta_slider_slide_is_hidden',
+                    'value'   => '1',
+                    'compare' => '!=',
+                ),
+                array(
+                    'key'     => '_meta_slider_slide_is_hidden',
+                    'compare' => 'NOT EXISTS',
+                ),
+            );
+        }
+
         // Filter to update the args before the query is built
         $args = apply_filters('metaslider_populate_slides_args', $args, $slideshow_id, $slideshow_settings);
 
         $the_query = new WP_Query($args);
-
-        // Skip hidden image slides - Pro slides are handled through 'metaslider_get_slides_query'
-        $the_query = $this->skip_hidden_slides($the_query);
 
         // Filter to alter the query itself if needed
         return apply_filters('metaslider_get_slides_query', $the_query, $slideshow_id, $slideshow_settings);
@@ -282,18 +309,6 @@ class MetaSlider
      */
     public function render_admin_slides()
     {
-        if ( ! count( $this->slides )  && ! isset( $_GET['metaslider_add_sample_slides'] )) {
-            ?>
-            <p id="add-first-slide-notice" style="display: flex;">
-                <span>
-                    <?php _e( 'Click the "Add Slide" button to create your slideshow', 'ml-slider' ) ?>
-                </span>
-            </p>
-            <?php
-
-            return;
-        }
-        
         foreach ($this->slides as $slide) {
             echo $slide; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
         }
@@ -400,9 +415,22 @@ class MetaSlider
             $class .= ' has-onhover-arrows';
         }
 
-        // Navigation class
+        // Navigation classes
         if ( 'dots_onhover' == $this->get_setting( 'navigation' ) ) {
             $class .= ' has-dots-onhover-navigation';
+        }
+        if ( 'true' == $this->get_setting( 'navigation' ) ) {
+            $class .= ' has-dots-nav';
+        }
+
+        // Carousel class
+        if ( 'true' === $this->get_setting( 'carouselMode' ) ) {
+            $class .= ' has-carousel-mode';
+        }
+
+        // Loading class
+        if ( 'true' === $this->get_setting( 'loading' ) ) {
+            $class .= ' has-loading';
         }
 
         // handle any custom classes
@@ -746,27 +774,20 @@ class MetaSlider
             $desktop = $breakpoints[3];
 
             $css .= '@media only screen and (max-width: ' . ($tablet - 1) . 'px) {'; 
-            $css .= 'body.metaslider-plugin:after { display: none; content: "smartphone"; }';
             $css .= $this->build_mobile_css('smartphone');
-
             $css .= '}';
 
             $css .= '@media only screen and (min-width : ' . $tablet . 'px) and (max-width: ' .( $laptop - 1) . 'px) {';
-            $css .= 'body.metaslider-plugin:after { display: none; content: "tablet"; }';
             $css .= $this->build_mobile_css('tablet');
             $css .= '}';
 
             $css .= '@media only screen and (min-width : ' . $laptop . 'px) and (max-width: ' . ($desktop - 1) . 'px) {';
-            $css .= 'body.metaslider-plugin:after { display: none; content: "laptop"; }';
             $css .= $this->build_mobile_css('laptop');
             $css .= '}';
 
             $css .= '@media only screen and (min-width : ' . $desktop . 'px) {';
-            $css .= 'body.metaslider-plugin:after { display: none; content: "desktop"; }';
             $css .= $this->build_mobile_css('desktop');
             $css .= '}';
-        } else {
-            $css .= 'body.metaslider-plugin:after { display: none; content: ""; }';
         }
         return $css;
     }
@@ -839,49 +860,59 @@ class MetaSlider
     }
 
     /**
-     * Loops through each slide and returns the query without the hidden slides.
-     *
-     * @since 3.100
-     * 
-     * @param object $slides_query The wp query
-     * 
-     * @return object
+     * Check if "Add slide" wide button is configured to be displayed before slides list
+     *  
+     * @since 3.101 
      */
-    public function skip_hidden_slides($slides_query)
+    public function admin_table_before($slider_id)
     {
-        $page = is_admin() && isset( $_GET['page'] ) ? sanitize_key( $_GET['page'] ) : '';
-
-        // Hide invisible slides in frotend and theme editor page in admin
-        if ( ! is_admin() || $page === 'metaslider-theme-editor' ) {
-
-            $slides_to_hide = array();
-            foreach ($slides_query->posts as $slide) {
-                
-                // Determine the slides that we want to hide
-                $is_hidden = metaslider_option_is_enabled(get_post_meta($slide->ID, '_meta_slider_slide_is_hidden', true));
-
-                if (filter_var($is_hidden, FILTER_VALIDATE_BOOLEAN)) {
-                    $slides_to_hide[] = $slide->ID;
-                }
-            }
-
-            // If no slides were determined to hide, return the original query
-            if (empty($slides_to_hide)) {
-                return $slides_query;
-            }
-
-            // Return a new wp_query with just the slides needed
-            $args = $slides_query->query_vars;
-            $args['post__not_in'] = $slides_to_hide;
-
-            // WP will set defaults using fill_query_vars() and when duplicating
-            // a query will then cause issues. For example, the default ['s' => ''] will
-            // set is_search() to true as they just use isset() to test it.
-            $args = array_filter($args, 'metaslider_remove_empty_vars');
-
-            return new WP_Query($args);
+        $global_settings = metaslider_global_settings();
+        $pos = $global_settings['newSlideOrder'] ?? 'last';
+        if ($pos === 'first') {
+            $this->add_slide_button_wide('first', $slider_id);
         }
+    }
 
-        return $slides_query;
+    /**
+     * Check if "Add slide" wide button is configured to be displayed after slides list
+     *  
+     * @since 3.101 
+     */
+    public function admin_table_after($slider_id)
+    {
+        $global_settings = metaslider_global_settings();
+        $pos = $global_settings['newSlideOrder'] ?? 'last';
+        if ($pos === 'last') {
+            $this->add_slide_button_wide('last', $slider_id);
+        }
+    }
+
+    /**
+     * Output "Add slide" wide button
+     * 
+     * @since 3.101
+     * 
+     * @param string $pos 'last' or 'first'
+     * @param int $slider_id
+     * 
+     * @return html
+     */
+    public function add_slide_button_wide($pos, $slider_id)
+    {
+        if (!metaslider_viewing_trashed_slides($slider_id)) {
+            $class = 'ms-add-new-' .  $pos;
+            ?>
+            <div id="add-new-slide-wide" class="<?php echo esc_attr($class) ?>">
+                <a href="javascript:void(0)" onClick="window.create_slides.open()">
+                    <span>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 p-0.5 text-gray-dark"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                    </span>
+                    <span>
+                        <?php _e( 'Add Slide', 'ml-slider' ) ?>
+                    </span>
+                </a>
+            </div>
+            <?php
+        }
     }
 }

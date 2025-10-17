@@ -133,7 +133,7 @@ return array(
         'settings' => array(
             array(
                 'label' => esc_html__('Background', 'ml-slider'),
-                'info' => esc_html__("Fallback background for slideshow.", 'ml-slider'),
+                'info' => esc_html__("This background color is used when a slide does not fill the whole width and height of the slide area.", 'ml-slider'),
                 'name' => 'slideshow_background',
                 'type' => 'color',
                 'default' => 'rgba(255,255,255,0)',

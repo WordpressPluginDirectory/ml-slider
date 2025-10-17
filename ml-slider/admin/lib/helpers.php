@@ -12,6 +12,13 @@ if (!defined('ABSPATH')) {
  */
 function metaslider_plugin_is_installed($name = 'ml-slider')
 {
+    // @since 3.101 - Get path from db if available
+    $path = metaslider_plugin_data( $name, 'path' );
+    if ( $path && file_exists( WP_PLUGIN_DIR . '/' . $path ) ) {
+        return $path;
+    }
+
+    // Callback for the old way of getting path
     if (!function_exists('get_plugins')) {
         include_once(ABSPATH . 'wp-admin/includes/plugin.php');
     }
@@ -30,6 +37,36 @@ function metaslider_plugin_is_installed($name = 'ml-slider')
     }
     return false;
 }
+
+/**
+ * Will return the stored plugin data
+ *
+ * @since 3.101
+ * 
+ * @param  string $slug name of the plugin 'ml-slider' or 'ml-slider-pro'
+ * @param  string $data name of the data to return. e.g. 'path' or 'version'
+ * 
+ * @return bool|string - will return path or version, e.g. 'ml-slider/ml-slider.php' or '3.101'
+ */
+function metaslider_plugin_data( $slug = 'ml-slider', $data = 'path' )
+{
+    $skip       = apply_filters( 'metaslider_skip_get_plugin_data', false );
+    $allowed    = array( 'version', 'path' );
+
+    // Short circuit if we want to skip or $data is invalid
+    if ( $skip === true || ! in_array( $data, $allowed ) ) {
+        return false;
+    }
+
+    if ( $slug == 'ml-slider' ) {
+        return get_option( 'metaslider_plugin_' . $data );
+    } elseif ( $slug == 'ml-slider-pro' ) {
+        return get_option( 'metaslider_pro_plugin_' . $data );
+    }
+
+    return false;
+}
+
 /**
  * checks if metaslider pro is installed
  *
@@ -194,6 +231,12 @@ function metaslider_viewing_trashed_slides($slider_id)
  */
 function metaslider_pro_version()
 {
+    // @since 3.101 - Get version from db if available
+    if ( $version = metaslider_plugin_data( 'ml-slider-pro', 'version' ) ) {
+        return $version;
+    }
+
+    // Callback for the old way of getting version
     $file = trailingslashit(WP_PLUGIN_DIR) . metaslider_plugin_is_installed('ml-slider-pro');
     $data = get_file_data($file, array('Version' => 'Version'));
     return $data['Version'];
@@ -206,6 +249,12 @@ function metaslider_pro_version()
  */
 function metaslider_version()
 {
+    // @since 3.101 - Get version from db if available
+    if ( $version = metaslider_plugin_data( 'ml-slider', 'version' ) ) {
+        return $version;
+    }
+
+    // Callback for the old way of getting version
     $file = trailingslashit(WP_PLUGIN_DIR) . metaslider_plugin_is_installed('ml-slider');
     $data = get_file_data($file, array('Version' => 'Version'));
     return $data['Version'];
@@ -309,7 +358,7 @@ function metaslider_image_cropped_size( $side, $settings )
 
     $Side = ucfirst( $side ); // e.g 'width' -> 'Width'
 
-    if ( metaslider_pro_is_active() 
+    if ( class_exists( 'MetaSliderPro' ) 
         && isset( $settings['smartCropSource'] ) 
         && $settings['smartCropSource'] == 'image' 
     ) {
@@ -320,4 +369,93 @@ function metaslider_image_cropped_size( $side, $settings )
     }
 
     return isset( $settings[$side] ) ? $settings[$side] : 0; // Slideshow width or height setting
+}
+
+/**
+ * Get global settings
+ *
+ * @since 3.101
+ * 
+ * @return array
+ */
+function metaslider_global_settings()
+{
+    if ($settings = get_option('metaslider_global_settings')) {
+        return $settings;
+    }
+
+    return array();
+}
+
+/**
+ * Upgrade to pro small yellow button with lock icon
+ * 
+ * @since 3.101
+ * 
+ * @param string $text Optional tooltip text
+ * 
+ * @return html
+ */
+function metaslider_upgrade_pro_small_btn($text = '')
+{
+    if (empty($text)) {
+        $text = __( 'Some of these features are available in MetaSlider Pro', 'ml-slider' );
+    }
+    
+    $link = 'https://www.metaslider.com/upgrade?utm_source=lite&utm_medium=banner&utm_campaign=pro';
+    return '<a class="dashicons dashicons-lock is-pro-setting tipsy-tooltip-top" original-title="' . 
+        esc_attr( $text ) . '" href="' . 
+        esc_url( $link ) . '" target="_blank"></a>';
+}
+
+/**
+ * Get the closest image based on a width size
+ * 
+ * @since 3.102
+ * 
+ * @param int $width            Image width we want to target
+ * @param int $attachment_id    Image ID
+ * 
+ * @return string A valid media image URL or a placeholder URL
+ */
+function metaslider_intermediate_image_src( $width, $attachment_id )
+{
+    $image_sizes = wp_get_attachment_image_src( $attachment_id, 'full' );
+
+    if ( is_array( $image_sizes ) && count( $image_sizes ) ) {
+        $original_width = $image_sizes[1]; // Image width value from array
+        
+        // Find the closest image size to $width in width
+        $sizes = get_intermediate_image_sizes(); // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.get_intermediate_image_sizes_get_intermediate_image_sizes
+
+        // Default if no smaller size is found
+        $closest_size = 'full'; 
+
+        foreach ( $sizes as $size ) {
+            $size_info  = image_get_intermediate_size( $attachment_id, $size );
+
+            if ( isset( $size_info['width'] ) 
+                && $size_info['width'] >= $width 
+                && $size_info['width'] < $original_width 
+            ) {
+                $closest_size = $size;
+                break;
+            }
+        }
+
+        // Get the URL of the closest image size.
+        $closest_image = wp_get_attachment_image_src( $attachment_id, $closest_size );
+        
+        // $closest_image[0] URL
+        // $closest_image[1] width
+        // $closest_image[2] height
+        // $closest_image[3] boolean for: is the image cropped?
+
+        if ( is_array( $closest_image ) ) {
+            $image_ = is_ssl() ? set_url_scheme( $closest_image[0], 'https' ) : set_url_scheme( $closest_image[0], 'http' );
+            return $image_;
+        }
+    }
+
+    return METASLIDER_ASSETS_URL . 'metaslider/placeholder-thumb.jpg';
 }
