@@ -1418,6 +1418,20 @@ window.jQuery(function ($) {
         }, 2000);
     });
 
+    /**
+     * Trigger slideshow save after a quickstart has been created
+     *
+     * @since 3.103 - Previously removed on 3.98
+     */
+    var sampleSlidesWereAdded = function () {
+        if (window.location.href.indexOf('metaslider_add_sample_slides_after') !== -1) {
+            setTimeout(function () {
+                APP && APP.triggerEvent('metaslider/save');
+            }, 1000);
+        }
+    }
+    sampleSlidesWereAdded();
+
     /* Dashboard modal */
     $(".open-modal").on("click", function () {
         event.preventDefault(); 

@@ -5,7 +5,7 @@
  * Plugin Name: MetaSlider
  * Plugin URI:  https://www.metaslider.com
  * Description: MetaSlider gives you the power to create a beautiful slideshow, carousel, or gallery on your WordPress site.
- * Version:     3.102.0
+ * Version:     3.103.0
  * Author:      MetaSlider
  * Author URI:  https://www.metaslider.com
  * License:     GPL-2.0+
@@ -44,7 +44,7 @@ if (! class_exists('MetaSliderPlugin')) {
          *
          * @var string
          */
-        public $version = '3.102.0';
+        public $version = '3.103.0';
 
         /**
          * Pro installed version number
@@ -226,7 +226,7 @@ if (! class_exists('MetaSliderPlugin')) {
         {
             // MetaSlider pro is active but pre 2.13.0 (2.13.0 includes its own notice system)
             $slug = metaslider_plugin_is_installed('ml-slider-pro');
-            if (is_plugin_active($slug)) {
+            if (function_exists('is_plugin_active') && is_plugin_active($slug)) {
 
                 // @since 3.101 - Get version from db if available
                 $pro_data = metaslider_plugin_data( 'ml-slider-pro', 'version' );
@@ -2887,7 +2887,15 @@ if (! class_exists('MetaSliderPlugin')) {
             $file = $_FILES['async-upload'];
             $wp_upload_dir = wp_upload_dir();
             $uploaded = wp_handle_upload($file, array('test_form'=> false, 'action' => 'quickstart_upload'));
-            $filename = $uploaded['url'];
+            
+            // @since 3.103 - If there is an error, stop the process
+            if ( isset( $uploaded['error'] ) ) {
+                wp_send_json_error( array(
+                    'message' => $uploaded['error']
+                ), 409 );
+            }
+            $filename = $uploaded['file']; // Use path, not URL - $uploaded['url']
+
             $filetype = wp_check_filetype(basename($filename), null);
             $attachment = array(
                 'guid'           => $wp_upload_dir['url'] . '/' . basename($filename),

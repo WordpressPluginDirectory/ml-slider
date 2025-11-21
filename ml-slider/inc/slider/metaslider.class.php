@@ -150,6 +150,7 @@ class MetaSlider
             'thumb_height' => 100,
             'responsive_thumbs' => true,
             'thumb_min_width' => 100,
+            'thumb_layout' => 'grid',
             'fullWidth' => true,
             'noConflict' => true,
             'mobileArrows_smartphone' => false,

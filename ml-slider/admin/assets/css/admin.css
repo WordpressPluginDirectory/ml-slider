@@ -54,7 +54,7 @@ eventually be removed/refactored */
 .metaslider.wrap div.error {
     clear: both
 }
-.metaslider .left input[type=text],
+.metaslider .left input[type=text]:not(.tox-input-wrapper input),
 .metaslider .left textarea {
     border: 1px solid #8c8f94;
     border-radius: 4px;
@@ -693,13 +693,13 @@ eventually be removed/refactored */
     width: 125px;
 }
 
-.metaslider .tabs-content .row input {
+.metaslider .tabs-content .row input:not(.tox-input-wrapper input) {
     margin-right: 5px;
     margin-bottom: 0px;
     margin-left: 0px;
 }
 
-.metaslider .tabs-content .row input[type="text"] {
+.metaslider .tabs-content .row input[type="text"]:not(.tox-input-wrapper input) {
     width: 100%;
 }
 
@@ -1119,6 +1119,10 @@ input[type="radio"] {
             }
         }
     }
+}
+.tox .tox-number-input input {
+    margin: 0 !important;
+    min-height: 28px;
 }
 
  /* Spin an svg */

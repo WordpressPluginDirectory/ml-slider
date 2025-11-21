@@ -99,5 +99,13 @@ return array(
         'type' => 'premium',
         'supports' => array( 'flex' ),
         'description' => __( 'A stylish theme ideal for WooCommerce products.', 'ml-slider' )
+    ),
+    'nami' => array(
+        'folder' => 'nami',
+        'title' => 'Nami',
+        'type' => 'premium',
+        'supports' => array( 'flex' ),
+        'description' => __( 'A 2 columns minimalistic theme to split your images and captions.', 'ml-slider' ),
+        'instructions' => __( 'Image, External Image, Post Feed, Local Video and External Video slides are displayed in 2 columns, while the other slide types are displayed in 1 column.', 'ml-slider' ),
     )
 );

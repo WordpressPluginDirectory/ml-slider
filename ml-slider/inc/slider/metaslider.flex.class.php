@@ -40,7 +40,7 @@ class MetaFlexSlider extends MetaSlider
         add_filter('metaslider_flex_slider_parameters', array( $this, 'manage_dots_onhover' ), 10, 3);
         add_filter('metaslider_flex_slider_parameters', array( $this, 'loading_status' ), 10, 3);
         add_filter('metaslider_flex_slider_parameters', array( $this, 'lazy_load' ), 10, 3);
-        //add_filter('metaslider_flex_slider_parameters', array($this, 'fix_touch_swipe'), 10, 3);
+        add_filter('metaslider_flex_slider_parameters', array($this, 'fix_touch_swipe'), 10, 3);
 
         if(metaslider_pro_is_active() == false) {
             add_filter('metaslider_flex_slider_parameters', array( $this, 'metaslider_flex_loop'), 99, 3);
@@ -985,16 +985,19 @@ class MetaFlexSlider extends MetaSlider
      * 
      * @since 3.100
      */
-    public function fix_touch_swipe($options, $slider_id, $settings)
+    public function fix_touch_swipe( $options, $slider_id, $settings )
     {
-        if (isset($settings['touch']) && $settings['touch'] == 'true') {
+        $global_settings = metaslider_global_settings();
+        $fix_touch_swipe = isset($global_settings['fixTouchSwipe']) ? (bool) $global_settings['fixTouchSwipe'] : false;
+
+        if ( $fix_touch_swipe ) {
             $options['start'] = isset( $options['start'] ) ? $options['start'] : array();
             $options['start'] = array_merge( $options['start'], array(
                 "$('html, body').css('overflow-x', 'hidden');"
-            ));
+            ) );
         }
 
-        remove_filter('metaslider_flex_slider_parameters', array($this, 'fix_touch_swipe'));
+        remove_filter( 'metaslider_flex_slider_parameters', array( $this, 'fix_touch_swipe' ) );
         return $options;
     }
 

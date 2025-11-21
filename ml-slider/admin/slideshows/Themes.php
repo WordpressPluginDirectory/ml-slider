@@ -484,7 +484,13 @@ return $theme;
             $settings['theme'] = 'none';
             $settings['theme_customize'] = array();
             update_post_meta($slideshow_id, 'ml-slider_settings', $settings);
-            return update_post_meta($slideshow_id, 'metaslider_slideshow_theme', 'none');
+
+            $res = update_post_meta( $slideshow_id, 'metaslider_slideshow_theme', 'none' );
+
+            // @since 3.103
+            do_action( 'metaslider_set_theme', $slideshow_id, $settings );
+
+            return $res;
         }
 
         // For custom themes, it's easier to use the legacy setting because the pro plugin
@@ -532,8 +538,13 @@ return $theme;
             unset($theme['edit_settings']);
         }
 
+        $res = (bool) update_post_meta( $slideshow_id, 'metaslider_slideshow_theme', $theme );
+        
+        // @since 3.103
+        do_action( 'metaslider_set_theme', $slideshow_id, $settings );
+
         // This will return false if the data is the same, unfortunately
-        return (bool) update_post_meta($slideshow_id, 'metaslider_slideshow_theme', $theme);
+        return $res;
     }
 
     /**

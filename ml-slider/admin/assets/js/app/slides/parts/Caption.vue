@@ -140,7 +140,7 @@ export default {
 							type: 'image',
 							configuration: {
 								toolbar: [
-									'undo redo bold italic forecolor link unlink alignleft aligncenter alignright styles code device_options add_button'
+									'undo redo bold italic forecolor fontsizeinput link unlink alignleft aligncenter alignright styles code device_options add_button'
 								],
 								menubar: false,
 								plugins: 'code link',

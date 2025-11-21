@@ -1136,8 +1136,19 @@
         slider.visible = slider.visible > 0 ? slider.visible : 1;
 
         slider.move = (slider.vars.move > 0 && slider.vars.move < slider.visible ) ? slider.vars.move : slider.visible;
-        slider.pagingCount = Math.ceil(((slider.count - slider.visible)/slider.move) + 1);
-        slider.last =  slider.pagingCount - 1;
+
+        // Margin-aware paging logic in case we add margin-right to each slide
+        var totalContentWidth = (slider.itemW * slider.count) + (slideMargin * (slider.count - 1));
+
+        if (totalContentWidth <= slider.w) {
+            // All slides fit within container — only one page
+            slider.pagingCount = 1;
+        } else {
+            // Legacy pagination behavior
+            slider.pagingCount = Math.ceil(((slider.count - slider.visible) / slider.move) + 1);
+        }
+
+        slider.last = slider.pagingCount - 1;
         slider.limit = (slider.pagingCount === 1) ? 0 :
                        (slider.vars.itemWidth > slider.w) ? (slider.itemW * (slider.count - 1)) + (slideMargin * (slider.count - 1)) : ((slider.itemW + slideMargin) * slider.count) - slider.w - slideMargin;
       } else {

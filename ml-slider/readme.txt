@@ -2,7 +2,7 @@
 Contributors: andergmartins, htmgarcia, publishpress, stevejburge, rochdesigns
 Tags: slider, video slider, image slider, carousel slider, gallery
 Requires at least: 5.0
-Stable tag: 3.102.0
+Stable tag: 3.103.0
 Requires PHP: 7.0
 Tested up to: 6.8
 License: GPLv2 or later
@@ -319,6 +319,21 @@ Yes, you can build Elementor slides and Beaver Builder slideshows. You can creat
 
 The format is based on [Keep a Changelog recommendations](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
+
+= [3.103.0] - Nov 20, 2025 =
+
+* ADDED: Font size support to TinyMCE, #1884;
+* ADDED: Setting to enable overflow for body, #1792;
+* ADDED: Disable the whole slideshow edit screen when saving changes, #1564;
+* ADDED: Promo ad for Flush cache setting, #1897;
+* FIXED: is_plugin_active() is undefined, #1888, #1859;
+* FIXED: Bug in bulk upload, #1861;
+* FIXED: Navigation still shows when products are only three, #1885;
+* FIXED: Settings can be undefined for slideshow created through quickstart, #1776;
+* CHANGED: Italian, Spanish and French translation updates, #1883;
+* CHANGED: Improve import/export, #1886;
+* CHANGED: Optimize metaslider_filter_unsafe_html for reuse in pro, #1894;
+* CHANGED: Replace ver=1.0.0 from theme's CSS and JS with the actual plugin version, #1378;
 
 = [3.102.0] - Oct 16, 2025 =
 

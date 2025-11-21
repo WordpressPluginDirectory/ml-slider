@@ -84,7 +84,7 @@ function metaslider_pro_is_installed()
  */
 function metaslider_pro_is_active()
 {
-    return is_plugin_active(metaslider_plugin_is_installed('ml-slider-pro'));
+    return function_exists('is_plugin_active') && is_plugin_active(metaslider_plugin_is_installed('ml-slider-pro'));
 }
 
 /**
@@ -458,4 +458,40 @@ function metaslider_intermediate_image_src( $width, $attachment_id )
     }
 
     return METASLIDER_ASSETS_URL . 'metaslider/placeholder-thumb.jpg';
+}
+
+/**
+ * Filter unsafe HTML from slide content (e.g. caption)
+ * 
+ * @since 3.103
+ * 
+ * @param string $content    The HTML content to be purified
+ * @param array  $slide      The slide data such as id, caption, caption_raw, etc.
+ * @param int    $slider_id  The slideshow ID
+ * @param array  $settings   The slideshow settings
+ * 
+ * @return string The purified HTML content
+ */
+function metaslider_filter_unsafe_html( $content, $slide, $slider_id, $settings )
+{
+    try {
+        if ( ! class_exists( 'HTMLPurifier' ) ) {
+            require_once( METASLIDER_PATH . 'lib/htmlpurifier/library/HTMLPurifier.auto.php' );
+        }
+        $config = HTMLPurifier_Config::createDefault();
+        // How to filter:
+        // add_filter('metaslider_html_purifier_config', function($config) {
+        //     $config->set('HTML.Allowed', 'a[href|target]');
+        //     $config->set('Attr.AllowedFrameTargets', array('_blank'));
+        //     return $config;
+        // });
+        $config   = apply_filters('metaslider_html_purifier_config', $config, $slide, $slider_id, $settings);
+        $purifier = new HTMLPurifier( $config );
+        $content  = $purifier->purify( $content );
+    } catch ( Exception $e ) {
+        // If something goes wrong then escape
+        $content = htmlspecialchars( do_shortcode( $content ), ENT_NOQUOTES, 'UTF-8' );
+    }
+
+    return $content;
 }

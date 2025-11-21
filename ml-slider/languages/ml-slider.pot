@@ -2,14 +2,14 @@
 # This file is distributed under the GPL-2.0+.
 msgid ""
 msgstr ""
-"Project-Id-Version: MetaSlider 3.102.0-beta2\n"
+"Project-Id-Version: MetaSlider 3.103.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/project\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-10-16T14:58:38+00:00\n"
+"POT-Creation-Date: 2025-11-20T14:39:22+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: ml-slider\n"
@@ -327,20 +327,20 @@ msgid "The title cannot be empty."
 msgstr ""
 
 #: admin/routes/api.php:934
-#: admin/routes/api.php:1101
+#: admin/routes/api.php:1103
 #, php-format
 msgid "The field (%s) cannot be empty"
 msgstr ""
 
-#: admin/routes/api.php:1091
+#: admin/routes/api.php:1093
 msgid "Maximum Number of Custom Field in Post Feed Sliders"
 msgstr ""
 
-#: admin/routes/api.php:1205
+#: admin/routes/api.php:1207
 msgid "Import slug not found"
 msgstr ""
 
-#: admin/routes/api.php:1221
+#: admin/routes/api.php:1223
 msgid "Import data could not be processed"
 msgstr ""
 
@@ -364,9 +364,19 @@ msgstr ""
 msgid "Next"
 msgstr ""
 
-#: admin/slideshows/Slideshows.php:377
-#: admin/slideshows/Slideshows.php:423
+#: admin/slideshows/Slideshows.php:437
+#: admin/slideshows/Slideshows.php:542
 msgid "Import file is invalid."
+msgstr ""
+
+#: admin/slideshows/Slideshows.php:490
+#, php-format
+msgid "Failed to import video from URL: %s. Error: %s"
+msgstr ""
+
+#: admin/slideshows/Slideshows.php:518
+#, php-format
+msgid "Failed to import image from URL: %s. Error: %s"
 msgstr ""
 
 #: admin/slideshows/Themes.php:60
@@ -1039,7 +1049,23 @@ msgid "Transition between slides automatically."
 msgstr ""
 
 #: admin/views/pages/parts/slider-settings.php:850
-#: themes/customize.php:20
+#: themes/architekt/customize.php:542
+#: themes/bitono/customize.php:719
+#: themes/blend/customize.php:748
+#: themes/bubble/customize.php:735
+#: themes/clarity/customize.php:673
+#: themes/cubic/customize.php:703
+#: themes/databold/customize.php:718
+#: themes/default-base/customize.php:753
+#: themes/disjoint/customize.php:694
+#: themes/draxler/customize.php:695
+#: themes/highway/customize.php:706
+#: themes/jenga/customize.php:518
+#: themes/nexus/customize.php:731
+#: themes/outline/customize.php:717
+#: themes/precognition/customize.php:620
+#: themes/radix/customize.php:597
+#: themes/simply-dark/customize.php:712
 msgid "Play / Pause Button"
 msgstr ""
 
@@ -1181,7 +1207,7 @@ msgid "Allow touch swipe navigation of the slider on touch-enabled devices."
 msgstr ""
 
 #: admin/views/pages/parts/slider-settings.php:1070
-#: themes/customize.php:143
+#: themes/customize.php:34
 msgid "Progress Bar"
 msgstr ""
 
@@ -1254,6 +1280,7 @@ msgid "Customize the slideshow's container box."
 msgstr ""
 
 #: admin/views/pages/parts/slider-settings.php:1224
+#: admin/assets/dist/js/app.js:2
 msgid "This feature is available in MetaSlider Pro"
 msgstr ""
 
@@ -1343,7 +1370,7 @@ msgid "Add a new slide"
 msgstr ""
 
 #: admin/views/pages/parts/toolbar.php:29
-#: inc/slider/metaslider.class.php:911
+#: inc/slider/metaslider.class.php:912
 msgid "Add Slide"
 msgstr ""
 
@@ -1699,6 +1726,30 @@ msgstr ""
 msgid "Repeat slide is available in MetaSlider Pro"
 msgstr ""
 
+#: admin/views/slides/tabs/advanced.php:49
+msgid "Custom thumbnail"
+msgstr ""
+
+#: admin/views/slides/tabs/advanced.php:49
+msgid "When Navigation is Thumbnails or Filmstrip, select a thumbnail to replace the default one."
+msgstr ""
+
+#: admin/views/slides/tabs/advanced.php:56
+msgid "Custom thumbnail is available in MetaSlider Pro"
+msgstr ""
+
+#: admin/views/slides/tabs/advanced.php:68
+msgid "Custom CSS classes"
+msgstr ""
+
+#: admin/views/slides/tabs/advanced.php:68
+msgid "Add custom CSS classes separated with empty spaces to slide li tag."
+msgstr ""
+
+#: admin/views/slides/tabs/advanced.php:75
+msgid "Custom CSS classes is available in MetaSlider Pro"
+msgstr ""
+
 #: admin/views/slides/tabs/crop.php:14
 msgid "Crop Position"
 msgstr ""
@@ -1963,11 +2014,11 @@ msgstr ""
 msgid "Advanced"
 msgstr ""
 
-#: inc/slide/metaslide.image.class.php:843
+#: inc/slide/metaslide.image.class.php:826
 msgid "View Slide Details"
 msgstr ""
 
-#: inc/slider/metaslider.class.php:347
+#: inc/slider/metaslider.class.php:348
 msgid "Edit Slideshow"
 msgstr ""
 
@@ -2289,56 +2340,72 @@ msgstr ""
 #: themes/architekt/customize.php:16
 #: themes/architekt/customize.php:295
 #: themes/architekt/customize.php:454
+#: themes/architekt/customize.php:548
 #: themes/bitono/customize.php:16
 #: themes/bitono/customize.php:306
 #: themes/bitono/customize.php:564
+#: themes/bitono/customize.php:725
 #: themes/blend/customize.php:16
 #: themes/blend/customize.php:271
 #: themes/blend/customize.php:593
+#: themes/blend/customize.php:754
 #: themes/bubble/customize.php:16
 #: themes/bubble/customize.php:290
 #: themes/bubble/customize.php:580
+#: themes/bubble/customize.php:741
 #: themes/clarity/customize.php:16
 #: themes/clarity/customize.php:305
 #: themes/clarity/customize.php:563
+#: themes/clarity/customize.php:679
 #: themes/cubic/customize.php:16
 #: themes/cubic/customize.php:290
 #: themes/cubic/customize.php:548
+#: themes/cubic/customize.php:709
 #: themes/customize.php:26
-#: themes/customize.php:135
 #: themes/databold/customize.php:16
 #: themes/databold/customize.php:306
 #: themes/databold/customize.php:563
+#: themes/databold/customize.php:724
 #: themes/default-base/customize.php:27
 #: themes/default-base/customize.php:322
 #: themes/default-base/customize.php:585
+#: themes/default-base/customize.php:759
 #: themes/disjoint/customize.php:16
 #: themes/disjoint/customize.php:282
 #: themes/disjoint/customize.php:539
+#: themes/disjoint/customize.php:700
 #: themes/draxler/customize.php:16
 #: themes/draxler/customize.php:274
 #: themes/draxler/customize.php:540
+#: themes/draxler/customize.php:701
 #: themes/highway/customize.php:16
 #: themes/highway/customize.php:305
 #: themes/highway/customize.php:552
+#: themes/highway/customize.php:712
 #: themes/jenga/customize.php:16
 #: themes/jenga/customize.php:194
 #: themes/jenga/customize.php:363
+#: themes/jenga/customize.php:524
 #: themes/nexus/customize.php:16
 #: themes/nexus/customize.php:290
 #: themes/nexus/customize.php:548
 #: themes/nexus/customize.php:709
+#: themes/nexus/customize.php:737
 #: themes/outline/customize.php:16
 #: themes/outline/customize.php:305
 #: themes/outline/customize.php:562
+#: themes/outline/customize.php:723
 #: themes/precognition/customize.php:16
 #: themes/precognition/customize.php:306
 #: themes/precognition/customize.php:465
+#: themes/precognition/customize.php:626
 #: themes/radix/customize.php:16
 #: themes/radix/customize.php:443
+#: themes/radix/customize.php:603
 #: themes/simply-dark/customize.php:16
 #: themes/simply-dark/customize.php:294
 #: themes/simply-dark/customize.php:552
+#: themes/simply-dark/customize.php:718
 msgid "Background"
 msgstr ""
 
@@ -2347,89 +2414,121 @@ msgstr ""
 #: themes/architekt/customize.php:88
 #: themes/architekt/customize.php:299
 #: themes/architekt/customize.php:365
+#: themes/architekt/customize.php:552
+#: themes/architekt/customize.php:572
 #: themes/bitono/customize.php:20
 #: themes/bitono/customize.php:46
 #: themes/bitono/customize.php:88
 #: themes/bitono/customize.php:310
 #: themes/bitono/customize.php:343
+#: themes/bitono/customize.php:729
+#: themes/bitono/customize.php:749
 #: themes/blend/customize.php:20
 #: themes/blend/customize.php:46
 #: themes/blend/customize.php:88
 #: themes/blend/customize.php:275
 #: themes/blend/customize.php:308
 #: themes/blend/customize.php:384
+#: themes/blend/customize.php:758
+#: themes/blend/customize.php:778
 #: themes/bubble/customize.php:20
 #: themes/bubble/customize.php:46
 #: themes/bubble/customize.php:72
 #: themes/bubble/customize.php:294
 #: themes/bubble/customize.php:327
 #: themes/bubble/customize.php:403
+#: themes/bubble/customize.php:745
+#: themes/bubble/customize.php:765
 #: themes/clarity/customize.php:20
 #: themes/clarity/customize.php:46
 #: themes/clarity/customize.php:88
 #: themes/clarity/customize.php:309
 #: themes/clarity/customize.php:342
+#: themes/clarity/customize.php:683
+#: themes/clarity/customize.php:703
 #: themes/cubic/customize.php:20
 #: themes/cubic/customize.php:46
 #: themes/cubic/customize.php:88
 #: themes/cubic/customize.php:294
 #: themes/cubic/customize.php:327
-#: themes/customize.php:30
-#: themes/customize.php:50
+#: themes/cubic/customize.php:713
+#: themes/cubic/customize.php:733
 #: themes/databold/customize.php:20
 #: themes/databold/customize.php:46
 #: themes/databold/customize.php:88
 #: themes/databold/customize.php:310
 #: themes/databold/customize.php:343
+#: themes/databold/customize.php:728
+#: themes/databold/customize.php:748
 #: themes/default-base/customize.php:31
 #: themes/default-base/customize.php:57
 #: themes/default-base/customize.php:99
 #: themes/default-base/customize.php:326
 #: themes/default-base/customize.php:359
+#: themes/default-base/customize.php:763
+#: themes/default-base/customize.php:783
 #: themes/disjoint/customize.php:20
 #: themes/disjoint/customize.php:46
 #: themes/disjoint/customize.php:88
 #: themes/disjoint/customize.php:286
 #: themes/disjoint/customize.php:319
+#: themes/disjoint/customize.php:704
+#: themes/disjoint/customize.php:724
 #: themes/draxler/customize.php:20
 #: themes/draxler/customize.php:46
 #: themes/draxler/customize.php:88
 #: themes/draxler/customize.php:278
 #: themes/draxler/customize.php:311
+#: themes/draxler/customize.php:705
+#: themes/draxler/customize.php:725
 #: themes/highway/customize.php:20
 #: themes/highway/customize.php:46
 #: themes/highway/customize.php:88
 #: themes/highway/customize.php:309
 #: themes/highway/customize.php:342
+#: themes/highway/customize.php:716
+#: themes/highway/customize.php:736
 #: themes/jenga/customize.php:20
 #: themes/jenga/customize.php:46
 #: themes/jenga/customize.php:72
 #: themes/jenga/customize.php:198
 #: themes/jenga/customize.php:231
+#: themes/jenga/customize.php:528
+#: themes/jenga/customize.php:548
 #: themes/nexus/customize.php:20
 #: themes/nexus/customize.php:46
 #: themes/nexus/customize.php:72
 #: themes/nexus/customize.php:294
 #: themes/nexus/customize.php:327
 #: themes/nexus/customize.php:713
+#: themes/nexus/customize.php:741
+#: themes/nexus/customize.php:761
 #: themes/outline/customize.php:20
 #: themes/outline/customize.php:46
 #: themes/outline/customize.php:88
 #: themes/outline/customize.php:309
 #: themes/outline/customize.php:342
+#: themes/outline/customize.php:727
+#: themes/outline/customize.php:747
 #: themes/precognition/customize.php:20
 #: themes/precognition/customize.php:46
 #: themes/precognition/customize.php:88
 #: themes/precognition/customize.php:310
 #: themes/precognition/customize.php:408
+#: themes/precognition/customize.php:630
+#: themes/precognition/customize.php:650
 #: themes/radix/customize.php:20
 #: themes/radix/customize.php:72
 #: themes/radix/customize.php:114
+#: themes/radix/customize.php:607
+#: themes/radix/customize.php:627
 #: themes/simply-dark/customize.php:20
 #: themes/simply-dark/customize.php:46
 #: themes/simply-dark/customize.php:88
 #: themes/simply-dark/customize.php:298
 #: themes/simply-dark/customize.php:331
+#: themes/simply-dark/customize.php:722
+#: themes/simply-dark/customize.php:742
 msgid "Default"
 msgstr ""
 
@@ -2440,110 +2539,158 @@ msgstr ""
 #: themes/architekt/customize.php:332
 #: themes/architekt/customize.php:339
 #: themes/architekt/customize.php:372
+#: themes/architekt/customize.php:559
+#: themes/architekt/customize.php:579
 #: themes/bitono/customize.php:27
 #: themes/bitono/customize.php:53
 #: themes/bitono/customize.php:95
 #: themes/bitono/customize.php:317
 #: themes/bitono/customize.php:350
+#: themes/bitono/customize.php:736
+#: themes/bitono/customize.php:756
 #: themes/blend/customize.php:27
 #: themes/blend/customize.php:53
 #: themes/blend/customize.php:95
 #: themes/blend/customize.php:282
 #: themes/blend/customize.php:315
 #: themes/blend/customize.php:391
+#: themes/blend/customize.php:765
+#: themes/blend/customize.php:785
 #: themes/bubble/customize.php:27
 #: themes/bubble/customize.php:53
 #: themes/bubble/customize.php:79
 #: themes/bubble/customize.php:301
 #: themes/bubble/customize.php:334
 #: themes/bubble/customize.php:410
+#: themes/bubble/customize.php:752
+#: themes/bubble/customize.php:772
 #: themes/clarity/customize.php:27
 #: themes/clarity/customize.php:53
 #: themes/clarity/customize.php:95
 #: themes/clarity/customize.php:316
 #: themes/clarity/customize.php:349
+#: themes/clarity/customize.php:690
+#: themes/clarity/customize.php:710
 #: themes/cubic/customize.php:27
 #: themes/cubic/customize.php:53
 #: themes/cubic/customize.php:95
 #: themes/cubic/customize.php:301
 #: themes/cubic/customize.php:334
-#: themes/customize.php:37
-#: themes/customize.php:57
+#: themes/cubic/customize.php:720
+#: themes/cubic/customize.php:740
 #: themes/databold/customize.php:27
 #: themes/databold/customize.php:53
 #: themes/databold/customize.php:95
 #: themes/databold/customize.php:317
 #: themes/databold/customize.php:350
+#: themes/databold/customize.php:735
+#: themes/databold/customize.php:755
 #: themes/default-base/customize.php:38
 #: themes/default-base/customize.php:64
 #: themes/default-base/customize.php:106
 #: themes/default-base/customize.php:333
 #: themes/default-base/customize.php:366
+#: themes/default-base/customize.php:770
+#: themes/default-base/customize.php:790
 #: themes/disjoint/customize.php:27
 #: themes/disjoint/customize.php:53
 #: themes/disjoint/customize.php:95
 #: themes/disjoint/customize.php:293
 #: themes/disjoint/customize.php:326
+#: themes/disjoint/customize.php:711
+#: themes/disjoint/customize.php:731
 #: themes/draxler/customize.php:27
 #: themes/draxler/customize.php:53
 #: themes/draxler/customize.php:95
 #: themes/draxler/customize.php:285
 #: themes/draxler/customize.php:318
+#: themes/draxler/customize.php:712
+#: themes/draxler/customize.php:732
 #: themes/highway/customize.php:27
 #: themes/highway/customize.php:53
 #: themes/highway/customize.php:95
 #: themes/highway/customize.php:316
 #: themes/highway/customize.php:349
+#: themes/highway/customize.php:723
+#: themes/highway/customize.php:743
 #: themes/jenga/customize.php:27
 #: themes/jenga/customize.php:53
 #: themes/jenga/customize.php:79
 #: themes/jenga/customize.php:205
 #: themes/jenga/customize.php:238
+#: themes/jenga/customize.php:535
+#: themes/jenga/customize.php:555
 #: themes/nexus/customize.php:27
 #: themes/nexus/customize.php:53
 #: themes/nexus/customize.php:79
 #: themes/nexus/customize.php:301
 #: themes/nexus/customize.php:334
 #: themes/nexus/customize.php:720
+#: themes/nexus/customize.php:748
+#: themes/nexus/customize.php:768
 #: themes/outline/customize.php:27
 #: themes/outline/customize.php:53
 #: themes/outline/customize.php:95
 #: themes/outline/customize.php:316
 #: themes/outline/customize.php:349
+#: themes/outline/customize.php:734
+#: themes/outline/customize.php:754
 #: themes/precognition/customize.php:27
 #: themes/precognition/customize.php:53
 #: themes/precognition/customize.php:95
 #: themes/precognition/customize.php:317
 #: themes/precognition/customize.php:415
+#: themes/precognition/customize.php:637
+#: themes/precognition/customize.php:657
 #: themes/radix/customize.php:27
 #: themes/radix/customize.php:79
 #: themes/radix/customize.php:121
+#: themes/radix/customize.php:614
+#: themes/radix/customize.php:634
 #: themes/simply-dark/customize.php:27
 #: themes/simply-dark/customize.php:53
 #: themes/simply-dark/customize.php:95
 #: themes/simply-dark/customize.php:305
 #: themes/simply-dark/customize.php:338
+#: themes/simply-dark/customize.php:729
+#: themes/simply-dark/customize.php:749
 msgid "Hover"
 msgstr ""
 
 #: themes/architekt/customize.php:42
+#: themes/architekt/customize.php:568
 #: themes/bitono/customize.php:42
+#: themes/bitono/customize.php:745
 #: themes/blend/customize.php:42
+#: themes/blend/customize.php:774
 #: themes/bubble/customize.php:42
+#: themes/bubble/customize.php:761
 #: themes/clarity/customize.php:42
+#: themes/clarity/customize.php:699
 #: themes/cubic/customize.php:42
-#: themes/customize.php:46
+#: themes/cubic/customize.php:729
 #: themes/databold/customize.php:42
+#: themes/databold/customize.php:744
 #: themes/default-base/customize.php:53
+#: themes/default-base/customize.php:779
 #: themes/disjoint/customize.php:42
+#: themes/disjoint/customize.php:720
 #: themes/draxler/customize.php:42
+#: themes/draxler/customize.php:721
 #: themes/highway/customize.php:42
+#: themes/highway/customize.php:732
 #: themes/jenga/customize.php:42
+#: themes/jenga/customize.php:544
 #: themes/nexus/customize.php:42
+#: themes/nexus/customize.php:757
 #: themes/outline/customize.php:42
+#: themes/outline/customize.php:743
 #: themes/precognition/customize.php:42
+#: themes/precognition/customize.php:646
 #: themes/radix/customize.php:68
+#: themes/radix/customize.php:623
 #: themes/simply-dark/customize.php:42
+#: themes/simply-dark/customize.php:738
 msgid "Icon Colors"
 msgstr ""
 
@@ -2769,66 +2916,114 @@ msgid "Distance from Navigation"
 msgstr ""
 
 #: themes/architekt/customize.php:239
+#: themes/architekt/customize.php:588
 #: themes/bitono/customize.php:250
+#: themes/bitono/customize.php:765
 #: themes/blend/customize.php:215
+#: themes/blend/customize.php:794
 #: themes/bubble/customize.php:234
+#: themes/bubble/customize.php:781
 #: themes/clarity/customize.php:249
+#: themes/clarity/customize.php:719
 #: themes/cubic/customize.php:234
-#: themes/customize.php:66
+#: themes/cubic/customize.php:749
 #: themes/databold/customize.php:250
+#: themes/databold/customize.php:764
 #: themes/default-base/customize.php:266
+#: themes/default-base/customize.php:799
 #: themes/disjoint/customize.php:226
+#: themes/disjoint/customize.php:740
 #: themes/draxler/customize.php:215
 #: themes/draxler/customize.php:461
+#: themes/draxler/customize.php:741
 #: themes/highway/customize.php:249
+#: themes/highway/customize.php:752
 #: themes/jenga/customize.php:138
+#: themes/jenga/customize.php:564
 #: themes/nexus/customize.php:234
+#: themes/nexus/customize.php:777
 #: themes/outline/customize.php:249
+#: themes/outline/customize.php:763
 #: themes/precognition/customize.php:250
+#: themes/precognition/customize.php:666
 #: themes/radix/customize.php:245
+#: themes/radix/customize.php:643
 #: themes/simply-dark/customize.php:238
+#: themes/simply-dark/customize.php:758
 msgid "Border Radius"
 msgstr ""
 
 #: themes/architekt/customize.php:255
+#: themes/architekt/customize.php:598
 #: themes/bitono/customize.php:266
+#: themes/bitono/customize.php:775
 #: themes/blend/customize.php:231
+#: themes/blend/customize.php:804
 #: themes/bubble/customize.php:250
+#: themes/bubble/customize.php:791
 #: themes/clarity/customize.php:265
+#: themes/clarity/customize.php:729
 #: themes/cubic/customize.php:250
-#: themes/customize.php:76
+#: themes/cubic/customize.php:759
 #: themes/databold/customize.php:266
+#: themes/databold/customize.php:774
 #: themes/default-base/customize.php:282
+#: themes/default-base/customize.php:809
 #: themes/disjoint/customize.php:242
+#: themes/disjoint/customize.php:750
 #: themes/draxler/customize.php:234
+#: themes/draxler/customize.php:751
 #: themes/highway/customize.php:265
+#: themes/highway/customize.php:762
 #: themes/jenga/customize.php:154
+#: themes/jenga/customize.php:574
 #: themes/nexus/customize.php:250
+#: themes/nexus/customize.php:787
 #: themes/outline/customize.php:265
+#: themes/outline/customize.php:773
 #: themes/precognition/customize.php:266
+#: themes/precognition/customize.php:676
 #: themes/radix/customize.php:261
+#: themes/radix/customize.php:653
 #: themes/simply-dark/customize.php:254
+#: themes/simply-dark/customize.php:768
 msgid "Opacity (default)"
 msgstr ""
 
 #: themes/architekt/customize.php:271
+#: themes/architekt/customize.php:608
 #: themes/bitono/customize.php:282
+#: themes/bitono/customize.php:785
 #: themes/blend/customize.php:247
+#: themes/blend/customize.php:814
 #: themes/bubble/customize.php:266
+#: themes/bubble/customize.php:801
 #: themes/clarity/customize.php:281
+#: themes/clarity/customize.php:739
 #: themes/cubic/customize.php:266
-#: themes/customize.php:86
+#: themes/cubic/customize.php:769
 #: themes/databold/customize.php:282
+#: themes/databold/customize.php:784
 #: themes/default-base/customize.php:298
+#: themes/default-base/customize.php:819
 #: themes/disjoint/customize.php:258
+#: themes/disjoint/customize.php:760
 #: themes/draxler/customize.php:250
+#: themes/draxler/customize.php:761
 #: themes/highway/customize.php:281
+#: themes/highway/customize.php:772
 #: themes/jenga/customize.php:170
+#: themes/jenga/customize.php:584
 #: themes/nexus/customize.php:266
+#: themes/nexus/customize.php:797
 #: themes/outline/customize.php:281
+#: themes/outline/customize.php:783
 #: themes/precognition/customize.php:282
+#: themes/precognition/customize.php:686
 #: themes/radix/customize.php:277
+#: themes/radix/customize.php:663
 #: themes/simply-dark/customize.php:270
+#: themes/simply-dark/customize.php:778
 msgid "Opacity (hover)"
 msgstr ""
 
@@ -3013,96 +3208,130 @@ msgid "Text Align"
 msgstr ""
 
 #: themes/architekt/customize.php:515
+#: themes/architekt/customize.php:661
 #: themes/bitono/customize.php:467
 #: themes/bitono/customize.php:631
 #: themes/bitono/customize.php:692
+#: themes/bitono/customize.php:838
 #: themes/blend/customize.php:464
 #: themes/blend/customize.php:660
 #: themes/blend/customize.php:721
+#: themes/blend/customize.php:867
 #: themes/bubble/customize.php:483
 #: themes/bubble/customize.php:647
 #: themes/bubble/customize.php:708
+#: themes/bubble/customize.php:854
 #: themes/clarity/customize.php:466
 #: themes/clarity/customize.php:646
+#: themes/clarity/customize.php:792
 #: themes/cubic/customize.php:451
 #: themes/cubic/customize.php:615
 #: themes/cubic/customize.php:676
+#: themes/cubic/customize.php:822
 #: themes/databold/customize.php:466
 #: themes/databold/customize.php:630
 #: themes/databold/customize.php:691
+#: themes/databold/customize.php:837
 #: themes/default-base/customize.php:488
 #: themes/default-base/customize.php:665
 #: themes/default-base/customize.php:726
+#: themes/default-base/customize.php:872
 #: themes/disjoint/customize.php:442
 #: themes/disjoint/customize.php:606
 #: themes/disjoint/customize.php:667
+#: themes/disjoint/customize.php:813
 #: themes/draxler/customize.php:435
 #: themes/draxler/customize.php:607
 #: themes/draxler/customize.php:668
+#: themes/draxler/customize.php:814
 #: themes/highway/customize.php:618
 #: themes/highway/customize.php:679
+#: themes/highway/customize.php:825
 #: themes/jenga/customize.php:430
 #: themes/jenga/customize.php:491
+#: themes/jenga/customize.php:637
 #: themes/nexus/customize.php:451
 #: themes/nexus/customize.php:615
 #: themes/nexus/customize.php:676
+#: themes/nexus/customize.php:850
 #: themes/outline/customize.php:465
 #: themes/outline/customize.php:629
 #: themes/outline/customize.php:690
+#: themes/outline/customize.php:836
 #: themes/precognition/customize.php:532
 #: themes/precognition/customize.php:593
+#: themes/precognition/customize.php:739
 #: themes/radix/customize.php:509
 #: themes/radix/customize.php:570
+#: themes/radix/customize.php:716
 #: themes/simply-dark/customize.php:455
 #: themes/simply-dark/customize.php:624
 #: themes/simply-dark/customize.php:685
+#: themes/simply-dark/customize.php:831
 msgid "Left"
 msgstr ""
 
 #: themes/architekt/customize.php:519
+#: themes/architekt/customize.php:657
 #: themes/bitono/customize.php:471
 #: themes/bitono/customize.php:627
 #: themes/bitono/customize.php:696
+#: themes/bitono/customize.php:834
 #: themes/blend/customize.php:468
 #: themes/blend/customize.php:656
 #: themes/blend/customize.php:725
+#: themes/blend/customize.php:863
 #: themes/bubble/customize.php:487
 #: themes/bubble/customize.php:643
 #: themes/bubble/customize.php:712
+#: themes/bubble/customize.php:850
 #: themes/clarity/customize.php:470
 #: themes/clarity/customize.php:650
+#: themes/clarity/customize.php:788
 #: themes/cubic/customize.php:455
 #: themes/cubic/customize.php:611
 #: themes/cubic/customize.php:680
+#: themes/cubic/customize.php:818
 #: themes/databold/customize.php:470
 #: themes/databold/customize.php:626
 #: themes/databold/customize.php:695
+#: themes/databold/customize.php:833
 #: themes/default-base/customize.php:492
 #: themes/default-base/customize.php:661
 #: themes/default-base/customize.php:730
+#: themes/default-base/customize.php:868
 #: themes/disjoint/customize.php:446
 #: themes/disjoint/customize.php:602
 #: themes/disjoint/customize.php:671
+#: themes/disjoint/customize.php:809
 #: themes/draxler/customize.php:439
 #: themes/draxler/customize.php:603
 #: themes/draxler/customize.php:672
+#: themes/draxler/customize.php:810
 #: themes/highway/customize.php:614
 #: themes/highway/customize.php:683
+#: themes/highway/customize.php:821
 #: themes/jenga/customize.php:426
 #: themes/jenga/customize.php:495
+#: themes/jenga/customize.php:633
 #: themes/nexus/customize.php:455
 #: themes/nexus/customize.php:611
 #: themes/nexus/customize.php:680
+#: themes/nexus/customize.php:846
 #: themes/outline/customize.php:469
 #: themes/outline/customize.php:625
 #: themes/outline/customize.php:694
+#: themes/outline/customize.php:832
 #: themes/precognition/customize.php:528
 #: themes/precognition/customize.php:597
+#: themes/precognition/customize.php:735
 #: themes/radix/customize.php:505
 #: themes/radix/customize.php:574
+#: themes/radix/customize.php:712
 #: themes/simply-dark/customize.php:459
 #: themes/simply-dark/customize.php:620
 #: themes/simply-dark/customize.php:689
+#: themes/simply-dark/customize.php:827
 msgid "Right"
 msgstr ""
 
@@ -3138,6 +3367,432 @@ msgstr ""
 msgid "Center"
 msgstr ""
 
+#: themes/architekt/customize.php:618
+#: themes/bitono/customize.php:173
+#: themes/bitono/customize.php:416
+#: themes/bitono/customize.php:587
+#: themes/bitono/customize.php:795
+#: themes/blend/customize.php:154
+#: themes/blend/customize.php:413
+#: themes/blend/customize.php:616
+#: themes/blend/customize.php:824
+#: themes/bubble/customize.php:157
+#: themes/bubble/customize.php:432
+#: themes/bubble/customize.php:603
+#: themes/bubble/customize.php:811
+#: themes/clarity/customize.php:172
+#: themes/clarity/customize.php:415
+#: themes/clarity/customize.php:749
+#: themes/cubic/customize.php:173
+#: themes/cubic/customize.php:400
+#: themes/cubic/customize.php:571
+#: themes/cubic/customize.php:779
+#: themes/databold/customize.php:173
+#: themes/databold/customize.php:415
+#: themes/databold/customize.php:586
+#: themes/databold/customize.php:794
+#: themes/default-base/customize.php:184
+#: themes/default-base/customize.php:432
+#: themes/default-base/customize.php:608
+#: themes/default-base/customize.php:829
+#: themes/disjoint/customize.php:154
+#: themes/disjoint/customize.php:391
+#: themes/disjoint/customize.php:562
+#: themes/disjoint/customize.php:770
+#: themes/draxler/customize.php:154
+#: themes/draxler/customize.php:384
+#: themes/draxler/customize.php:563
+#: themes/draxler/customize.php:771
+#: themes/highway/customize.php:172
+#: themes/highway/customize.php:415
+#: themes/highway/customize.php:575
+#: themes/highway/customize.php:782
+#: themes/jenga/customize.php:386
+#: themes/jenga/customize.php:594
+#: themes/nexus/customize.php:157
+#: themes/nexus/customize.php:400
+#: themes/nexus/customize.php:571
+#: themes/nexus/customize.php:807
+#: themes/outline/customize.php:172
+#: themes/outline/customize.php:414
+#: themes/outline/customize.php:585
+#: themes/outline/customize.php:793
+#: themes/precognition/customize.php:173
+#: themes/precognition/customize.php:488
+#: themes/precognition/customize.php:696
+#: themes/radix/customize.php:180
+#: themes/radix/customize.php:320
+#: themes/radix/customize.php:466
+#: themes/radix/customize.php:673
+#: themes/simply-dark/customize.php:173
+#: themes/simply-dark/customize.php:404
+#: themes/simply-dark/customize.php:575
+#: themes/simply-dark/customize.php:788
+msgid "Vertical Position"
+msgstr ""
+
+#: themes/architekt/customize.php:624
+#: themes/bitono/customize.php:179
+#: themes/bitono/customize.php:422
+#: themes/bitono/customize.php:593
+#: themes/bitono/customize.php:801
+#: themes/blend/customize.php:160
+#: themes/blend/customize.php:419
+#: themes/blend/customize.php:622
+#: themes/blend/customize.php:830
+#: themes/bubble/customize.php:163
+#: themes/bubble/customize.php:438
+#: themes/bubble/customize.php:609
+#: themes/bubble/customize.php:817
+#: themes/clarity/customize.php:178
+#: themes/clarity/customize.php:421
+#: themes/clarity/customize.php:597
+#: themes/clarity/customize.php:755
+#: themes/cubic/customize.php:179
+#: themes/cubic/customize.php:406
+#: themes/cubic/customize.php:577
+#: themes/cubic/customize.php:785
+#: themes/databold/customize.php:179
+#: themes/databold/customize.php:421
+#: themes/databold/customize.php:592
+#: themes/databold/customize.php:800
+#: themes/default-base/customize.php:194
+#: themes/default-base/customize.php:442
+#: themes/default-base/customize.php:618
+#: themes/default-base/customize.php:835
+#: themes/disjoint/customize.php:160
+#: themes/disjoint/customize.php:397
+#: themes/disjoint/customize.php:568
+#: themes/disjoint/customize.php:776
+#: themes/draxler/customize.php:160
+#: themes/draxler/customize.php:390
+#: themes/draxler/customize.php:569
+#: themes/draxler/customize.php:777
+#: themes/highway/customize.php:178
+#: themes/highway/customize.php:421
+#: themes/highway/customize.php:581
+#: themes/highway/customize.php:788
+#: themes/jenga/customize.php:392
+#: themes/jenga/customize.php:600
+#: themes/nexus/customize.php:163
+#: themes/nexus/customize.php:406
+#: themes/nexus/customize.php:577
+#: themes/nexus/customize.php:813
+#: themes/outline/customize.php:178
+#: themes/outline/customize.php:420
+#: themes/outline/customize.php:591
+#: themes/outline/customize.php:799
+#: themes/precognition/customize.php:179
+#: themes/precognition/customize.php:494
+#: themes/precognition/customize.php:702
+#: themes/radix/customize.php:190
+#: themes/radix/customize.php:326
+#: themes/radix/customize.php:472
+#: themes/radix/customize.php:679
+#: themes/simply-dark/customize.php:179
+#: themes/simply-dark/customize.php:410
+#: themes/simply-dark/customize.php:585
+#: themes/simply-dark/customize.php:794
+msgid "Top"
+msgstr ""
+
+#: themes/architekt/customize.php:628
+#: themes/bitono/customize.php:183
+#: themes/bitono/customize.php:426
+#: themes/bitono/customize.php:597
+#: themes/bitono/customize.php:805
+#: themes/blend/customize.php:164
+#: themes/blend/customize.php:423
+#: themes/blend/customize.php:626
+#: themes/blend/customize.php:834
+#: themes/bubble/customize.php:167
+#: themes/bubble/customize.php:442
+#: themes/bubble/customize.php:613
+#: themes/bubble/customize.php:821
+#: themes/clarity/customize.php:182
+#: themes/clarity/customize.php:425
+#: themes/clarity/customize.php:593
+#: themes/clarity/customize.php:759
+#: themes/cubic/customize.php:183
+#: themes/cubic/customize.php:410
+#: themes/cubic/customize.php:581
+#: themes/cubic/customize.php:789
+#: themes/databold/customize.php:183
+#: themes/databold/customize.php:425
+#: themes/databold/customize.php:596
+#: themes/databold/customize.php:804
+#: themes/default-base/customize.php:198
+#: themes/default-base/customize.php:446
+#: themes/default-base/customize.php:622
+#: themes/default-base/customize.php:839
+#: themes/disjoint/customize.php:164
+#: themes/disjoint/customize.php:401
+#: themes/disjoint/customize.php:572
+#: themes/disjoint/customize.php:780
+#: themes/draxler/customize.php:164
+#: themes/draxler/customize.php:394
+#: themes/draxler/customize.php:573
+#: themes/draxler/customize.php:781
+#: themes/highway/customize.php:182
+#: themes/highway/customize.php:425
+#: themes/highway/customize.php:585
+#: themes/highway/customize.php:792
+#: themes/jenga/customize.php:396
+#: themes/jenga/customize.php:604
+#: themes/nexus/customize.php:167
+#: themes/nexus/customize.php:410
+#: themes/nexus/customize.php:581
+#: themes/nexus/customize.php:817
+#: themes/outline/customize.php:182
+#: themes/outline/customize.php:424
+#: themes/outline/customize.php:595
+#: themes/outline/customize.php:803
+#: themes/precognition/customize.php:183
+#: themes/precognition/customize.php:498
+#: themes/precognition/customize.php:706
+#: themes/radix/customize.php:194
+#: themes/radix/customize.php:330
+#: themes/radix/customize.php:476
+#: themes/radix/customize.php:683
+#: themes/simply-dark/customize.php:183
+#: themes/simply-dark/customize.php:414
+#: themes/simply-dark/customize.php:589
+#: themes/simply-dark/customize.php:798
+msgid "Bottom"
+msgstr ""
+
+#: themes/architekt/customize.php:639
+#: themes/bitono/customize.php:200
+#: themes/bitono/customize.php:443
+#: themes/bitono/customize.php:609
+#: themes/bitono/customize.php:816
+#: themes/blend/customize.php:181
+#: themes/blend/customize.php:440
+#: themes/blend/customize.php:638
+#: themes/blend/customize.php:845
+#: themes/bubble/customize.php:184
+#: themes/bubble/customize.php:459
+#: themes/bubble/customize.php:625
+#: themes/bubble/customize.php:832
+#: themes/clarity/customize.php:199
+#: themes/clarity/customize.php:442
+#: themes/clarity/customize.php:770
+#: themes/cubic/customize.php:200
+#: themes/cubic/customize.php:427
+#: themes/cubic/customize.php:593
+#: themes/cubic/customize.php:800
+#: themes/databold/customize.php:200
+#: themes/databold/customize.php:442
+#: themes/databold/customize.php:608
+#: themes/databold/customize.php:815
+#: themes/default-base/customize.php:216
+#: themes/default-base/customize.php:464
+#: themes/default-base/customize.php:643
+#: themes/default-base/customize.php:850
+#: themes/disjoint/customize.php:182
+#: themes/disjoint/customize.php:418
+#: themes/disjoint/customize.php:584
+#: themes/disjoint/customize.php:791
+#: themes/draxler/customize.php:181
+#: themes/draxler/customize.php:411
+#: themes/draxler/customize.php:585
+#: themes/draxler/customize.php:792
+#: themes/highway/customize.php:199
+#: themes/highway/customize.php:442
+#: themes/highway/customize.php:596
+#: themes/highway/customize.php:803
+#: themes/jenga/customize.php:408
+#: themes/jenga/customize.php:615
+#: themes/nexus/customize.php:184
+#: themes/nexus/customize.php:427
+#: themes/nexus/customize.php:593
+#: themes/nexus/customize.php:828
+#: themes/outline/customize.php:199
+#: themes/outline/customize.php:441
+#: themes/outline/customize.php:607
+#: themes/outline/customize.php:814
+#: themes/precognition/customize.php:200
+#: themes/precognition/customize.php:510
+#: themes/precognition/customize.php:717
+#: themes/radix/customize.php:211
+#: themes/radix/customize.php:347
+#: themes/radix/customize.php:487
+#: themes/radix/customize.php:694
+#: themes/simply-dark/customize.php:200
+#: themes/simply-dark/customize.php:431
+#: themes/simply-dark/customize.php:602
+#: themes/simply-dark/customize.php:809
+msgid "Vertical Position Offset"
+msgstr ""
+
+#: themes/architekt/customize.php:640
+#: themes/bitono/customize.php:201
+#: themes/bitono/customize.php:444
+#: themes/bitono/customize.php:610
+#: themes/bitono/customize.php:817
+#: themes/blend/customize.php:182
+#: themes/blend/customize.php:441
+#: themes/blend/customize.php:639
+#: themes/blend/customize.php:846
+#: themes/bubble/customize.php:185
+#: themes/bubble/customize.php:460
+#: themes/bubble/customize.php:626
+#: themes/bubble/customize.php:833
+#: themes/clarity/customize.php:200
+#: themes/clarity/customize.php:443
+#: themes/clarity/customize.php:771
+#: themes/cubic/customize.php:201
+#: themes/cubic/customize.php:428
+#: themes/cubic/customize.php:594
+#: themes/cubic/customize.php:801
+#: themes/databold/customize.php:201
+#: themes/databold/customize.php:443
+#: themes/databold/customize.php:609
+#: themes/databold/customize.php:816
+#: themes/default-base/customize.php:217
+#: themes/default-base/customize.php:465
+#: themes/default-base/customize.php:851
+#: themes/disjoint/customize.php:183
+#: themes/disjoint/customize.php:419
+#: themes/disjoint/customize.php:585
+#: themes/disjoint/customize.php:792
+#: themes/draxler/customize.php:182
+#: themes/draxler/customize.php:412
+#: themes/draxler/customize.php:586
+#: themes/draxler/customize.php:793
+#: themes/highway/customize.php:200
+#: themes/highway/customize.php:443
+#: themes/highway/customize.php:597
+#: themes/highway/customize.php:804
+#: themes/jenga/customize.php:409
+#: themes/jenga/customize.php:616
+#: themes/nexus/customize.php:185
+#: themes/nexus/customize.php:428
+#: themes/nexus/customize.php:594
+#: themes/nexus/customize.php:829
+#: themes/outline/customize.php:200
+#: themes/outline/customize.php:442
+#: themes/outline/customize.php:608
+#: themes/outline/customize.php:815
+#: themes/precognition/customize.php:201
+#: themes/precognition/customize.php:511
+#: themes/precognition/customize.php:718
+#: themes/radix/customize.php:212
+#: themes/radix/customize.php:348
+#: themes/radix/customize.php:488
+#: themes/radix/customize.php:695
+#: themes/simply-dark/customize.php:201
+#: themes/simply-dark/customize.php:432
+#: themes/simply-dark/customize.php:603
+#: themes/simply-dark/customize.php:810
+msgid "Based on \"Position\"."
+msgstr ""
+
+#: themes/architekt/customize.php:651
+#: themes/bitono/customize.php:621
+#: themes/bitono/customize.php:828
+#: themes/blend/customize.php:650
+#: themes/blend/customize.php:857
+#: themes/bubble/customize.php:637
+#: themes/bubble/customize.php:844
+#: themes/clarity/customize.php:782
+#: themes/cubic/customize.php:605
+#: themes/cubic/customize.php:812
+#: themes/databold/customize.php:620
+#: themes/databold/customize.php:827
+#: themes/default-base/customize.php:655
+#: themes/default-base/customize.php:862
+#: themes/disjoint/customize.php:596
+#: themes/disjoint/customize.php:803
+#: themes/draxler/customize.php:597
+#: themes/draxler/customize.php:804
+#: themes/highway/customize.php:608
+#: themes/highway/customize.php:815
+#: themes/jenga/customize.php:420
+#: themes/jenga/customize.php:627
+#: themes/nexus/customize.php:605
+#: themes/nexus/customize.php:840
+#: themes/outline/customize.php:619
+#: themes/outline/customize.php:826
+#: themes/precognition/customize.php:522
+#: themes/precognition/customize.php:729
+#: themes/radix/customize.php:499
+#: themes/radix/customize.php:706
+#: themes/simply-dark/customize.php:614
+#: themes/simply-dark/customize.php:821
+msgid "Horizontal Position"
+msgstr ""
+
+#: themes/architekt/customize.php:672
+#: themes/bitono/customize.php:642
+#: themes/bitono/customize.php:849
+#: themes/blend/customize.php:671
+#: themes/blend/customize.php:878
+#: themes/bubble/customize.php:658
+#: themes/bubble/customize.php:865
+#: themes/clarity/customize.php:803
+#: themes/cubic/customize.php:626
+#: themes/cubic/customize.php:833
+#: themes/databold/customize.php:641
+#: themes/databold/customize.php:848
+#: themes/default-base/customize.php:676
+#: themes/default-base/customize.php:883
+#: themes/disjoint/customize.php:617
+#: themes/disjoint/customize.php:824
+#: themes/draxler/customize.php:618
+#: themes/draxler/customize.php:825
+#: themes/highway/customize.php:629
+#: themes/highway/customize.php:836
+#: themes/jenga/customize.php:441
+#: themes/jenga/customize.php:648
+#: themes/nexus/customize.php:626
+#: themes/nexus/customize.php:861
+#: themes/outline/customize.php:640
+#: themes/outline/customize.php:847
+#: themes/precognition/customize.php:543
+#: themes/precognition/customize.php:750
+#: themes/radix/customize.php:520
+#: themes/radix/customize.php:727
+#: themes/simply-dark/customize.php:635
+#: themes/simply-dark/customize.php:842
+msgid "Horizontal Position Offset"
+msgstr ""
+
+#: themes/architekt/customize.php:673
+#: themes/bitono/customize.php:643
+#: themes/bitono/customize.php:850
+#: themes/blend/customize.php:672
+#: themes/blend/customize.php:879
+#: themes/bubble/customize.php:659
+#: themes/bubble/customize.php:866
+#: themes/clarity/customize.php:804
+#: themes/cubic/customize.php:627
+#: themes/cubic/customize.php:834
+#: themes/databold/customize.php:642
+#: themes/databold/customize.php:849
+#: themes/default-base/customize.php:677
+#: themes/default-base/customize.php:884
+#: themes/disjoint/customize.php:618
+#: themes/disjoint/customize.php:825
+#: themes/draxler/customize.php:619
+#: themes/draxler/customize.php:826
+#: themes/highway/customize.php:630
+#: themes/highway/customize.php:837
+#: themes/jenga/customize.php:442
+#: themes/jenga/customize.php:649
+#: themes/nexus/customize.php:627
+#: themes/nexus/customize.php:862
+#: themes/outline/customize.php:641
+#: themes/outline/customize.php:848
+#: themes/precognition/customize.php:544
+#: themes/precognition/customize.php:751
+#: themes/radix/customize.php:521
+#: themes/radix/customize.php:728
+#: themes/simply-dark/customize.php:636
+#: themes/simply-dark/customize.php:843
+msgid "Based on \"Horizontal Position\"."
+msgstr ""
+
 #: themes/bitono/customize.php:154
 #: themes/bubble/customize.php:138
 #: themes/clarity/customize.php:153
@@ -3149,242 +3804,6 @@ msgstr ""
 #: themes/precognition/customize.php:154
 #: themes/simply-dark/customize.php:154
 msgid "Distance from Edge"
-msgstr ""
-
-#: themes/bitono/customize.php:173
-#: themes/bitono/customize.php:416
-#: themes/bitono/customize.php:587
-#: themes/blend/customize.php:154
-#: themes/blend/customize.php:413
-#: themes/blend/customize.php:616
-#: themes/bubble/customize.php:157
-#: themes/bubble/customize.php:432
-#: themes/bubble/customize.php:603
-#: themes/clarity/customize.php:172
-#: themes/clarity/customize.php:415
-#: themes/cubic/customize.php:173
-#: themes/cubic/customize.php:400
-#: themes/cubic/customize.php:571
-#: themes/databold/customize.php:173
-#: themes/databold/customize.php:415
-#: themes/databold/customize.php:586
-#: themes/default-base/customize.php:184
-#: themes/default-base/customize.php:432
-#: themes/default-base/customize.php:608
-#: themes/disjoint/customize.php:154
-#: themes/disjoint/customize.php:391
-#: themes/disjoint/customize.php:562
-#: themes/draxler/customize.php:154
-#: themes/draxler/customize.php:384
-#: themes/draxler/customize.php:563
-#: themes/highway/customize.php:172
-#: themes/highway/customize.php:415
-#: themes/highway/customize.php:575
-#: themes/jenga/customize.php:386
-#: themes/nexus/customize.php:157
-#: themes/nexus/customize.php:400
-#: themes/nexus/customize.php:571
-#: themes/outline/customize.php:172
-#: themes/outline/customize.php:414
-#: themes/outline/customize.php:585
-#: themes/precognition/customize.php:173
-#: themes/precognition/customize.php:488
-#: themes/radix/customize.php:180
-#: themes/radix/customize.php:320
-#: themes/radix/customize.php:466
-#: themes/simply-dark/customize.php:173
-#: themes/simply-dark/customize.php:404
-#: themes/simply-dark/customize.php:575
-msgid "Vertical Position"
-msgstr ""
-
-#: themes/bitono/customize.php:179
-#: themes/bitono/customize.php:422
-#: themes/bitono/customize.php:593
-#: themes/blend/customize.php:160
-#: themes/blend/customize.php:419
-#: themes/blend/customize.php:622
-#: themes/bubble/customize.php:163
-#: themes/bubble/customize.php:438
-#: themes/bubble/customize.php:609
-#: themes/clarity/customize.php:178
-#: themes/clarity/customize.php:421
-#: themes/clarity/customize.php:597
-#: themes/cubic/customize.php:179
-#: themes/cubic/customize.php:406
-#: themes/cubic/customize.php:577
-#: themes/databold/customize.php:179
-#: themes/databold/customize.php:421
-#: themes/databold/customize.php:592
-#: themes/default-base/customize.php:194
-#: themes/default-base/customize.php:442
-#: themes/default-base/customize.php:618
-#: themes/disjoint/customize.php:160
-#: themes/disjoint/customize.php:397
-#: themes/disjoint/customize.php:568
-#: themes/draxler/customize.php:160
-#: themes/draxler/customize.php:390
-#: themes/draxler/customize.php:569
-#: themes/highway/customize.php:178
-#: themes/highway/customize.php:421
-#: themes/highway/customize.php:581
-#: themes/jenga/customize.php:392
-#: themes/nexus/customize.php:163
-#: themes/nexus/customize.php:406
-#: themes/nexus/customize.php:577
-#: themes/outline/customize.php:178
-#: themes/outline/customize.php:420
-#: themes/outline/customize.php:591
-#: themes/precognition/customize.php:179
-#: themes/precognition/customize.php:494
-#: themes/radix/customize.php:190
-#: themes/radix/customize.php:326
-#: themes/radix/customize.php:472
-#: themes/simply-dark/customize.php:179
-#: themes/simply-dark/customize.php:410
-#: themes/simply-dark/customize.php:585
-msgid "Top"
-msgstr ""
-
-#: themes/bitono/customize.php:183
-#: themes/bitono/customize.php:426
-#: themes/bitono/customize.php:597
-#: themes/blend/customize.php:164
-#: themes/blend/customize.php:423
-#: themes/blend/customize.php:626
-#: themes/bubble/customize.php:167
-#: themes/bubble/customize.php:442
-#: themes/bubble/customize.php:613
-#: themes/clarity/customize.php:182
-#: themes/clarity/customize.php:425
-#: themes/clarity/customize.php:593
-#: themes/cubic/customize.php:183
-#: themes/cubic/customize.php:410
-#: themes/cubic/customize.php:581
-#: themes/databold/customize.php:183
-#: themes/databold/customize.php:425
-#: themes/databold/customize.php:596
-#: themes/default-base/customize.php:198
-#: themes/default-base/customize.php:446
-#: themes/default-base/customize.php:622
-#: themes/disjoint/customize.php:164
-#: themes/disjoint/customize.php:401
-#: themes/disjoint/customize.php:572
-#: themes/draxler/customize.php:164
-#: themes/draxler/customize.php:394
-#: themes/draxler/customize.php:573
-#: themes/highway/customize.php:182
-#: themes/highway/customize.php:425
-#: themes/highway/customize.php:585
-#: themes/jenga/customize.php:396
-#: themes/nexus/customize.php:167
-#: themes/nexus/customize.php:410
-#: themes/nexus/customize.php:581
-#: themes/outline/customize.php:182
-#: themes/outline/customize.php:424
-#: themes/outline/customize.php:595
-#: themes/precognition/customize.php:183
-#: themes/precognition/customize.php:498
-#: themes/radix/customize.php:194
-#: themes/radix/customize.php:330
-#: themes/radix/customize.php:476
-#: themes/simply-dark/customize.php:183
-#: themes/simply-dark/customize.php:414
-#: themes/simply-dark/customize.php:589
-msgid "Bottom"
-msgstr ""
-
-#: themes/bitono/customize.php:200
-#: themes/bitono/customize.php:443
-#: themes/bitono/customize.php:609
-#: themes/blend/customize.php:181
-#: themes/blend/customize.php:440
-#: themes/blend/customize.php:638
-#: themes/bubble/customize.php:184
-#: themes/bubble/customize.php:459
-#: themes/bubble/customize.php:625
-#: themes/clarity/customize.php:199
-#: themes/clarity/customize.php:442
-#: themes/cubic/customize.php:200
-#: themes/cubic/customize.php:427
-#: themes/cubic/customize.php:593
-#: themes/databold/customize.php:200
-#: themes/databold/customize.php:442
-#: themes/databold/customize.php:608
-#: themes/default-base/customize.php:216
-#: themes/default-base/customize.php:464
-#: themes/default-base/customize.php:643
-#: themes/disjoint/customize.php:182
-#: themes/disjoint/customize.php:418
-#: themes/disjoint/customize.php:584
-#: themes/draxler/customize.php:181
-#: themes/draxler/customize.php:411
-#: themes/draxler/customize.php:585
-#: themes/highway/customize.php:199
-#: themes/highway/customize.php:442
-#: themes/highway/customize.php:596
-#: themes/jenga/customize.php:408
-#: themes/nexus/customize.php:184
-#: themes/nexus/customize.php:427
-#: themes/nexus/customize.php:593
-#: themes/outline/customize.php:199
-#: themes/outline/customize.php:441
-#: themes/outline/customize.php:607
-#: themes/precognition/customize.php:200
-#: themes/precognition/customize.php:510
-#: themes/radix/customize.php:211
-#: themes/radix/customize.php:347
-#: themes/radix/customize.php:487
-#: themes/simply-dark/customize.php:200
-#: themes/simply-dark/customize.php:431
-#: themes/simply-dark/customize.php:602
-msgid "Vertical Position Offset"
-msgstr ""
-
-#: themes/bitono/customize.php:201
-#: themes/bitono/customize.php:444
-#: themes/bitono/customize.php:610
-#: themes/blend/customize.php:182
-#: themes/blend/customize.php:441
-#: themes/blend/customize.php:639
-#: themes/bubble/customize.php:185
-#: themes/bubble/customize.php:460
-#: themes/bubble/customize.php:626
-#: themes/clarity/customize.php:200
-#: themes/clarity/customize.php:443
-#: themes/cubic/customize.php:201
-#: themes/cubic/customize.php:428
-#: themes/cubic/customize.php:594
-#: themes/databold/customize.php:201
-#: themes/databold/customize.php:443
-#: themes/databold/customize.php:609
-#: themes/default-base/customize.php:217
-#: themes/default-base/customize.php:465
-#: themes/disjoint/customize.php:183
-#: themes/disjoint/customize.php:419
-#: themes/disjoint/customize.php:585
-#: themes/draxler/customize.php:182
-#: themes/draxler/customize.php:412
-#: themes/draxler/customize.php:586
-#: themes/highway/customize.php:200
-#: themes/highway/customize.php:443
-#: themes/highway/customize.php:597
-#: themes/jenga/customize.php:409
-#: themes/nexus/customize.php:185
-#: themes/nexus/customize.php:428
-#: themes/nexus/customize.php:594
-#: themes/outline/customize.php:200
-#: themes/outline/customize.php:442
-#: themes/outline/customize.php:608
-#: themes/precognition/customize.php:201
-#: themes/precognition/customize.php:511
-#: themes/radix/customize.php:212
-#: themes/radix/customize.php:348
-#: themes/radix/customize.php:488
-#: themes/simply-dark/customize.php:201
-#: themes/simply-dark/customize.php:432
-#: themes/simply-dark/customize.php:603
-msgid "Based on \"Position\"."
 msgstr ""
 
 #: themes/bitono/customize.php:461
@@ -3467,60 +3886,6 @@ msgstr ""
 msgid "Distance Between Dots"
 msgstr ""
 
-#: themes/bitono/customize.php:621
-#: themes/blend/customize.php:650
-#: themes/bubble/customize.php:637
-#: themes/cubic/customize.php:605
-#: themes/databold/customize.php:620
-#: themes/default-base/customize.php:655
-#: themes/disjoint/customize.php:596
-#: themes/draxler/customize.php:597
-#: themes/highway/customize.php:608
-#: themes/jenga/customize.php:420
-#: themes/nexus/customize.php:605
-#: themes/outline/customize.php:619
-#: themes/precognition/customize.php:522
-#: themes/radix/customize.php:499
-#: themes/simply-dark/customize.php:614
-msgid "Horizontal Position"
-msgstr ""
-
-#: themes/bitono/customize.php:642
-#: themes/blend/customize.php:671
-#: themes/bubble/customize.php:658
-#: themes/cubic/customize.php:626
-#: themes/databold/customize.php:641
-#: themes/default-base/customize.php:676
-#: themes/disjoint/customize.php:617
-#: themes/draxler/customize.php:618
-#: themes/highway/customize.php:629
-#: themes/jenga/customize.php:441
-#: themes/nexus/customize.php:626
-#: themes/outline/customize.php:640
-#: themes/precognition/customize.php:543
-#: themes/radix/customize.php:520
-#: themes/simply-dark/customize.php:635
-msgid "Horizontal Position Offset"
-msgstr ""
-
-#: themes/bitono/customize.php:643
-#: themes/blend/customize.php:672
-#: themes/bubble/customize.php:659
-#: themes/cubic/customize.php:627
-#: themes/databold/customize.php:642
-#: themes/default-base/customize.php:677
-#: themes/disjoint/customize.php:618
-#: themes/draxler/customize.php:619
-#: themes/highway/customize.php:630
-#: themes/jenga/customize.php:442
-#: themes/nexus/customize.php:627
-#: themes/outline/customize.php:641
-#: themes/precognition/customize.php:544
-#: themes/radix/customize.php:521
-#: themes/simply-dark/customize.php:636
-msgid "Based on \"Horizontal Position\"."
-msgstr ""
-
 #: themes/blend/customize.php:337
 msgid "Number Underline Width"
 msgstr ""
@@ -3565,11 +3930,11 @@ msgstr ""
 msgid "Dots Border Style"
 msgstr ""
 
-#: themes/customize.php:129
+#: themes/customize.php:20
 msgid "Slideshow"
 msgstr ""
 
-#: themes/customize.php:136
+#: themes/customize.php:27
 msgid "This background color is used when a slide does not fill the whole width and height of the slide area."
 msgstr ""
 
@@ -3694,6 +4059,7 @@ msgstr ""
 #: themes/manifest-premium.php:17
 #: themes/manifest-premium.php:78
 #: themes/manifest-premium.php:86
+#: themes/manifest-premium.php:108
 msgid "A 2 columns minimalistic theme to split your images and captions."
 msgstr ""
 
@@ -3756,6 +4122,7 @@ msgstr ""
 
 #: themes/manifest-premium.php:79
 #: themes/manifest-premium.php:87
+#: themes/manifest-premium.php:109
 msgid "Image, External Image, Post Feed, Local Video and External Video slides are displayed in 2 columns, while the other slide types are displayed in 1 column."
 msgstr ""
 
@@ -3825,11 +4192,9 @@ msgid "Preparing 1 slide..."
 msgstr ""
 
 #: admin/assets/dist/js/admin.js:1
-#: admin/assets/dist/js/app.js:2
 #: admin/assets/js/admin.js:149
 #: admin/assets/js/admin.js:1330
 #: admin/assets/js/admin.js:1373
-#: admin/assets/js/app/store/modules/slideshows.js:216
 msgid "1 slide added successfully"
 msgstr ""
 
@@ -3958,6 +4323,11 @@ msgstr ""
 #: admin/assets/dist/js/app.js:2
 #, js-format
 msgid "Saving %s slides. This may take a few moments."
+msgstr ""
+
+#: admin/assets/dist/js/app.js:2
+#, js-format
+msgid "Saving %s slides."
 msgstr ""
 
 #: admin/assets/dist/js/app.js:2
@@ -4779,6 +5149,14 @@ msgid "TinyMCE is a WYSIWYG editor you can use in slide captions."
 msgstr ""
 
 #: admin/assets/dist/js/app.js:2
+msgid "Fix Touch Swipe"
+msgstr ""
+
+#: admin/assets/dist/js/app.js:2
+msgid "If Touch Swipe doesn't work as expected, enable this setting."
+msgstr ""
+
+#: admin/assets/dist/js/app.js:2
 msgid "Recommended Theme Options"
 msgstr ""
 
@@ -4831,6 +5209,14 @@ msgid "Update the MetaSlider Pro settings."
 msgstr ""
 
 #: admin/assets/dist/js/app.js:2
+msgid "Flush Cache when Saving Changes"
+msgstr ""
+
+#: admin/assets/dist/js/app.js:2
+msgid "This setting allows you to automatically flush cache when saving slideshow changes. Support WP Rocket, WP Super Cache, W3 Total Cache, WP-Optimize and WP Fastest Cache plugins."
+msgstr ""
+
+#: admin/assets/dist/js/app.js:2
 msgid "Maximum Number of Custom Fields in Post Feed and WooCommerce Slides"
 msgstr ""
 
@@ -4840,6 +5226,18 @@ msgstr ""
 
 #: admin/assets/dist/js/app.js:2
 msgid "Change the maximum custom fields for Post Feed and WooCommerce"
+msgstr ""
+
+#: admin/assets/dist/js/app.js:2
+msgid "Maximum Title Length in Post Feed and WooCommerce Slides"
+msgstr ""
+
+#: admin/assets/dist/js/app.js:2
+msgid "Select the maximum title length for post titles."
+msgstr ""
+
+#: admin/assets/dist/js/app.js:2
+msgid "Change the maximum title length for Post Feed and WooCommerce post titles"
 msgstr ""
 
 #: admin/assets/dist/js/app.js:2
@@ -4860,23 +5258,19 @@ msgid "Found %s slideshows"
 msgstr ""
 
 #: admin/assets/dist/js/app.js:2
-msgid "Image search complete"
-msgstr ""
-
-#: admin/assets/dist/js/app.js:2
-msgid "We are still searching for your images. Please wait."
-msgstr ""
-
-#: admin/assets/dist/js/app.js:2
 msgid "You have no slideshows to import"
 msgstr ""
 
 #: admin/assets/dist/js/app.js:2
-msgid "Some images are missing"
+msgid "Export file is from a local site. Exporting from a local site may cause issues during import. This is because the images and videos need to be accessible from a live server."
 msgstr ""
 
 #: admin/assets/dist/js/app.js:2
-msgid "When images are missing you will have to manually update or delete the slide after the import completes."
+msgid "Some images are missing. Please ensure all images are accessible from the source website before importing."
+msgstr ""
+
+#: admin/assets/dist/js/app.js:2
+msgid "Important!"
 msgstr ""
 
 #: admin/assets/dist/js/app.js:2
@@ -4885,7 +5279,7 @@ msgstr ""
 
 #: admin/assets/dist/js/app.js:2
 #, js-format
-msgid "Importing %s slideshows..."
+msgid "Importing %s slideshows... This may take a minute"
 msgstr ""
 
 #: admin/assets/dist/js/app.js:2
@@ -4905,7 +5299,7 @@ msgid "If you have an export file, you may upload it here to be processed. Infor
 msgstr ""
 
 #: admin/assets/dist/js/app.js:2
-msgid "Importing..."
+msgid "Importing... Please wait"
 msgstr ""
 
 #: admin/assets/dist/js/app.js:2
@@ -4917,23 +5311,15 @@ msgid "Upload file"
 msgstr ""
 
 #: admin/assets/dist/js/app.js:2
-msgid "All images required to import are accounted for."
+msgid "The import file appears to have been generated on a local development site. Some images or videos may not be imported due to limitations in the WordPress upload system."
 msgstr ""
 
 #: admin/assets/dist/js/app.js:2
-msgid "The following images were not found:"
+msgid "The import file was created with a previous version of MetaSlider. Please make sure you are using the latest version of MetaSlider in the source website, generate the import file again and upload it here."
 msgstr ""
 
 #: admin/assets/dist/js/app.js:2
-msgid "Note: You can still import slideshows that contain missing images. You will just need to manually update or delete these slides from their individual slideshow edit pages."
-msgstr ""
-
-#: admin/assets/dist/js/app.js:2
-msgid "Slideshow Title: "
-msgstr ""
-
-#: admin/assets/dist/js/app.js:2
-msgid "No image name provided"
+msgid "Click the Import button to begin the import process."
 msgstr ""
 
 #: admin/assets/dist/js/app.js:2
@@ -4951,6 +5337,26 @@ msgstr ""
 
 #: admin/assets/dist/js/app.js:2
 msgid "External slide"
+msgstr ""
+
+#: admin/assets/dist/js/app.js:2
+msgid "WooCommerce slide"
+msgstr ""
+
+#: admin/assets/dist/js/app.js:2
+msgid "Image Folder slide"
+msgstr ""
+
+#: admin/assets/dist/js/app.js:2
+msgid "Local Video slide"
+msgstr ""
+
+#: admin/assets/dist/js/app.js:2
+msgid "External Video slide"
+msgstr ""
+
+#: admin/assets/dist/js/app.js:2
+msgid "Custom HTML slide"
 msgstr ""
 
 #: admin/assets/dist/js/app.js:2
@@ -5006,19 +5412,11 @@ msgid "A .json file will automatically be downloaded with all your slideshow dat
 msgstr ""
 
 #: admin/assets/dist/js/app.js:2
-msgid "A few notes on exporting slideshow images:"
+msgid "A few notes on exporting slideshow images and videos:"
 msgstr ""
 
 #: admin/assets/dist/js/app.js:2
-msgid "Your images need to be exported manually. Please upload them to the new website before importing these slideshows."
-msgstr ""
-
-#: admin/assets/dist/js/app.js:2
-msgid "Images will need to keep the same file names on the new site."
-msgstr ""
-
-#: admin/assets/dist/js/app.js:2
-msgid "Read our guide on exporting images."
+msgid "Exporting from a localhost site may cause issues during import. This is because the images and videos need to be accessible from a live server."
 msgstr ""
 
 #: admin/assets/dist/js/app.js:2
@@ -5040,7 +5438,7 @@ msgid "Export %s slideshows"
 msgstr ""
 
 #: admin/assets/dist/js/app.js:2
-msgid "Select the slideshows you wish to export below, then press here to export them."
+msgid "Select the slideshows you wish to export below, then click here to export them."
 msgstr ""
 
 #: admin/assets/dist/js/app.js:2

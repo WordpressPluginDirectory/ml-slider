@@ -1035,6 +1035,8 @@ class MetaSlider_Api
     /**
      * Get ids of images based on filename. Used during import
      *
+     * @deprecated 3.103 - We no longer use filenames to identify images during import
+     * 
      * @param object $request The request
      */
     public function get_image_ids_from_file_name($request)
