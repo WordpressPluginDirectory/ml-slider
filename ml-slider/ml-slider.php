@@ -5,11 +5,11 @@
  * Plugin Name: MetaSlider
  * Plugin URI:  https://www.metaslider.com
  * Description: MetaSlider gives you the power to create a beautiful slideshow, carousel, or gallery on your WordPress site.
- * Version:     3.103.0
+ * Version:     3.104.0
  * Author:      MetaSlider
  * Author URI:  https://www.metaslider.com
  * License:     GPL-2.0+
- * Copyright:   2024 - MetaSlider LLC
+ * Copyright:   2025 - MetaSlider LLC
  *
  * Text Domain: ml-slider
  * Domain Path: /languages
@@ -44,7 +44,7 @@ if (! class_exists('MetaSliderPlugin')) {
          *
          * @var string
          */
-        public $version = '3.103.0';
+        public $version = '3.104.0';
 
         /**
          * Pro installed version number
@@ -354,7 +354,7 @@ if (! class_exists('MetaSliderPlugin')) {
             if (get_option('metaslider_new_user') == false) {
                 add_option('metaslider_new_user', 'new');
             } else {
-                $global_settings = $this->get_global_settings();
+                $global_settings = metaslider_global_settings();
                 if (!isset($global_settings['legacyWidget']) 
                 || ( isset($global_settings['legacyWidget'] ) && false == $global_settings['legacyWidget'])) {
                     add_action('widgets_init', array($this, 'register_metaslider_widget'));
@@ -1434,7 +1434,7 @@ if (! class_exists('MetaSliderPlugin')) {
                 - one or more doesn't use flexslider
             */
 
-            $global_settings = $this->get_global_settings();
+            $global_settings = metaslider_global_settings();
             $slideshow = new MetaSlider_Slideshows();
             $count_sliders = $slideshow->get_legacy_slideshows();
             $new_install = get_option('metaslider_new_user');
@@ -1831,13 +1831,7 @@ if (! class_exists('MetaSliderPlugin')) {
         }
 
         public function get_global_settings() {
-            if (is_multisite() && $settings = get_site_option('metaslider_global_settings')) {
-                return $settings;
-            }
-    
-            if ($settings = get_option('metaslider_global_settings')) {
-                return $settings;
-            }
+            return metaslider_global_settings();
         }
 
         /**

@@ -137,7 +137,8 @@ class MetaSlider_Slideshow_Settings
             'containerPadding_bottom' => 10,
             'containerPadding_left' => 10,
             'containerMargin_top' => 10,
-            'containerMargin_bottom' => 30
+            'containerMargin_bottom' => 30,
+            'navStep' => 1
         );
         $defaults = apply_filters('metaslider_default_parameters', $defaults);
         $overrides = get_option('metaslider_default_settings');
@@ -166,7 +167,7 @@ class MetaSlider_Slideshow_Settings
          * Reason is these settings have true/false + string options, so is better to handle all as strings
          * Keep original value if is different to 'on' and 'off'. 
          * We include actual booleans in $map just in case. */
-        $dropdowns = array('effect', 'cropMultiply', 'direction', 'easing', 'links', 'navigation', 'smartCrop', 'random', 'loop', 'layer_scaling');
+        $dropdowns = array('effect', 'cropMultiply', 'direction', 'easing', 'links', 'navigation', 'smartCrop', 'random', 'loop', 'layer_scaling', 'navStep');
 
         foreach ($dropdowns as $dropdown) {
             if (isset($settings[$dropdown])) {

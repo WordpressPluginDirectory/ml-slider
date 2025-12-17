@@ -387,8 +387,12 @@ return $options;
             return $html;
         }
 
+        $width = absint( $settings['width'] ) ?? 0;
+
+        $style = $width ? "max-width: {$width}px;" : "";
+
         $new_html = array();
-        $new_html[] = '<div id="metaslider_container_box_' . $slider_id . '" class="metaslider-container-box">';
+        $new_html[] = '<div id="metaslider_container_box_' . $slider_id . '" class="metaslider-container-box" style="' . esc_attr( $style ) . '">';
         $new_html[] = $html;
         $new_html[] = '</div>';
 

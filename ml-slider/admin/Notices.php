@@ -93,7 +93,7 @@ class MetaSlider_Notices extends Updraft_Notices_1_0
             return (!defined('METASLIDER_FORCE_LITE_NOTICES')) ? $this->pro_notices() : array();
         }
 
-        return [
+        $ads = [
             'rate_plugin' => [
                 'title' => _x('Like MetaSlider? Please help us by giving a positive review at WordPress.org', 'Keep the plugin name "MetaSlider" when possible', 'ml-slider'),
                 'text' => '',
@@ -138,6 +138,23 @@ class MetaSlider_Notices extends Updraft_Notices_1_0
                 'validity_function' => 'translation_needed',
             ],
         ];
+
+        if ( metaslider_plugin_is_installed( 'ml-slider-lightbox' ) === false ) {
+            $ads = array_merge( $ads, [
+                'install_lightbox' => [
+                    'title' => __('Do you want to display your slideshow media inside a lightbox?', 'ml-slider'),
+                    'text' => '',
+                    'image' => 'notices/metaslider_logo.png',
+                    'button_link' => 'metaslider_lightbox',
+                    'button_meta' => 'install-lightbox',
+                    'dismiss_time' => 'install_lightbox',
+                    'hide_time' => 12,
+                    'supported_positions' => ['header'],
+                ],
+            ] );
+        }
+
+        return $ads;
     }
 
     /**
@@ -344,6 +361,11 @@ class MetaSlider_Notices extends Updraft_Notices_1_0
             'signup' => __('Sign up &rarr;', 'ml-slider'),
             'go_there' => __('Go there &rarr;', 'ml-slider')
         );
+
+        if ( metaslider_plugin_is_installed( 'ml-slider-lightbox' ) === false ) {
+            $messages['install-lightbox'] = __('Click to install the MetaSlider Lightbox plugin &rarr;', 'ml-slider');
+        }
+
         $message = isset($messages[$type]) ? $messages[$type] : __('Read more', 'ml-slider');
 
         return '<a class="updraft_notice_link ml-discount-ad-button" target="_blank" href="' . esc_url($this->get_notice_url($link)) . '">' . esc_html($message) . '</a>';
@@ -504,6 +526,15 @@ class MetaSlider_Notices extends Updraft_Notices_1_0
             'metaslider_survey_pro' => 'https://www.metaslider.com/survey-pro',
             'metaslider_translate' => 'https://translate.wordpress.org/projects/wp-plugins/ml-slider',
         );
+
+        if ( metaslider_plugin_is_installed( 'ml-slider-lightbox' ) === false ) {
+            $urls['metaslider_lightbox'] = wp_nonce_url(
+                self_admin_url(
+                    'update.php?action=install-plugin&plugin=ml-slider-lightbox'
+                ),
+                'install-plugin_ml-slider-lightbox'
+            ); 
+        }
 
         // Return the website url if the ID was not set
         if (!isset($urls[$link_id])) {

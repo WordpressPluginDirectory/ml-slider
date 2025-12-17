@@ -3,6 +3,15 @@ if (!defined('ABSPATH')) {
     die('No direct access.');
 }
 
+$global_settings  = metaslider_global_settings();
+$default_settings = get_site_option( 'metaslider_default_settings' );
+$breakpoints      = array(
+    'smartphone' => isset( $default_settings['smartphone'] ) ? (int) $default_settings['smartphone'] : 320,
+    'tablet'     => isset( $default_settings['tablet'] ) ? (int) $default_settings['tablet'] : 768,
+    'laptop'     => isset( $default_settings['laptop'] ) ? (int) $default_settings['laptop'] : 1024,
+    'desktop'    => isset( $default_settings['desktop'] ) ? (int) $default_settings['desktop'] : 1440
+);
+
 // Slider libraries
 $aFields = array(
     'type' => array(
@@ -169,6 +178,166 @@ echo $this->build_settings_rows($aFields);
                     )
                 ),
             );
+
+            // Device options
+            if ( ! isset( $global_settings['mobileSettings'] ) 
+                || ( isset( $global_settings['mobileSettings'] ) 
+                    && true == $global_settings['mobileSettings'] 
+                )  
+            ) {
+                $aFields = array_merge( 
+                    $aFields,  
+                    array(
+                        'mobileArrows' => array(
+                            'priority' => 51,
+                            'type' => 'mobile',
+                            'label' => __("Hide Arrows On", "ml-slider"),
+                            'options' => array(
+                                'smartphone' => array(
+                                    'checked' => $this->slider->get_setting('mobileArrows_smartphone') == 'true' ? 'checked' : '',
+                                    'helptext' => sprintf( 
+                                        __( 
+                                            'When enabled this setting will hide the arrows on screen widths less than %spx.', 
+                                            'ml-slider'
+                                        ), 
+                                        $breakpoints['tablet'] 
+                                    )
+                                ),
+                                'tablet' => array(
+                                    'checked' => $this->slider->get_setting('mobileArrows_tablet') == 'true' ? 'checked' : '',
+                                    'helptext' => sprintf( 
+                                        __( 
+                                            'When enabled this setting will hide the arrows on screen widths of %1$spx to %2$spx.', 
+                                            'ml-slider'
+                                        ), 
+                                        $breakpoints['tablet'],
+                                        $breakpoints['laptop'] - 1
+                                    )
+                                ),
+                                'laptop' => array(
+                                    'checked' => $this->slider->get_setting('mobileArrows_laptop') == 'true' ? 'checked' : '',
+                                    'helptext' => sprintf( 
+                                        __( 
+                                            'When enabled this setting will hide the arrows on screen widths of %1$spx to %2$spx.', 
+                                            'ml-slider'
+                                        ), 
+                                        $breakpoints['laptop'],
+                                        $breakpoints['desktop'] - 1
+                                    )
+                                ),
+                                'desktop' => array(
+                                    'checked' => $this->slider->get_setting('mobileArrows_desktop') == 'true' ? 'checked' : '',
+                                    'helptext' => sprintf( 
+                                        __( 
+                                            'When enabled this setting will hide the arrows on screen widths equal to or greater than %spx.', 
+                                            'ml-slider'
+                                        ), 
+                                        $breakpoints['desktop'] 
+                                    )
+                                ),
+                            )
+                        ),
+                        'mobileNavigation' => array(
+                            'priority' => 61,
+                            'type' => 'mobile',
+                            'label' => __("Hide Navigation On", "ml-slider"),
+                            'options' => array(
+                                'smartphone' => array(
+                                    'checked' => $this->slider->get_setting('mobileNavigation_smartphone') == 'true' ? 'checked' : '',
+                                    'helptext' => sprintf( 
+                                        __( 
+                                            'When enabled this setting will hide the navigation on screen widths less than %spx.', 
+                                            'ml-slider'
+                                        ), 
+                                        $breakpoints['tablet'] 
+                                    )
+                                ),
+                                'tablet' => array(
+                                    'checked' => $this->slider->get_setting('mobileNavigation_tablet') == 'true' ? 'checked' : '',
+                                    'helptext' => sprintf( 
+                                        __( 
+                                            'When enabled this setting will hide the navigation on screen widths of %1$spx to %2$spx.', 
+                                            'ml-slider'
+                                        ), 
+                                        $breakpoints['tablet'],
+                                        $breakpoints['laptop'] - 1
+                                    )
+                                ),
+                                'laptop' => array(
+                                    'checked' => $this->slider->get_setting('mobileNavigation_laptop') == 'true' ? 'checked' : '',
+                                    'helptext' => sprintf( 
+                                        __( 
+                                            'When enabled this setting will hide the navigation on screen widths of %1$spx to %2$spx.', 
+                                            'ml-slider'
+                                        ), 
+                                        $breakpoints['laptop'],
+                                        $breakpoints['desktop'] - 1
+                                    )
+                                ),
+                                'desktop' => array(
+                                    'checked' => $this->slider->get_setting('mobileNavigation_desktop') == 'true' ? 'checked' : '',
+                                    'helptext' => sprintf( 
+                                        __( 
+                                            'When enabled this setting will hide the navigation on screen widths equal to or greater than %spx.', 
+                                            'ml-slider'
+                                        ), 
+                                        $breakpoints['desktop'] 
+                                    )
+                                ),
+                            )
+                        ),
+                        'mobileSlideshow' => array(
+                            'priority' => 71,
+                            'type' => 'mobile',
+                            'label' => __("Hide Slideshow On", "ml-slider"),
+                            'options' => array(
+                                'smartphone' => array(
+                                    'checked' => $this->slider->get_setting('mobileSlideshow_smartphone') == 'true' ? 'checked' : '',
+                                    'helptext' => sprintf( 
+                                        __( 
+                                            'When enabled this setting will hide the slideshow on screen widths less than %spx.', 
+                                            'ml-slider'
+                                        ), 
+                                        $breakpoints['tablet'] 
+                                    )
+                                ),
+                                'tablet' => array(
+                                    'checked' => $this->slider->get_setting('mobileSlideshow_tablet') == 'true' ? 'checked' : '',
+                                    'helptext' => sprintf( 
+                                        __( 
+                                            'When enabled this setting will hide the slideshow on screen widths of %1$spx to %2$spx.', 
+                                            'ml-slider'
+                                        ), 
+                                        $breakpoints['tablet'],
+                                        $breakpoints['laptop'] - 1
+                                    )
+                                ),
+                                'laptop' => array(
+                                    'checked' => $this->slider->get_setting('mobileSlideshow_laptop') == 'true' ? 'checked' : '',
+                                    'helptext' => sprintf( 
+                                        __( 
+                                            'When enabled this setting will hide the slideshow on screen widths of %1$spx to %2$spx.', 
+                                            'ml-slider'
+                                        ), 
+                                        $breakpoints['laptop'],
+                                        $breakpoints['desktop'] - 1
+                                    )
+                                ),
+                                'desktop' => array(
+                                    'checked' => $this->slider->get_setting('mobileSlideshow_desktop') == 'true' ? 'checked' : '',
+                                    'helptext' => sprintf( 
+                                        __( 
+                                            'When enabled this setting will hide the slideshow on screen widths equal to or greater than %spx.', 
+                                            'ml-slider'
+                                        ), 
+                                        $breakpoints['desktop'] 
+                                    )
+                                ),
+                            )
+                        )
+                    )
+                );
+            }
 
             $aFields = apply_filters('metaslider_basic_settings', $aFields, $this->slider);
 
@@ -552,6 +721,10 @@ echo $this->build_settings_rows($aFields);
                         array(
                             'show' => 'forceHeight', // Show Force height
                             'when' => true // When carouselMode is true
+                        ),
+                        array(
+                            'show' => 'navStep', // Show navStep
+                            'when' => true // When carouselMode is true
                         )
                     )
                 ),
@@ -599,6 +772,22 @@ echo $this->build_settings_rows($aFields);
                     ),
                     'after' => ''
                 ),
+                'navStep' => array(
+                    'priority' => 45,
+                    'type' => 'number',
+                    'size' => 3,
+                    'min' => 1,
+                    'max' => 1,
+                    'step' => 1,
+                    'value' => 1,
+                    'label' => esc_html__("Slides to Advance", "ml-slider"),
+                    'class' => 'flex disabled-text',
+                    'helptext' => esc_html__(
+                        "Number of slides to move when clicking next or previous.",
+                        "ml-slider"
+                    ),
+                    'after' => metaslider_upgrade_pro_small_btn()
+                ),
                 'forceHeight' => array(
                     'priority' => 50,
                     'type' => 'checkbox',
@@ -625,188 +814,6 @@ echo $this->build_settings_rows($aFields);
             ?>
         </table>
     </div>
-    <?php
-    // Device options
-    if ( !isset( $global_settings['mobileSettings'] ) 
-        || ( isset( $global_settings['mobileSettings'] ) && true == $global_settings['mobileSettings'] )  
-    ) {
-        $default_settings = get_site_option( 'metaslider_default_settings' );
-        $breakpoints      = array(
-            'smartphone' => isset( $default_settings['smartphone'] ) ? (int) $default_settings['smartphone'] : 320,
-            'tablet'     => isset( $default_settings['tablet'] ) ? (int) $default_settings['tablet'] : 768,
-            'laptop'     => isset( $default_settings['laptop'] ) ? (int) $default_settings['laptop'] : 1024,
-            'desktop'    => isset( $default_settings['desktop'] ) ? (int) $default_settings['desktop'] : 1440
-        );
-        ?>
-        <div class="ms-settings-box mobileOptions ms-off">
-            <div class="ms-highlight">
-                <?php esc_html_e( 'Device Options', 'ml-slider' ) ?>
-                <a href="#" class="ms-toggle-static">
-                <span class="dashicons"></span>
-            </a>
-            </div>
-            <table class="ms-settings-box-inner">
-                <?php
-                $aFields = array(
-                    'mobileArrows' => array(
-                        'priority' => 1,
-                        'type' => 'mobile',
-                        'label' => __("Hide Arrows On", "ml-slider"),
-                        'options' => array(
-                            'smartphone' => array(
-                                'checked' => $this->slider->get_setting('mobileArrows_smartphone') == 'true' ? 'checked' : '',
-                                'helptext' => sprintf( 
-                                    __( 
-                                        'When enabled this setting will hide the arrows on screen widths less than %spx.', 
-                                        'ml-slider'
-                                    ), 
-                                    $breakpoints['tablet'] 
-                                )
-                            ),
-                            'tablet' => array(
-                                'checked' => $this->slider->get_setting('mobileArrows_tablet') == 'true' ? 'checked' : '',
-                                'helptext' => sprintf( 
-                                    __( 
-                                        'When enabled this setting will hide the arrows on screen widths of %1$spx to %2$spx.', 
-                                        'ml-slider'
-                                    ), 
-                                    $breakpoints['tablet'],
-                                    $breakpoints['laptop'] - 1
-                                )
-                            ),
-                            'laptop' => array(
-                                'checked' => $this->slider->get_setting('mobileArrows_laptop') == 'true' ? 'checked' : '',
-                                'helptext' => sprintf( 
-                                    __( 
-                                        'When enabled this setting will hide the arrows on screen widths of %1$spx to %2$spx.', 
-                                        'ml-slider'
-                                    ), 
-                                    $breakpoints['laptop'],
-                                    $breakpoints['desktop'] - 1
-                                )
-                            ),
-                            'desktop' => array(
-                                'checked' => $this->slider->get_setting('mobileArrows_desktop') == 'true' ? 'checked' : '',
-                                'helptext' => sprintf( 
-                                    __( 
-                                        'When enabled this setting will hide the arrows on screen widths equal to or greater than %spx.', 
-                                        'ml-slider'
-                                    ), 
-                                    $breakpoints['desktop'] 
-                                )
-                            ),
-                        )
-                    ),
-                    'mobileNavigation' => array(
-                        'priority' => 2,
-                        'type' => 'mobile',
-                        'label' => __("Hide Navigation On", "ml-slider"),
-                        'options' => array(
-                            'smartphone' => array(
-                                'checked' => $this->slider->get_setting('mobileNavigation_smartphone') == 'true' ? 'checked' : '',
-                                'helptext' => sprintf( 
-                                    __( 
-                                        'When enabled this setting will hide the navigation on screen widths less than %spx.', 
-                                        'ml-slider'
-                                    ), 
-                                    $breakpoints['tablet'] 
-                                )
-                            ),
-                            'tablet' => array(
-                                'checked' => $this->slider->get_setting('mobileNavigation_tablet') == 'true' ? 'checked' : '',
-                                'helptext' => sprintf( 
-                                    __( 
-                                        'When enabled this setting will hide the navigation on screen widths of %1$spx to %2$spx.', 
-                                        'ml-slider'
-                                    ), 
-                                    $breakpoints['tablet'],
-                                    $breakpoints['laptop'] - 1
-                                )
-                            ),
-                            'laptop' => array(
-                                'checked' => $this->slider->get_setting('mobileNavigation_laptop') == 'true' ? 'checked' : '',
-                                'helptext' => sprintf( 
-                                    __( 
-                                        'When enabled this setting will hide the navigation on screen widths of %1$spx to %2$spx.', 
-                                        'ml-slider'
-                                    ), 
-                                    $breakpoints['laptop'],
-                                    $breakpoints['desktop'] - 1
-                                )
-                            ),
-                            'desktop' => array(
-                                'checked' => $this->slider->get_setting('mobileNavigation_desktop') == 'true' ? 'checked' : '',
-                                'helptext' => sprintf( 
-                                    __( 
-                                        'When enabled this setting will hide the navigation on screen widths equal to or greater than %spx.', 
-                                        'ml-slider'
-                                    ), 
-                                    $breakpoints['desktop'] 
-                                )
-                            ),
-                        )
-                    ),
-                    'mobileSlideshow' => array(
-                        'priority' => 3,
-                        'type' => 'mobile',
-                        'label' => __("Hide Slideshow On", "ml-slider"),
-                        'options' => array(
-                            'smartphone' => array(
-                                'checked' => $this->slider->get_setting('mobileSlideshow_smartphone') == 'true' ? 'checked' : '',
-                                'helptext' => sprintf( 
-                                    __( 
-                                        'When enabled this setting will hide the slideshow on screen widths less than %spx.', 
-                                        'ml-slider'
-                                    ), 
-                                    $breakpoints['tablet'] 
-                                )
-                            ),
-                            'tablet' => array(
-                                'checked' => $this->slider->get_setting('mobileSlideshow_tablet') == 'true' ? 'checked' : '',
-                                'helptext' => sprintf( 
-                                    __( 
-                                        'When enabled this setting will hide the slideshow on screen widths of %1$spx to %2$spx.', 
-                                        'ml-slider'
-                                    ), 
-                                    $breakpoints['tablet'],
-                                    $breakpoints['laptop'] - 1
-                                )
-                            ),
-                            'laptop' => array(
-                                'checked' => $this->slider->get_setting('mobileSlideshow_laptop') == 'true' ? 'checked' : '',
-                                'helptext' => sprintf( 
-                                    __( 
-                                        'When enabled this setting will hide the slideshow on screen widths of %1$spx to %2$spx.', 
-                                        'ml-slider'
-                                    ), 
-                                    $breakpoints['laptop'],
-                                    $breakpoints['desktop'] - 1
-                                )
-                            ),
-                            'desktop' => array(
-                                'checked' => $this->slider->get_setting('mobileSlideshow_desktop') == 'true' ? 'checked' : '',
-                                'helptext' => sprintf( 
-                                    __( 
-                                        'When enabled this setting will hide the slideshow on screen widths equal to or greater than %spx.', 
-                                        'ml-slider'
-                                    ), 
-                                    $breakpoints['desktop'] 
-                                )
-                            ),
-                        )
-                    ),
-                );
-
-                $aFields = apply_filters('metaslider_mobile_settings', $aFields, $this->slider);
-                
-                // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-                echo $this->build_settings_rows($aFields);
-                ?>
-            </table>
-        </div>
-    <?php 
-    }
-    ?>
     <div class="ms-settings-box advancedOptions ms-off">
         <div class="ms-highlight highlight">
             <?php esc_html_e( 'Advanced Options', 'ml-slider' ) ?>
@@ -1039,6 +1046,12 @@ echo $this->build_settings_rows($aFields);
                         'oldest' => array(
                             'label' => __("Oldest First", "ml-slider")
                         ),
+                        'atoz' => array(
+                            'label' => __("A to Z (by filename)", "ml-slider")
+                        ),
+                        'ztoa' => array(
+                            'label' => __("Z to A (by filename)", "ml-slider")
+                        ),
                         'false' => array(
                             'label' => __("Drag-and-drop", "ml-slider")
                         ),
@@ -1185,6 +1198,17 @@ echo $this->build_settings_rows($aFields);
                         "This feature can speed up your site. MetaSlider will only load slides when they are required by your slideshow.",
                         "ml-slider"
                     )
+                ),
+                'lightbox' => array(
+                    'priority' => 92,
+                    'type' => 'checkbox',
+                    'label' => __('Open in lightbox?', 'ml-slider'),
+                    'after' => '',
+                    'class' => 'flex',
+                    'checked' => '',
+                    'helptext' => __("All slides will open in a lightbox, using MetaSlider Lightbox", "ml-slider"),
+                    'addon_required' => true,
+                    'after' => metaslider_install_lightbox_small_btn()
                 ),
             );
 

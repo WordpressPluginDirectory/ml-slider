@@ -62,6 +62,8 @@ function metaslider_plugin_data( $slug = 'ml-slider', $data = 'path' )
         return get_option( 'metaslider_plugin_' . $data );
     } elseif ( $slug == 'ml-slider-pro' ) {
         return get_option( 'metaslider_pro_plugin_' . $data );
+    } elseif ( $slug == 'ml-slider-lightbox' ) {
+        return get_option( 'metaslider_lightbox_plugin_' . $data );
     }
 
     return false;
@@ -380,6 +382,10 @@ function metaslider_image_cropped_size( $side, $settings )
  */
 function metaslider_global_settings()
 {
+    if (is_multisite() && $settings = get_site_option('metaslider_global_settings')) {
+        return $settings;
+    }
+
     if ($settings = get_option('metaslider_global_settings')) {
         return $settings;
     }
@@ -404,6 +410,27 @@ function metaslider_upgrade_pro_small_btn($text = '')
     
     $link = 'https://www.metaslider.com/upgrade?utm_source=lite&utm_medium=banner&utm_campaign=pro';
     return '<a class="dashicons dashicons-lock is-pro-setting tipsy-tooltip-top" original-title="' . 
+        esc_attr( $text ) . '" href="' . 
+        esc_url( $link ) . '" target="_blank"></a>';
+}
+
+/**
+ * Install Lightbox plugin small button
+ * 
+ * @since 3.104
+ * 
+ * @param string $text Optional tooltip text
+ * 
+ * @return html
+ */
+function metaslider_install_lightbox_small_btn($text = '')
+{
+    if (empty($text)) {
+        $text = __( 'This feature is available with MetaSlider Lightbox', 'ml-slider' );
+    }
+    
+    $link = 'https://wordpress.org/plugins/ml-slider-lightbox/';
+    return '<a class="dashicons dashicons-external is-free-setting tipsy-tooltip-top" original-title="' . 
         esc_attr( $text ) . '" href="' . 
         esc_url( $link ) . '" target="_blank"></a>';
 }
@@ -494,4 +521,46 @@ function metaslider_filter_unsafe_html( $content, $slide, $slider_id, $settings 
     }
 
     return $content;
+}
+
+/**
+ * Get device breakpoints
+ * 
+ * @since 3.104
+ * 
+ * @return array
+ */
+function metaslider_breakpoints()
+{
+    $slideshow_defaults = '';
+    $smartphone = 480;
+    $tablet = 768;
+    $laptop = 1024;
+    $desktop = 1440;
+
+    if (is_multisite() && $settings = get_site_option('metaslider_default_settings')) {
+        $slideshow_defaults = $settings;
+    }
+    if ($settings = get_option('metaslider_default_settings')) {
+        $slideshow_defaults = $settings;
+    }
+
+    if (! empty( $slideshow_defaults )) {
+        if(isset($slideshow_defaults['smartphone'])) {
+            $smartphone = $slideshow_defaults['smartphone'];
+        }
+        if(isset($slideshow_defaults['tablet'])) {
+            $tablet = $slideshow_defaults['tablet'];
+        }
+        if(isset($slideshow_defaults['laptop'])) {
+            $laptop = $slideshow_defaults['laptop'];
+        }
+        if(isset($slideshow_defaults['desktop'])) {
+            $desktop = $slideshow_defaults['desktop'];
+        }
+    }
+
+    $breakpoints = array($smartphone, $tablet, $laptop, $desktop);
+
+    return $breakpoints;
 }

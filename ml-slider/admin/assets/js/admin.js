@@ -1485,7 +1485,7 @@ window.jQuery(function ($) {
             }
         });
         // Patch to make sure disabled attribute remains for some checkboxes
-        $('.disabled-checkbox').each(function() {
+        $('.disabled-checkbox, .disabled-text').each(function() {
             $(this).attr('disabled', true);
         });
         $('.ms-loading-settings').remove();

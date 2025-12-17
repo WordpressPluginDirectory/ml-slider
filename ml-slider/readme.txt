@@ -2,9 +2,9 @@
 Contributors: andergmartins, htmgarcia, publishpress, stevejburge, rochdesigns
 Tags: slider, video slider, image slider, carousel slider, gallery
 Requires at least: 5.0
-Stable tag: 3.103.0
+Stable tag: 3.104.0
 Requires PHP: 7.0
-Tested up to: 6.8
+Tested up to: 6.9
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -319,6 +319,24 @@ Yes, you can build Elementor slides and Beaver Builder slideshows. You can creat
 
 The format is based on [Keep a Changelog recommendations](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
+
+= [3.104.0] - Dec 16, 2025 =
+
+* ADDED: Underline, strikethrough, removeformat and line height options to caption, #1911;
+* ADDED: Promote MetaSlider Lightbox, #1906;
+* ADDED: aria-label to Play/pause, #1915;
+* ADDED: Alphabetical as an option for "Slide Order", #1751;
+* FIXED: If container is enabled, move max-width to container div, #1914;
+* FIXED: metaslider_global_settings() is missing check for multisite, #1923;
+* FIXED: sprintf is not defined, #1919;
+* FIXED: Loop Carousel Continuously breaks preview, #1918;
+* FIXED: Responsive for multi column layout options in settings page, #1902;
+* FIXED: When user interacts (Next/Prev, focus, swipe): switch to aria-live="polite", #1916;
+* CHANGED: Italian, Spanish and French translation updates, #1905;
+* CHANGED: Description for Device settings, #1907;
+* CHANGED: New location for device options, #1616;
+* CHANGED: Use metaslider_global_settings() always, #1924;
+* REMOVED: The privacy notice, #1926;
 
 = [3.103.0] - Nov 20, 2025 =
 

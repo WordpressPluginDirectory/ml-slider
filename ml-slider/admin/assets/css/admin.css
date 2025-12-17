@@ -244,6 +244,7 @@ eventually be removed/refactored */
 }
 .metaslider .ms-switch-button label input[disabled] + span {
     cursor: not-allowed;
+    opacity: 0.5;
 }
 .metaslider .ms-switch-button label span {
     position: absolute;
@@ -333,6 +334,11 @@ eventually be removed/refactored */
 .metaslider .left table tr.slide input.url {
     width: 100%;
     min-width: 200px;
+}
+
+.metaslider .left table tr.slide input[type="text"].video_url,
+.metaslider .left table tr.slide input[type="text"].track_url {
+    border-radius: 0;
 }
 
 .branch-3-5 .metaslider .left table tr.slide .tabs-content .new_window,
@@ -1643,7 +1649,7 @@ input.no_last_pass {
 #slideshows-list {
     margin: 10px;
 }
-.metaslider [class*="tipsy-tooltip"].dashicons:not(.is-pro-setting) {
+.metaslider [class*="tipsy-tooltip"].dashicons:not(.is-pro-setting):not(.is-free-setting) {
 	opacity: 0.5;
 	font-size: 1rem;
 	line-height: 30px;
@@ -1776,30 +1782,15 @@ input.no_last_pass {
 }
 
 /* Settngs & Help Page */
-#mobile-settings button,
-#dashboard-settings button {
+.ms-settings-row > .ms-settings-col:not(:last-child) button {
 	display: none !important;
-}
-#mobile-settings div.col:last-child button,
-#dashboard-settings div.col:last-child button {
-	display: inline-block !important;
-}
-#mobile-settings .row,
-#dashboard-settings .row {
-	display: flex;
-}
-#mobile-settings .col,
-#dashboard-settings .col {
-	display: flex;
-	flex-direction: row;
-	align-items: flex-start;
 }
 #mobile-settings .dashicons {
 	color: #606060;
 	font-size: 35px;
-	height: 35px;
+	height: 30px;
 	padding: 0;
-	width: 45px;
+	width: 30px;
 }
 #mobile-settings form input {
 	width: 60px !important;
@@ -2182,20 +2173,35 @@ td .dot.available {
 	display: none;
 }
 
-.metaslider .is-pro-setting {
+.metaslider .is-pro-setting,
+.metaslider .is-free-setting {
     width: 30px;
     opacity: 1;
-    color: #333;
     font-size: 1rem;
     line-height: 1.2rem;
 }
 
-.metaslider .ms-settings-table .is-pro-setting {
+.metaslider .is-pro-setting {
+    color: #333;
+}
+
+.metaslider .is-free-setting {
+    color: #fff;
+}
+
+.metaslider .ms-settings-table .is-pro-setting,
+.metaslider .ms-settings-table .is-free-setting {
     font-size: 1rem;
 	line-height: 30px;
 }
 
-.metaslider .ms-settings-table .checkbox .is-pro-setting {
+.metaslider .ms-settings-table tr.number .is-pro-setting,
+.metaslider .ms-settings-table tr.number .is-free-setting {
+	line-height: 20px;
+}
+
+.metaslider .ms-settings-table .checkbox .is-pro-setting,
+.metaslider .ms-settings-table .checkbox .is-free-setting {
 	line-height: 22px;
 }
 
@@ -2203,14 +2209,27 @@ td .dot.available {
     color: #333;
 }
 
-.metaslider .is-pro-setting:focus {
+.metaslider .is-free-setting:hover {
+    color: #fff;
+}
+
+.metaslider .is-pro-setting:focus,
+.metaslider .is-free-setting:focus {
     box-shadow: none;
+}
+
+.metaslider .is-pro-setting:before,
+.metaslider .is-free-setting:before {
+    padding: 4px;
+    border-radius: 50%;
 }
 
 .metaslider .is-pro-setting:before {
     background: #feb123;
-    padding: 4px;
-    border-radius: 50%;
+}
+
+.metaslider .is-free-setting:before {
+    background: #007cba;
 }
 
 .metaslider-ui .metaslider-slides-container .slide.slide-is-hidden td > *:not(.metaslider-ui-controls) {
