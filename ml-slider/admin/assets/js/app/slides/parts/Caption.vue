@@ -85,6 +85,7 @@ export default {
 	created() {
         this.selectedSource = this.captionSource ? this.captionSource : 'override'
         // Check if URL contains metaslider_add_sample_slides=withcaption
+        // metaslider_add_sample_slides param is deprecated since 3.106 - We use the native import for the quickstart
         const urlParams = new URLSearchParams(window.location.search);
         const sampleSlides = urlParams.get('metaslider_add_sample_slides');
 		

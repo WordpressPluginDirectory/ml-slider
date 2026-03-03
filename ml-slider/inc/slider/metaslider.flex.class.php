@@ -41,6 +41,7 @@ class MetaFlexSlider extends MetaSlider
         add_filter('metaslider_flex_slider_parameters', array( $this, 'loading_status' ), 10, 3);
         add_filter('metaslider_flex_slider_parameters', array( $this, 'lazy_load' ), 10, 3);
         add_filter('metaslider_flex_slider_parameters', array($this, 'fix_touch_swipe'), 10, 3);
+        add_filter('metaslider_flex_slider_parameters', array($this, 'force_full_width'), 10, 3);
 
         if(metaslider_pro_is_active() == false) {
             add_filter('metaslider_flex_slider_parameters', array( $this, 'metaslider_flex_loop'), 99, 3);
@@ -240,17 +241,21 @@ class MetaFlexSlider extends MetaSlider
                 $double = $slides * 2;
                 $animationtime = ($settings['animationSpeed'] * $slides) + ($settings['delay'] * $slides);
                 $transform_width = $margin + $settings["width"];
+                $reverse = ( isset( $settings['reverse'] ) && $settings['reverse'] == 'true' ) ? true : false;
+                $start_position = $reverse ? "calc(var(--ms-slide-width) * -" . $slides . ")" : "0";
+                $end_position = $reverse ? "0" : "calc(var(--ms-slide-width) * -" . $slides . ")";
+
                 $css .= "
                     :root {
                         --ms-slide-width: {$transform_width}px;
                     }
                     @keyframes infiniteloop_" . $slider_id . " {
                         0% {
-                            transform: translateX(0);
+                            transform: translateX({$start_position});
                             visibility: visible;
                         }
                         100% {
-                            transform: translateX(calc(var(--ms-slide-width) * -" . $slides . "));
+                            transform: translateX({$end_position});
                             visibility: visible;
                         }
                     }
@@ -1068,6 +1073,77 @@ class MetaFlexSlider extends MetaSlider
         }
 
         remove_filter( 'metaslider_flex_slider_parameters', array( $this, 'modify_carousel_css' ) );
+        return $options;
+    }
+
+    /**
+     * Force actual full width
+     * 
+     * @since 3.105
+     */
+    public function force_full_width( $options, $slider_id, $settings )
+    {
+        if ( $this->get_setting('fullWidth') == 'true' 
+            && $this->get_setting('forceFullWidth') == 'true'
+        ) {
+            $center = $this->get_setting('center') === 'true' ? true : false;
+            $fullWidthTarget = sanitize_text_field( $this->get_setting('fullWidthTarget') ) ?? 'body';
+
+            $options['init'] = isset( $options['init'] ) ? $options['init'] : array();
+            $options['init'] = array_merge( $options['init'], array(
+                "var ms_target_width = function() {
+                    return $('{$fullWidthTarget}').width();
+                };
+
+                var ms_full_width_slideshow = function() {
+                    var has_container = $('#metaslider_container_box_{$slider_id}').length ? true : false;
+
+                    if (has_container) {
+                        var left_edge = $('#metaslider_container_box_{$slider_id}').parent().offset().left;
+
+                        $('#metaslider_container_box_{$slider_id}').css({
+                            'max-width': '',
+                            width: ms_target_width() + 'px',
+                            transform: 'translate(-' + left_edge + 'px)'
+                        });
+                    } else {
+                        var parent = $('#metaslider-id-{$slider_id}').parent();
+                        var left_edge = parent.offset().left;
+                        
+                        var padding_left = parseFloat(parent.css('padding-left'));
+                        var padding_right = parseFloat(parent.css('padding-right'));
+
+                        if (left_edge > 0) {
+                             $('#metaslider-id-{$slider_id}').css({
+                                'max-width': '',
+                                " . ( $center ? "'max-width'" : "width" ) . ": ms_target_width() + 'px',
+                                " . ( ! $center ? "transform: 'translate(-' + left_edge + 'px)'" : "" ) . "
+                            });
+                        } else {
+                            $('#metaslider-id-{$slider_id}').attr(
+                                'style',
+                                'margin-right:' + (- padding_right - padding_left) + 'px !important'
+                            );
+                            $('#metaslider-id-{$slider_id}').css({
+                                width: '',
+                                'max-width': ms_target_width() + 'px',
+                                transform: 'translate(-' + padding_left + 'px)'
+                            });
+                        }
+                    }
+                };
+                
+                ms_full_width_slideshow();
+                setTimeout(function() {
+                    $(window).trigger('resize');
+                }, 200);
+                $(window).on('resize', function() {
+                    ms_full_width_slideshow();
+                });"
+            ) );
+        }
+
+        remove_filter( 'metaslider_flex_slider_parameters', array( $this, 'force_full_width' ) );
         return $options;
     }
 }

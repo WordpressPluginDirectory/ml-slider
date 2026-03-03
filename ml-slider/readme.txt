@@ -2,7 +2,7 @@
 Contributors: andergmartins, htmgarcia, publishpress, stevejburge, rochdesigns
 Tags: slider, video slider, image slider, carousel slider, gallery
 Requires at least: 5.0
-Stable tag: 3.104.0
+Stable tag: 3.106.0
 Requires PHP: 7.0
 Tested up to: 6.9
 License: GPLv2 or later
@@ -319,6 +319,39 @@ Yes, you can build Elementor slides and Beaver Builder slideshows. You can creat
 
 The format is based on [Keep a Changelog recommendations](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
+
+= [3.106.0] - Mar 02, 2026 =
+
+* ADDED: Pro ad to "Add CSS" buton, #1970;
+* FIXED: Precognition theme's navigation in mobile, #1997;
+* FIXED: Disjoint theme's navigation in mobile, #1996;
+* FIXED: Preview, #1998;
+* CHANGED: New quickstart page, #1896, #1981, #1982, #1983, #1984, #1986, #1987, #1988, #1990, #1993, #1999, #2002, #2005, #2006, #2009, #2010, #2013, #2014, #2016, #2018, #2020, #2022, #2024, #2027, #2018, #2019, #2032, #2034, #2035, #2036, #2041, #2050;
+* CHANGED: Italian, Spanish and French translation updates, #1973;
+* CHANGED: Small text correction for theme recommendation, #1979;
+* CHANGED: Legacy quickstart uses the same new quickstart approach, #2043;
+
+= [3.105.0] - Jan 27, 2026 =
+
+* ADDED: Full width options, #1686;
+* ADDED: Make a new "Lightbox" panel in the right sidebar, #1938, #1959;
+* ADDED: Folder slide type landing page, #1949;
+* ADDED: Install/activate MetaSlider Ligthtbox on click, #1957;
+* ADDED: Pro labels to slide types landing pages, #1930;
+* ADDED: Color to the Upgrade menu link, #1958;
+* FIXED: Detect non valid id in slideshow edit screen, #1697;
+* FIXED: Hide "Slide Direction" when Carousel mode is enabled, #1703;
+* FIXED: Visual indicator when hidding elements for device options, #1921;
+* FIXED: "Loop Carousel Continuously" doesn't work with "Reverse", #1940;
+* FIXED: Blend Theme: Links/Buttons on Caption not entirely clickable, #1727;
+* FIXED: Hide center align when carousel mode is enabled, #1743;
+* CHANGED: Some panels start open and others don't, #1952;
+* CHANGED: Slides to Advance text, #1953;
+* CHANGED: Italian, Spanish and French translation updates, #1843;
+* CHANGED: Upgrade add-on for Theme editor vs Pro themes, #1716;
+* CHANGED: Reorder slide types and add free label, #1943;
+* CHANGED: Update tooltip text for link url, #1741;
+* CHANGED: Update legacy libraries text, #1649;
 
 = [3.104.0] - Dec 16, 2025 =
 

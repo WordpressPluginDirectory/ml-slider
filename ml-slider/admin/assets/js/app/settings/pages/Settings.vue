@@ -116,7 +116,7 @@
 				<template slot="description">{{ __('This setting allows you to disable the legacy slideshow libraries: Nivo Slider, Coin Slider, and Responsive Slides', 'ml-slider') }}</template>
 				<template slot="legacy-notices" v-if="legacySlideshows === 0">
 					<div class="notice notice-success ml-legacy-notice">
-                    	<p>{{ __('You can safely enable this setting. None of your slideshows use the legacy libraries.', 'ml-slider') }}</p>
+                    	<p>{{ __('We recommend disabling these libraries. You can safely disable the libraries. None of your slideshows use the legacy libraries.', 'ml-slider') }}</p>
 					</div>
                 </template>
 				<template slot="legacy-notices" v-if="legacySlideshows !== 0">

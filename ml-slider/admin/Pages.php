@@ -163,7 +163,6 @@ class MetaSlider_Admin_Pages extends MetaSliderPlugin
                 && $global_settings['newSlideOrder'] === 'first' 
                 ? esc_html( $global_settings['newSlideOrder'] ) : 'last',
             'tinymce' => array(), // Just initialize to add values later through JS files
-            'quickstart_slugs' => $this->quickstart_slugs(),
             'breakpoints' => $breakpoints,
             'tone' => esc_html__( 'Tone', 'ml-slider' ),
             'opacity' => esc_html__( 'Opacity', 'ml-slider' ),

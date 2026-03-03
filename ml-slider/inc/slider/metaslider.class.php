@@ -152,6 +152,8 @@ class MetaSlider
             'thumb_min_width' => 100,
             'thumb_layout' => 'grid',
             'fullWidth' => true,
+            'forceFullWidth' => false,
+            'fullWidthTarget' => 'body',
             'noConflict' => true,
             'mobileArrows_smartphone' => false,
             'mobileArrows_tablet' => false,

@@ -164,7 +164,7 @@ echo $this->build_settings_rows($aFields);
                     ),
                     'after' => metaslider_upgrade_pro_small_btn()
                 ),
-                'fullWidth' => array(
+                'fullWidth' => array( // Don't target 'fullWidth' to show/hide with 'dependencies' array key
                     'priority' => 70,
                     'type' => 'checkbox',
                     'label' => esc_html__("100% Width", "ml-slider"),
@@ -174,6 +174,45 @@ echo $this->build_settings_rows($aFields);
                     ) == 'true' ? 'checked' : '',
                     'helptext' => esc_html__(
                         'If the space for the slideshow is larger than the "Width" setting, the slideshow output will expand to fill all of that space.',
+                        "ml-slider"
+                    )
+                ),
+                'forceFullWidth' => array( // Don't target 'forceFullWidth' to show/hide with 'dependencies' array key
+                    'priority' => 71,
+                    'type' => 'checkbox',
+                    'label' => esc_html__("Adjust Width to Target Element", "ml-slider"),
+                    'class' => 'option flex',
+                    'checked' => $this->slider->get_setting(
+                        'forceFullWidth'
+                    ) == 'true' ? 'checked' : '',
+                    'helptext' => esc_html__(
+                        'This will force the slideshow to use the full width of the target CSS element (Beta). Result may vary from theme to theme.',
+                        "ml-slider"
+                    )
+                ),
+                'fullWidthTarget' => array( // Don't target 'fullWidthTarget' to show/hide with 'dependencies' array key
+                    'priority' => 72,
+                    'type' => 'text',
+                    'label' => esc_html__("Target Element", "ml-slider"),
+                    'class' => 'option flex',
+                    'helptext' => esc_html__(
+                        "The slideshow will use the full width of this target element (Beta). If the target element is not 'body', you may need to enable 'Center Align'.",
+                        "ml-slider"
+                    ),
+                    'value' => $this->slider->get_setting(
+                        'fullWidthTarget'
+                    ) == 'false' ? '' : $this->slider->get_setting('fullWidthTarget')
+                ),
+                'center' => array(
+                    'priority' => 74,
+                    'type' => 'checkbox',
+                    'label' => esc_html__("Center Align", "ml-slider"),
+                    'class' => 'option coin flex nivo responsive',
+                    'checked' => $this->slider->get_setting(
+                        'center'
+                    ) == 'true' ? 'checked' : '',
+                    'helptext' => esc_html__(
+                        "Center align the slideshow in the available space on your website.",
                         "ml-slider"
                     )
                 ),
@@ -287,7 +326,7 @@ echo $this->build_settings_rows($aFields);
                             )
                         ),
                         'mobileSlideshow' => array(
-                            'priority' => 71,
+                            'priority' => 68,
                             'type' => 'mobile',
                             'label' => __("Hide Slideshow On", "ml-slider"),
                             'options' => array(
@@ -364,7 +403,45 @@ echo $this->build_settings_rows($aFields);
             </tr>
         </table>
     </div>
-    <div class="ms-settings-box transitionOptions ms-on">
+    <div class="ms-settings-box lightboxOptions ms-on">
+        <div class="ms-highlight highlight">
+            <?php esc_html_e( 'Lightbox Options', 'ml-slider' ) ?>
+            <a href="#" class="ms-toggle-static">
+                <span class="dashicons"></span>
+            </a>
+        </div>
+        <table class="ms-settings-box-inner">
+            <?php
+            // Lightbox options
+            $aFields = array(
+                'lightbox' => array(
+                    'priority' => 5,
+                    'type' => 'checkbox',
+                    'label' => __('Open in lightbox?', 'ml-slider'),
+                    'after' => '',
+                    'class' => 'flex',
+                    'checked' => '',
+                    'helptext' => __("All slides will open in a lightbox, using MetaSlider Lightbox", "ml-slider"),
+                    'addon_required' => true
+                ),
+                'lightbox_ad' => array(
+                    'priority' => 10,
+                    'type' => 'html',
+                    'content' => metaslider_lightbox_ad(),
+                    'class' => 'flex',
+                    'id' => 'ms-lightbox-not-installed-notice',
+                    'visible' => true
+                ),
+            );
+
+            $aFields = apply_filters('metaslider_lightbox_settings', $aFields, $this->slider);
+            
+            // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+            echo $this->build_settings_rows($aFields);
+            ?>
+        </table>
+    </div>
+    <div class="ms-settings-box transitionOptions ms-off">
         <div class="ms-highlight">
             <?php esc_html_e( 'Transition Options', 'ml-slider' ) ?>
             <a href="#" class="ms-toggle-static">
@@ -679,7 +756,7 @@ echo $this->build_settings_rows($aFields);
             ?>
         </table>
     </div>
-    <div class="ms-settings-box carouselOptions ms-on">
+    <div class="ms-settings-box carouselOptions ms-off">
         <div class="ms-highlight">
             <?php esc_html_e( 'Carousel Options', 'ml-slider' ) ?>
             <a href="#" class="ms-toggle-static">
@@ -725,6 +802,14 @@ echo $this->build_settings_rows($aFields);
                         array(
                             'show' => 'navStep', // Show navStep
                             'when' => true // When carouselMode is true
+                        ),
+                        array(
+                            'show' => 'center', // Show center
+                            'when' => false // When carouselMode is false
+                        ),
+                        array(
+                            'show' => 'direction', // Show direction
+                            'when' => false // When carouselMode is false
                         )
                     )
                 ),
@@ -780,7 +865,7 @@ echo $this->build_settings_rows($aFields);
                     'max' => 1,
                     'step' => 1,
                     'value' => 1,
-                    'label' => esc_html__("Slides to Advance", "ml-slider"),
+                    'label' => esc_html__("Slides per Navigation Click", "ml-slider"),
                     'class' => 'flex disabled-text',
                     'helptext' => esc_html__(
                         "Number of slides to move when clicking next or previous.",
@@ -825,19 +910,6 @@ echo $this->build_settings_rows($aFields);
             <?php
             // Advanced options
             $aFields = array(
-                'center' => array(
-                    'priority' => 10,
-                    'type' => 'checkbox',
-                    'label' => esc_html__("Center Align", "ml-slider"),
-                    'class' => 'option coin flex nivo responsive',
-                    'checked' => $this->slider->get_setting(
-                        'center'
-                    ) == 'true' ? 'checked' : '',
-                    'helptext' => esc_html__(
-                        "Center align the slideshow in the available space on your website.",
-                        "ml-slider"
-                    )
-                ),
                 'autoPlay' => array( // Don't target 'autoPlay' to show/hide with 'dependencies' array key
                     'priority' => 20,
                     'type' => 'checkbox',
@@ -1198,18 +1270,7 @@ echo $this->build_settings_rows($aFields);
                         "This feature can speed up your site. MetaSlider will only load slides when they are required by your slideshow.",
                         "ml-slider"
                     )
-                ),
-                'lightbox' => array(
-                    'priority' => 92,
-                    'type' => 'checkbox',
-                    'label' => __('Open in lightbox?', 'ml-slider'),
-                    'after' => '',
-                    'class' => 'flex',
-                    'checked' => '',
-                    'helptext' => __("All slides will open in a lightbox, using MetaSlider Lightbox", "ml-slider"),
-                    'addon_required' => true,
-                    'after' => metaslider_install_lightbox_small_btn()
-                ),
+                )
             );
 
             $aFields = apply_filters('metaslider_advanced_settings', $aFields, $this->slider);
@@ -1402,7 +1463,7 @@ echo $this->build_settings_rows($aFields);
             ?>
         </table>
     </div>
-    <div class="ms-settings-box shortcodeOptions ms-on">
+    <div class="ms-settings-box shortcodeOptions ms-off">
         <div class="ms-highlight">
             <?php esc_html_e( 'Shortcode', 'ml-slider' ) ?>
             <a href="#" class="ms-toggle-static">

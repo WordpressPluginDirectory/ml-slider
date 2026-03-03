@@ -1115,6 +1115,8 @@ class MetaSlider_Api
     /**
      * Import theme images
      *
+     * @deprecated 3.106 - Use MetaSlider_Slideshows->import() instead
+     * 
      * @param object $request The request
      */
     public function import_images($request)
@@ -1165,8 +1167,8 @@ class MetaSlider_Api
                 $imageSlide->set_slide( $slide->slide_id );
 
                 $html_rows[] = array(
-                    'slide_id' => $slide->slide_id,
-                    'html' => $imageSlide->get_admin_slide()
+                    'slide_id' => $slide->slide_id
+                    //'html' => $imageSlide->get_admin_slide()
                 );
             }
         }
@@ -1185,6 +1187,7 @@ class MetaSlider_Api
      * Import others (aka Local videos, YouTube videos, Vimeo videos, etc.)
      *
      * @since 3.70
+     * @deprecated 3.106 - Use MetaSlider_Slideshows->import() instead
      * 
      * @param object $request The request
      */

@@ -397,15 +397,21 @@ function metaslider_global_settings()
  * Upgrade to pro small yellow button with lock icon
  * 
  * @since 3.101
+ * @since 3.106 - Added $tooltip param
  * 
- * @param string $text Optional tooltip text
+ * @param string $text  Optional tooltip text
+ * @param bool $tooltip If no tooltip is required, set as false
  * 
  * @return html
  */
-function metaslider_upgrade_pro_small_btn($text = '')
+function metaslider_upgrade_pro_small_btn( $text = '', $tooltip = true )
 {
     if (empty($text)) {
         $text = __( 'Some of these features are available in MetaSlider Pro', 'ml-slider' );
+    }
+
+    if ( ! $tooltip ) {
+        $text = '';
     }
     
     $link = 'https://www.metaslider.com/upgrade?utm_source=lite&utm_medium=banner&utm_campaign=pro';
@@ -418,6 +424,7 @@ function metaslider_upgrade_pro_small_btn($text = '')
  * Install Lightbox plugin small button
  * 
  * @since 3.104
+ * @deprecated 3.105
  * 
  * @param string $text Optional tooltip text
  * 
@@ -563,4 +570,44 @@ function metaslider_breakpoints()
     $breakpoints = array($smartphone, $tablet, $laptop, $desktop);
 
     return $breakpoints;
+}
+
+/**
+ * Lightbox plugin ad to install or activate the plugin
+ * 
+ * @since 3.105
+ * 
+ * @return html
+ */
+function metaslider_lightbox_ad()
+{
+    $path = metaslider_plugin_is_installed( 'ml-slider-lightbox' );
+
+    // Is installed but NOT active
+    if ( $path && ! class_exists( 'MetaSliderLightboxPlugin' ) ) {
+        $content = esc_html__( 'Activate MetaSlider Lightbox to show your slides in a lightbox window.', 'ml-slider' );
+        $text = esc_html__( 'Activate MetaSlider Lightbox', 'ml-slider' );
+        $link = wp_nonce_url(
+            sprintf(
+                self_admin_url( 'plugins.php?action=activate&plugin=%s' ), 
+                str_replace( '/', '%2F', $path )
+            ),
+            'activate-plugin_' . $path
+        );
+    } else {
+        // Is NOT installed
+        $content = esc_html__( 'Install MetaSlider Lightbox to show your slides in a lightbox window.', 'ml-slider' );
+        $text = esc_html__( 'Install MetaSlider Lightbox', 'ml-slider' );
+        $link = wp_nonce_url(
+            self_admin_url(
+                'update.php?action=install-plugin&plugin=ml-slider-lightbox&installing_metaslider_lightbox=true'
+            ),
+            'install-plugin_ml-slider-lightbox'
+        );
+    }
+
+    return '<div class="ms-ad-notice">' . 
+        $content . '<br>' . 
+        '<a href="' . esc_url( $link ) . '" target="_blank" class="ms-ad-button">' . 
+        $text . ' &rarr;</a></div>';
 }
