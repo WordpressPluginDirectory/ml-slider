@@ -2,9 +2,9 @@
 Contributors: andergmartins, htmgarcia, publishpress, stevejburge, rochdesigns
 Tags: slider, video slider, image slider, carousel slider, gallery
 Requires at least: 5.0
-Stable tag: 3.106.0
+Stable tag: 3.110.0
 Requires PHP: 7.0
-Tested up to: 6.9
+Tested up to: 7.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -303,6 +303,10 @@ This variety of options is why we love WordPress and why you do too. However, gi
 
 Yes, you can build Elementor slides and Beaver Builder slideshows. You can create Visual Composer sliders and Divi slideshows. No matter what page-builder plugin you use, MetaSlider will work for you whenever you need to build slide shows.
 
+= Where do I send security reports? = 
+
+You can email security@metaslider.com. You can also submit patches via Wordfence and Patchstack. Our Wordfence code is kznqwzcbuliukyojtqqkrzpmmrwmrbry.
+
 == Screenshots ==
 
 1. Image slides with MetaSlider
@@ -319,6 +323,81 @@ Yes, you can build Elementor slides and Beaver Builder slideshows. You can creat
 
 The format is based on [Keep a Changelog recommendations](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
+
+= [3.110.0] - Jun 11, 2026 =
+
+* ADDED: Translate MetaSlider into more languages, #2073, #2224;
+* ADDED: Left sidebar to drag-and-drop slides, #1348;
+* ADDED: Filter for themes in admin home screen, #2159;
+* ADDED: Make sure we have demos for each theme and filter by theme, #2160;
+* FIXED: Validate numeric slideshow settings before inline JS output, #2178;
+* FIXED: "Number of slides" doesn't match with the number of slides in edit screen, #2175;
+* FIXED: Avoid v-html for Unsplash profile metadata, #2179;
+* FIXED: Escape JS for full width target setting in frontend, #2182;
+* FIXED: Add SSRF and invalid file type validations on import, #2183;
+* FIXED: Sanitize and allow specific settings on save, #2184;
+* FIXED: postcss yarn warnings, #1204, #2200;
+* FIXED: Architekt theme: make navigation numbers bigger by default, #2208;
+* CHANGED: Update Axios to 1.17 and qs to 6.15.2, #2146;
+* CHANGED: Update readme file from WordPress.org, #2168;
+* CHANGED: Replace "lightbox" with "gallery" word, #2173;
+* CHANGED: Update the admin toolbar link, #2176;
+* CHANGED: Deprecate and remove call for switch_view method, #2180;
+* CHANGED: Update "Lightbox Options" tab for "Gallery", #2185;
+* CHANGED: Replace "Home" with "Slideshows", #2186;
+* CHANGED: Update the block name, #2177;
+* CHANGED: Make recommended theme options notice box dismissable, #2190;
+* CHANGED: Remove "MetaSlider" word from menu, #2195, #2197;
+* CHANGED: Italian, Spanish and French translation updates, #2199;
+
+= [3.109.0] - May 05, 2026 =
+
+* ADDED: Desktop view for preview, #2152;
+* ADDED: Filter and labels for Hero images in quickstart demos, #2153;
+* FIXED: Import error for quickstarts, #2114;
+* CHANGED: Axios to 1.15.2, #2112;
+* CHANGED: Italian, Spanish and French translation updates, #2151;
+* CHANGED: Plugin icons, #2154;
+* CHANGED: Plugin name to "MetaSlider Slideshow", #2155;
+* CHANGED: Update reference to MetaSlider Gallery plugin, #2156;
+
+= [3.108.0] - Apr 16, 2026 =
+
+* ADDED: Responsive preview options, #1802;
+* ADDED: Maximum carousel items settings, #1980;
+* ADDED: Cascade theme, #2091;
+* ADDED: Theme to Image carousel demo, #2137;
+* FIXED: Edit frontend links in multilingual sites are broken, #1946;
+* FIXED: MetaSlider block for apiVersion 3, #2123;
+* FIXED: Sanitize theme folder correctly, #2128;
+* FIXED: Productivity guide demo tags, #2131;
+* FIXED: Preview buttons and label improvements, #2132;
+* CHANGED: Make arrows vertical for Jenga theme, #2093;
+* CHANGED: Italian, Spanish and French translation updates, #2115, #2119;
+* CHANGED: Text change for max / min slides, #2142, #2138;
+
+= [3.107.0] - Mar 23, 2026 =
+
+* ADDED: Vertical slideshow quickstart demo, #2051;
+* ADDED: Hide captions based on screen sizes controls per slideshow, #2054;
+* ADDED: Loading bar to creating slideshow screen for quick start, #2057;
+* ADDED: More labels to quick start grid, #2058;
+* ADDED: Layer slides demos to quick start, #2060;
+* ADDED: Local video with captions demo to quick start, #2061;
+* ADDED: Title on Quick Start screen, #2098;
+* ADDED: Import slideshows: support for video captions (text track), #2101;
+* FIXED: Sanitize unserialized data on legacy import, #2094;
+* FIXED: Validate images and sanitize folder data from theme's manifest on legacy import, #2088;
+* FIXED: Custom width/height should be hidden, #2072;
+* FIXED: Don't use $type var due is reserved, #2076;
+* FIXED: Preview notice when sldieshow is empty is interrupted by automatic saving process, #2090;
+* FIXED: Quickstart: move vertical to animation type dropdown, #2100;
+* CHANGED: Update HTML Purifier to 4.19, #2078;
+* CHANGED: Axios to 1.13.5, #2095;
+* CHANGED: Webpack to 5.104.1, #2095;
+* CHANGED: Progress bar location, #2056;
+* CHANGED: Move image settings under "Images Options" panel, #2000, #2007;
+* CHANGED: Italian, Spanish and French translation updates, #2074;
 
 = [3.106.0] - Mar 02, 2026 =
 

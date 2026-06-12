@@ -325,6 +325,55 @@ echo $this->build_settings_rows($aFields);
                                 ),
                             )
                         ),
+                        'mobileCaption' => array(
+                            'priority' => 64,
+                            'type' => 'mobile',
+                            'label' => __("Hide Captions On", "ml-slider"),
+                            'options' => array(
+                                'smartphone' => array(
+                                    'checked' => $this->slider->get_setting('mobileCaption_smartphone') == 'true' ? 'checked' : '',
+                                    'helptext' => sprintf( 
+                                        __( 
+                                            'When enabled this setting will hide the captions on screen widths less than %spx.', 
+                                            'ml-slider'
+                                        ), 
+                                        $breakpoints['tablet'] 
+                                    )
+                                ),
+                                'tablet' => array(
+                                    'checked' => $this->slider->get_setting('mobileCaption_tablet') == 'true' ? 'checked' : '',
+                                    'helptext' => sprintf( 
+                                        __( 
+                                            'When enabled this setting will hide the captions on screen widths of %1$spx to %2$spx.', 
+                                            'ml-slider'
+                                        ), 
+                                        $breakpoints['tablet'],
+                                        $breakpoints['laptop'] - 1
+                                    )
+                                ),
+                                'laptop' => array(
+                                    'checked' => $this->slider->get_setting('mobileCaption_laptop') == 'true' ? 'checked' : '',
+                                    'helptext' => sprintf( 
+                                        __( 
+                                            'When enabled this setting will hide the captions on screen widths of %1$spx to %2$spx.', 
+                                            'ml-slider'
+                                        ), 
+                                        $breakpoints['laptop'],
+                                        $breakpoints['desktop'] - 1
+                                    )
+                                ),
+                                'desktop' => array(
+                                    'checked' => $this->slider->get_setting('mobileCaption_desktop') == 'true' ? 'checked' : '',
+                                    'helptext' => sprintf( 
+                                        __( 
+                                            'When enabled this setting will hide the captions on screen widths equal to or greater than %spx.', 
+                                            'ml-slider'
+                                        ), 
+                                        $breakpoints['desktop'] 
+                                    )
+                                ),
+                            )
+                        ),
                         'mobileSlideshow' => array(
                             'priority' => 68,
                             'type' => 'mobile',
@@ -405,7 +454,7 @@ echo $this->build_settings_rows($aFields);
     </div>
     <div class="ms-settings-box lightboxOptions ms-on">
         <div class="ms-highlight highlight">
-            <?php esc_html_e( 'Lightbox Options', 'ml-slider' ) ?>
+            <?php esc_html_e( 'Gallery Options', 'ml-slider' ) ?>
             <a href="#" class="ms-toggle-static">
                 <span class="dashicons"></span>
             </a>
@@ -417,11 +466,11 @@ echo $this->build_settings_rows($aFields);
                 'lightbox' => array(
                     'priority' => 5,
                     'type' => 'checkbox',
-                    'label' => __('Open in lightbox?', 'ml-slider'),
+                    'label' => __('Open In Gallery', 'ml-slider'),
                     'after' => '',
                     'class' => 'flex',
                     'checked' => '',
-                    'helptext' => __("All slides will open in a lightbox, using MetaSlider Lightbox", "ml-slider"),
+                    'helptext' => __("All slides will open in a gallery, using MetaSlider Gallery", "ml-slider"),
                     'addon_required' => true
                 ),
                 'lightbox_ad' => array(
@@ -792,7 +841,11 @@ echo $this->build_settings_rows($aFields);
                             'when' => true
                         ),
                         array(
-                            'show' => 'minItems', // Show Carousel items
+                            'show' => 'minItems', // Show Min Carousel items
+                            'when' => true // When carouselMode is true
+                        ),
+                        array(
+                            'show' => 'maxItems', // Show Max Carousel items
                             'when' => true // When carouselMode is true
                         ),
                         array(
@@ -849,13 +902,29 @@ echo $this->build_settings_rows($aFields);
                     'max' => 99,
                     'step' => 1,
                     'value' => $this->slider->get_setting('minItems'),
-                    'label' => esc_html__("Carousel Items", "ml-slider"),
+                    'label' => esc_html__("Display Minimum", "ml-slider"),
                     'class' => 'flex',
                     'helptext' => esc_html__(
-                        "Minimum number of slides to be displayed at once in the carousel.",
+                        "Minimum number of slides to be displayed at the same time in the carousel.",
                         "ml-slider"
                     ),
-                    'after' => ''
+                    'after' => 'slides'
+                ),
+                'maxItems' => array(
+                    'priority' => 41,
+                    'type' => 'number',
+                    'size' => 3,
+                    'min' => 0,
+                    'max' => 99,
+                    'step' => 1,
+                    'value' => $this->slider->get_setting('maxItems'),
+                    'label' => esc_html__("Display Maximum", "ml-slider"),
+                    'class' => 'flex',
+                    'helptext' => esc_html__(
+                        "Maximum number of slides to be displayed at the same time in the carousel. Set to 0 to adjust automatically.",
+                        "ml-slider"
+                    ),
+                    'after' => 'slides'
                 ),
                 'navStep' => array(
                     'priority' => 45,
@@ -894,6 +963,121 @@ echo $this->build_settings_rows($aFields);
                 $this->slider
             );
 
+            // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+            echo $this->build_settings_rows($aFields);
+            ?>
+        </table>
+    </div>
+    <div class="ms-settings-box imagesOptions ms-off">
+        <div class="ms-highlight highlight">
+            <?php esc_html_e( 'Image Options', 'ml-slider' ) ?>
+            <a href="#" class="ms-toggle-static">
+                <span class="dashicons"></span>
+            </a>
+        </div>
+        <table class="ms-settings-box-inner">
+            <?php
+            // Images options
+            $aFields = array(
+                'smartCrop' => array( // Don't target 'smartCrop' to show/hide with 'dependencies' array key
+                    'priority' => 5,
+                    'type' => 'select',
+                    'label' => esc_html__("Image Crop", "ml-slider"),
+                    'class' => 'option coin flex nivo responsive',
+                    'value' => $this->slider->get_setting('smartCrop'),
+                    'options' => array(
+                        'true' => array(
+                            'label' => esc_html__(
+                                "Smart Crop",
+                                "ml-slider"
+                            ),
+                            'class' => ''
+                        ),
+                        'false' => array(
+                            'label' => esc_html__(
+                                "Standard",
+                                "ml-slider"
+                            ),
+                            'class' => ''
+                        ),
+                        'disabled' => array(
+                            'label' => esc_html__(
+                                "Disabled",
+                                "ml-slider"
+                            ),
+                            'class' => ''
+                        ),
+                        'disabled_pad' => array(
+                            'label' => esc_html__(
+                                "Disabled (Smart Pad)",
+                                "ml-slider"
+                            ),
+                            'class' => 'option flex'
+                        ),
+                    ),
+                    'helptext' => esc_html__(
+                        "Smart Crop ensures your responsive slides are cropped to a ratio that results in a consistent slideshow size.",
+                        "ml-slider"
+                    )
+                ),
+                'smartCropSource' => array( // Don't target 'smartCropSource' to show/hide with 'dependencies' array key
+                    'priority' => 10,
+                    'type' => 'select',
+                    'label' => __('Image Crop Source', 'ml-slider'),
+                    'class' => 'option flex inline-block',
+                    'value' => $this->slider->get_setting( 'smartCropSource' ),
+                    'options' => array(
+                        'slideshow' => array( 
+                            'label' => __('Slideshow width/height', 'ml-slider' ) 
+                        ),
+                        'image' => array( 
+                            'label' => __('Custom width/height (Pro)', 'ml-slider' ),
+                            'addon_required' => true
+                        )
+                    ),
+                    'helptext' => __(
+                        'By default, MetaSlider Slideshow will crop images using the main width and height of the slideshow. If you want smaller images, select Custom width/height and make sure the values are less than the main width and height.',
+                        'ml-slider'
+                    ),
+                    'after' => metaslider_upgrade_pro_small_btn()
+                ),
+                'cropMultiply' => array(
+                    'priority' => 15,
+                    'type' => 'select',
+                    'label' => __("Image Crop Size", "ml-slider"),
+                    'class' => 'option flex',
+                    'value' => $this->slider->get_setting('cropMultiply'),
+                    'options' => array(
+                        1 => array('label' => '1x'),
+                        2 => array('label' => '2x'),
+                        3 => array('label' => '3x'),
+                        4 => array('label' => '4x')
+                    ),
+                    'helptext' => __(
+                        "This will increase the size of the images in your slideshow. Larger images are higher quality. Smaller images load more quickly.",
+                        "ml-slider"
+                    ),
+                    'extra_attrs' => array(
+                        'data-value' => $this->slider->get_setting('cropMultiply')
+                    )
+                ),
+                'lazyLoad' => array( // Don't target 'lazyLoad' to show/hide with 'dependencies' array key
+                    'priority' => 20,
+                    'type' => 'checkbox',
+                    'label' => __("Lazy Load Images", "ml-slider"),
+                    'class' => 'option flex',
+                    'checked' => $this->slider->get_setting(
+                        'lazyLoad'
+                    ) == 'true' ? 'checked' : '',
+                    'helptext' => __(
+                        "This feature can speed up your site. MetaSlider Slideshow will only load slides when they are required by your slideshow.",
+                        "ml-slider"
+                    )
+                )
+            );
+
+            $aFields = apply_filters('metaslider_image_settings', $aFields, $this->slider);
+            
             // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
             echo $this->build_settings_rows($aFields);
             ?>
@@ -975,8 +1159,21 @@ echo $this->build_settings_rows($aFields);
                         'pauseText'
                     ) == 'false' ? '' : $this->slider->get_setting('pauseText')
                 ),
-                'hoverPause' => array(
+                'progressBar' => array( // Don't target 'progressBar' to show/hide with 'dependencies' array key
                     'priority' => 25,
+                    'type' => 'checkbox',
+                    'label' => esc_html__("Progress Bar", "ml-slider"),
+                    'class' => 'option flex',
+                    'checked' => $this->slider->get_setting(
+                        'progressBar'
+                    ) == 'true' ? 'checked' : '',
+                    'helptext' => esc_html__(
+                        "Displays a visual indicator showing the time left before the next slide.",
+                        "ml-slider"
+                    )
+                ),
+                'hoverPause' => array(
+                    'priority' => 26,
                     'type' => 'checkbox',
                     'label' => esc_html__("Hover Pause", "ml-slider"),
                     'class' => 'option coin flex nivo responsive',
@@ -989,7 +1186,7 @@ echo $this->build_settings_rows($aFields);
                     )
                 ),
                 'loop' => array(
-                    'priority' => 26,
+                    'priority' => 27,
                     'type' => 'select',
                     'label' => __("Loop", "ml-slider"),
                     'class' => 'option flex nivo',
@@ -999,97 +1196,6 @@ echo $this->build_settings_rows($aFields);
                         'continuously' => array('label' => __("Loop Endlessly", "ml-slider"), 'class' => ''),
                         'stopOnLast' => array('label' => __("Stop On Last Slide", "ml-slider"), 'class' => ''),
                         'stopOnFirst' => array('label' => __("Stop On First Slide After Looping", "ml-slider"), 'class' => ''),
-                    )
-                ),
-                'smartCrop' => array(
-                    'priority' => 30,
-                    'type' => 'select',
-                    'label' => esc_html__("Image Crop", "ml-slider"),
-                    'class' => 'option coin flex nivo responsive',
-                    'value' => $this->slider->get_setting('smartCrop'),
-                    'options' => array(
-                        'true' => array(
-                            'label' => esc_html__(
-                                "Smart Crop",
-                                "ml-slider"
-                            ),
-                            'class' => ''
-                        ),
-                        'false' => array(
-                            'label' => esc_html__(
-                                "Standard",
-                                "ml-slider"
-                            ),
-                            'class' => ''
-                        ),
-                        'disabled' => array(
-                            'label' => esc_html__(
-                                "Disabled",
-                                "ml-slider"
-                            ),
-                            'class' => ''
-                        ),
-                        'disabled_pad' => array(
-                            'label' => esc_html__(
-                                "Disabled (Smart Pad)",
-                                "ml-slider"
-                            ),
-                            'class' => 'option flex'
-                        ),
-                    ),
-                    'helptext' => esc_html__(
-                        "Smart Crop ensures your responsive slides are cropped to a ratio that results in a consistent slideshow size.",
-                        "ml-slider"
-                    ),
-                    'dependencies' => array(
-                        array(
-                            'show' => 'cropMultiply', // Show Image double size
-                            'when' => array( // When Image crop is 'true' or 'false'
-                                'true',
-                                'false'
-                            )
-                        )
-                    )
-                ),
-                'smartCropSource' => array(
-                    'priority' => 31,
-                    'type' => 'select',
-                    'label' => __('Image Crop Source', 'ml-slider'),
-                    'class' => 'option flex inline-block',
-                    'value' => $this->slider->get_setting( 'smartCropSource' ),
-                    'options' => array(
-                        'slideshow' => array( 
-                            'label' => __('Slideshow width/height', 'ml-slider' ) 
-                        ),
-                        'image' => array( 
-                            'label' => __('Custom width/height (Pro)', 'ml-slider' ),
-                            'addon_required' => true
-                        )
-                    ),
-                    'helptext' => __(
-                        'By default, MetaSlider will crop images using the main width and height of the slideshow. If you want smaller images, select Custom width/height and make sure the values are less than the main width and height.',
-                        'ml-slider'
-                    ),
-                    'after' => metaslider_upgrade_pro_small_btn()
-                ),
-                'cropMultiply' => array(
-                    'priority' => 34,
-                    'type' => 'select',
-                    'label' => __("Image Crop Size", "ml-slider"),
-                    'class' => 'option flex',
-                    'value' => $this->slider->get_setting('cropMultiply'),
-                    'options' => array(
-                        1 => array('label' => '1x'),
-                        2 => array('label' => '2x'),
-                        3 => array('label' => '3x'),
-                        4 => array('label' => '4x')
-                    ),
-                    'helptext' => __(
-                        "This will increase the size of the images in your slideshow. Larger images are higher quality. Smaller images load more quickly.",
-                        "ml-slider"
-                    ),
-                    'extra_attrs' => array(
-                        'data-value' => $this->slider->get_setting('cropMultiply')
                     )
                 ),
                 'smoothHeight' => array(
@@ -1146,19 +1252,6 @@ echo $this->build_settings_rows($aFields);
                     ) ? 'checked' : '',
                     'helptext' => esc_html__(
                         "Allow touch swipe navigation of the slider on touch-enabled devices.",
-                        "ml-slider"
-                    )
-                ),
-                'progressBar' => array( // Don't target 'progressBar' to show/hide with 'dependencies' array key
-                    'priority' => 84,
-                    'type' => 'checkbox',
-                    'label' => esc_html__("Progress Bar", "ml-slider"),
-                    'class' => 'option flex',
-                    'checked' => $this->slider->get_setting(
-                        'progressBar'
-                    ) == 'true' ? 'checked' : '',
-                    'helptext' => esc_html__(
-                        "Displays a visual indicator showing the time left before the next slide.",
                         "ml-slider"
                     )
                 ),
@@ -1257,19 +1350,6 @@ echo $this->build_settings_rows($aFields);
                         "ml-slider"
                     ),
                     'is_legacy' => true
-                ),
-                'lazyLoad' => array( // Don't target 'lazyLoad' to show/hide with 'dependencies' array key
-                    'priority' => 91,
-                    'type' => 'checkbox',
-                    'label' => __("Lazy Load Images", "ml-slider"),
-                    'class' => 'option flex',
-                    'checked' => $this->slider->get_setting(
-                        'lazyLoad'
-                    ) == 'true' ? 'checked' : '',
-                    'helptext' => __(
-                        "This feature can speed up your site. MetaSlider will only load slides when they are required by your slideshow.",
-                        "ml-slider"
-                    )
                 )
             );
 
@@ -1280,7 +1360,6 @@ echo $this->build_settings_rows($aFields);
             ?>
         </table>
     </div>
-
     <div class="ms-settings-box containerOptions ms-off">
         <div class="ms-highlight highlight">
             <?php esc_html_e( 'Container Options', 'ml-slider' ) ?>
@@ -1306,7 +1385,7 @@ echo $this->build_settings_rows($aFields);
                     ),
                     'addon_required' => true,
                     'after' => metaslider_upgrade_pro_small_btn(
-                        __( 'This feature is available in MetaSlider Pro', 'ml-slider' )
+                        __( 'This feature is available in MetaSlider Slideshow Pro', 'ml-slider' )
                     )
                 )
             );

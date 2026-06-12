@@ -141,6 +141,7 @@ class MetaSlider
             'carouselMode' => false,
             'carouselMargin' => 5,
             'minItems' => 2,
+            'maxItems' => 0,
             'forceHeight' => false,
             'firstSlideFadeIn' => false,
             'easing' => 'linear',
@@ -163,6 +164,10 @@ class MetaSlider
             'mobileNavigation_tablet' => false,
             'mobileNavigation_laptop' => false,
             'mobileNavigation_desktop' => false,
+            'mobileCaption_smartphone' => false,
+            'mobileCaption_tablet' => false,
+            'mobileCaption_laptop' => false,
+            'mobileCaption_desktop' => false,
             'mobileSlideshow_smartphone' => false,
             'mobileSlideshow_tablet' => false,
             'mobileSlideshow_laptop' => false,
@@ -267,8 +272,8 @@ class MetaSlider
             $type = get_post_meta($slide_id, 'ml-slider_type', true);
             $type = $type ? $type : 'image'; // backwards compatibility, fall back to 'image'
 
-            // Skip over deleted media files
-            if ('image' === $type && 'ml-slide' === get_post_type($slide_id) && !get_post_thumbnail_id($slide_id)) {
+            // Skip over deleted media files — on the frontend only; in admin, show them so they can be deleted
+            if ( ! is_admin() && 'image' === $type && 'ml-slide' === get_post_type($slide_id) && ! get_post_thumbnail_id($slide_id)) {
                 continue;
             }
 
@@ -410,7 +415,7 @@ class MetaSlider
 
         //add mobile settings class
         $devices = ['smartphone', 'tablet', 'laptop', 'desktop'];
-        $features = ['mobileSlideshow' => 'hide-slideshow', 'mobileArrows' => 'hide-arrows', 'mobileNavigation' => 'hide-navigation'];
+        $features = ['mobileSlideshow' => 'hide-slideshow', 'mobileArrows' => 'hide-arrows', 'mobileNavigation' => 'hide-navigation', 'mobileCaption' => 'hide-caption'];
         
         foreach ($features as $setting_prefix => $css_prefix) {
             foreach ($devices as $device) {
@@ -746,6 +751,9 @@ class MetaSlider
         $class .= ' .hide-navigation-' . $device . ' .flex-control-paging,';
         $class .= ' .hide-navigation-' . $device . ' .flex-control-nav,';
         $class .= ' .hide-navigation-' . $device . ' .filmstrip,';
+
+        // @since 3.107 - Hide caption
+        $class .= ' .hide-caption-' . $device . ' .caption-wrap,';
 
         //hide slideshow @since 3.97
         $class .= ' .hide-slideshow-' . $device . ',';

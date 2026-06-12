@@ -97,6 +97,7 @@ class MetaSlider_Slideshow_Settings
             'infiniteLoop' => false,
             'carouselMargin' => 5,
             'minItems' => 2,
+            'maxItems' => 0,
             'forceHeight' => false,
             'firstSlideFadeIn' => false,
             'easing' => 'linear',
@@ -119,6 +120,10 @@ class MetaSlider_Slideshow_Settings
             'mobileNavigation_tablet' => false,
             'mobileNavigation_laptop' => false,
             'mobileNavigation_desktop' => false,
+            'mobileCaption_smartphone' => false,
+            'mobileCaption_tablet' => false,
+            'mobileCaption_laptop' => false,
+            'mobileCaption_desktop' => false,
             'mobileSlideshow_smartphone' => false,
             'mobileSlideshow_tablet' => false,
             'mobileSlideshow_laptop' => false,
@@ -159,7 +164,7 @@ class MetaSlider_Slideshow_Settings
     public static function adjust_settings($settings)
     {
         // Convert submitted checkbox values from 'on' or 'off' to boolean values in string format (e.g. true becomes 'true')
-        $checkboxes = array('noConflict', 'fullWidth', 'forceFullWidth', 'hoverPause', 'reverse', 'printCss', 'printJs', 'smoothHeight', 'center', 'carouselMode', 'autoPlay', 'firstSlideFadeIn', 'responsive_thumbs', 'keyboard', 'touch', 'infiniteLoop',  'mobileArrows_smartphone', 'mobileArrows_tablet','mobileArrows_laptop', 'mobileArrows_desktop', 'mobileNavigation_smartphone', 'mobileNavigation_tablet', 'mobileNavigation_laptop', 'mobileNavigation_desktop', 'mobileSlideshow_smartphone', 'mobileSlideshow_tablet', 'mobileSlideshow_laptop', 'mobileSlideshow_desktop', 'ariaLive', 'tabIndex', 'pausePlay', 'showPlayText', 'ariaCurrent', 'progressBar', 'loading', 'lazyLoad', 'forceHeight', 'lightbox', 'container');
+        $checkboxes = array('noConflict', 'fullWidth', 'forceFullWidth', 'hoverPause', 'reverse', 'printCss', 'printJs', 'smoothHeight', 'center', 'carouselMode', 'autoPlay', 'firstSlideFadeIn', 'responsive_thumbs', 'keyboard', 'touch', 'infiniteLoop',  'mobileArrows_smartphone', 'mobileArrows_tablet','mobileArrows_laptop', 'mobileArrows_desktop', 'mobileNavigation_smartphone', 'mobileNavigation_tablet', 'mobileNavigation_laptop', 'mobileNavigation_desktop', 'mobileCaption_smartphone', 'mobileCaption_tablet', 'mobileCaption_laptop', 'mobileCaption_desktop', 'mobileSlideshow_smartphone', 'mobileSlideshow_tablet', 'mobileSlideshow_laptop', 'mobileSlideshow_desktop', 'ariaLive', 'tabIndex', 'pausePlay', 'showPlayText', 'ariaCurrent', 'progressBar', 'loading', 'lazyLoad', 'forceHeight', 'lightbox', 'container');
 
         foreach ($checkboxes as $checkbox) {
             $settings[$checkbox] = (isset($settings[$checkbox]) && 'on' == $settings[$checkbox]) ? 'true' : 'false';
@@ -169,7 +174,7 @@ class MetaSlider_Slideshow_Settings
          * Reason is these settings have true/false + string options, so is better to handle all as strings
          * Keep original value if is different to 'on' and 'off'. 
          * We include actual booleans in $map just in case. */
-        $dropdowns = array('effect', 'cropMultiply', 'direction', 'easing', 'links', 'navigation', 'smartCrop', 'random', 'loop', 'layer_scaling', 'navStep');
+        $dropdowns = array('effect', 'cropMultiply', 'direction', 'easing', 'links', 'navigation', 'smartCrop', 'random', 'loop', 'layer_scaling');
 
         foreach ($dropdowns as $dropdown) {
             if (isset($settings[$dropdown])) {
@@ -189,6 +194,50 @@ class MetaSlider_Slideshow_Settings
         foreach ($texts as $text) {
             if (isset($settings[$text])) {
                 $settings[$text] = sanitize_text_field($settings[$text]);
+            }
+        }
+
+        // width and height: integers or empty only
+        foreach ( array( 'width', 'height' ) as $key ) {
+            if ( isset( $settings[ $key ] ) && $settings[ $key ] !== '' ) {
+                if ( is_numeric( $settings[ $key ] ) ) {
+                    $settings[ $key ] = intval( $settings[ $key ] );
+                } else {
+                    unset( $settings[ $key ] );
+                }
+            }
+        }
+
+        // Sanitize integers
+        $integers = array(
+            'delay',
+            'animationSpeed',
+            'filmstrip_delay',
+            'filmstrip_animationSpeed',
+            'minItems',
+            'maxItems',
+            'navStep',
+            'imageWidth',
+            'imageHeight',
+            'containerPadding_top',
+            'containerPadding_bottom',
+            'containerPadding_left',
+            'containerPadding_right',
+            'containerMargin_top',
+            'containerMargin_bottom',
+            'thumb_width',
+            'thumb_height',
+            'thumb_min_width',
+            'carouselMargin'
+        );
+        
+        foreach ( $integers as $key ) {
+            if ( isset( $settings[ $key ] ) && $settings[ $key ] !== '' ) {
+                if ( is_numeric( $settings[ $key ] ) ) {
+                    $settings[ $key ] = intval( $settings[ $key ] );
+                } else {
+                    unset( $settings[ $key ] );
+                }
             }
         }
 

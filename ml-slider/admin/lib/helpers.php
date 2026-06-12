@@ -407,7 +407,7 @@ function metaslider_global_settings()
 function metaslider_upgrade_pro_small_btn( $text = '', $tooltip = true )
 {
     if (empty($text)) {
-        $text = __( 'Some of these features are available in MetaSlider Pro', 'ml-slider' );
+        $text = __( 'Some of these features are available in MetaSlider Slideshow Pro', 'ml-slider' );
     }
 
     if ( ! $tooltip ) {
@@ -433,7 +433,7 @@ function metaslider_upgrade_pro_small_btn( $text = '', $tooltip = true )
 function metaslider_install_lightbox_small_btn($text = '')
 {
     if (empty($text)) {
-        $text = __( 'This feature is available with MetaSlider Lightbox', 'ml-slider' );
+        $text = __( 'This feature is available with MetaSlider Gallery', 'ml-slider' );
     }
     
     $link = 'https://wordpress.org/plugins/ml-slider-lightbox/';
@@ -585,8 +585,8 @@ function metaslider_lightbox_ad()
 
     // Is installed but NOT active
     if ( $path && ! class_exists( 'MetaSliderLightboxPlugin' ) ) {
-        $content = esc_html__( 'Activate MetaSlider Lightbox to show your slides in a lightbox window.', 'ml-slider' );
-        $text = esc_html__( 'Activate MetaSlider Lightbox', 'ml-slider' );
+        $content = esc_html__( 'Activate MetaSlider Gallery to show your slides in a lightbox window.', 'ml-slider' );
+        $text = esc_html__( 'Activate MetaSlider Gallery', 'ml-slider' );
         $link = wp_nonce_url(
             sprintf(
                 self_admin_url( 'plugins.php?action=activate&plugin=%s' ), 
@@ -596,8 +596,8 @@ function metaslider_lightbox_ad()
         );
     } else {
         // Is NOT installed
-        $content = esc_html__( 'Install MetaSlider Lightbox to show your slides in a lightbox window.', 'ml-slider' );
-        $text = esc_html__( 'Install MetaSlider Lightbox', 'ml-slider' );
+        $content = esc_html__( 'Install MetaSlider Gallery to show your slides in a lightbox window.', 'ml-slider' );
+        $text = esc_html__( 'Install MetaSlider Gallery', 'ml-slider' );
         $link = wp_nonce_url(
             self_admin_url(
                 'update.php?action=install-plugin&plugin=ml-slider-lightbox&installing_metaslider_lightbox=true'

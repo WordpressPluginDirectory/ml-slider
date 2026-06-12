@@ -12,7 +12,7 @@
 		<div class="container h-full px-6">
 			<div class="flex items-center h-full -mx-4">
     			<a href="<?php echo esc_url(admin_url('admin.php?page=metaslider')); ?>" class="flex items-center h-full py-2 px-4 hidden sm:block">
-    				<img style="height:46px;width:auto;" class="mr-2 rtl:mr-0 rtl:ml-2" src="<?php echo esc_url(METASLIDER_ADMIN_URL); ?>images/metaslider_logo3.png" alt="MetaSlider">
+    				<img style="height:46px;width:auto;" class="mr-2 rtl:mr-0 rtl:ml-2" src="<?php echo esc_url(METASLIDER_ADMIN_URL); ?>images/metaslider_logo3.png" alt="MetaSlider Slideshow">
     			</a>
 				<?php if ($this->slider) : ?>
 				<div class="flex-grow h-full px-4">
@@ -32,7 +32,7 @@
 								<button
                                     @click.prevent="preview()"
                                     id="preview-slideshow"
-                                    title="<?php esc_attr_e('Save & open the preview', 'ml-slider'); echo esc_attr(_x(' (alt + p)', 'This is a keyboard shortcut.', 'ml-slider')); ?>" class="ms-toolbar-button tipsy-tooltip-bottom-toolbar"
+                                    title="<?php esc_attr_e('Save & open the preview', 'ml-slider'); echo esc_attr(_x(' (Use Alt + P keys)', 'This is a keyboard shortcut.', 'ml-slider')); ?>" class="ms-toolbar-button tipsy-tooltip-bottom-toolbar"
                                     :disabled="locked"
                                     :class="{'disabled': locked}">
                                     <svg
@@ -83,7 +83,7 @@
 
 								<!-- Pro only add css feature -->
 								<?php ob_start(); ?>
-								<button @click.prevent="showCSSManagerNotice()" title="<?php esc_attr_e('Adding custom CSS is a MetaSlider Pro feature. Click to learn more.', 'ml-slider'); ?>" class="ms-toolbar-button tipsy-tooltip-bottom-toolbar" :class="{'disabled':false}">
+								<button @click.prevent="showCSSManagerNotice()" title="<?php esc_attr_e('Adding custom CSS is a MetaSlider Slideshow Pro feature. Click to learn more.', 'ml-slider'); ?>" class="ms-toolbar-button tipsy-tooltip-bottom-toolbar" :class="{'disabled':false}">
                                     <?php 
                                     // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
                                     echo metaslider_upgrade_pro_small_btn( '', false ); 

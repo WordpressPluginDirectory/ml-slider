@@ -367,6 +367,33 @@ class MetaSlider_Slideshows
                         unset( $slides_export[$key]['meta'][ $meta_key ] );
                     }
                 }
+
+                // @since 3.107 - Include text track from Local video and External video
+                if ( $slide_type === 'local_video' 
+                    && ! empty( $slides_export[$key]['meta']['ml-slider_track'] ) 
+                ) {
+                    $track = $this->maybe_unserialize( $slides_export[$key]['meta']['ml-slider_track'] );
+
+                    if ( ! empty( $track['id'] ) ) {
+                        // Extract original text track id
+                        $track_id = $track['id'];
+
+                        // Assign text track id to a temporary key
+                        $track['original_id'] = $track_id;
+
+                        // Remove 'id' key - We'll add back on import
+                        unset( $track['id'] );
+
+                        $slides_export[$key]['meta']['ml-slider_track'] = maybe_serialize( $track );
+
+                        // Assign the text track URL to a temporary key
+                        $track_url = wp_get_attachment_url( absint( $track['original_id'] ) );
+                        
+                        if ( $track_url ) {
+                            $slides_export[$key]['track_url'] = $track_url;
+                        }
+                    }
+                }
             }
 
             $slideshow_export['slides'] = $slides_export;
@@ -489,11 +516,11 @@ class MetaSlider_Slideshows
 
                                 if ( is_wp_error( $attachment_id ) ) {
                                     // Log and collect the error
-                                    $error_message = sprintf(
-                                        __( 'Failed to import video from URL: %s. Error: %s', 'ml-slider' ),
-                                        esc_url( $slide[$export_key] ),
-                                        $attachment_id->get_error_message()
-                                    );
+                                    // To get technical error, print: $attachment_id->get_error_message()
+                                    $known = array( 'invalid_url', 'invalid_file_type', 'ssrf_blocked' );
+                                    $error_message = in_array( $attachment_id->get_error_code(), $known, true )
+                                        ? $attachment_id->get_error_message()
+                                        : sprintf( __( 'Failed to import video from URL: %s.', 'ml-slider' ), esc_url( $slide[$export_key] ) );
                                     array_push( $errors[$index], $error_message );
 
                                     // Continue to next slide instead of aborting all
@@ -502,6 +529,39 @@ class MetaSlider_Slideshows
                                 
                                 $slide['meta'][$meta_key] = $attachment_id;
                             }
+                        }
+                    }
+
+                    // @since 3.107 - Upload text track and get new attachment IDs
+                    if ( $slide_type === 'local_video' 
+                        && ! empty( $slide['track_url'] ) 
+                        && ! empty ( $slide['meta']['ml-slider_track'] ) 
+                    ) {
+                        $attachment_id = $this->import_file_to_media_library( sanitize_url( $slide['track_url'] ) );
+
+                        if ( is_wp_error( $attachment_id ) ) {
+                            // Log and collect the error
+                            // To get technical error, print: $attachment_id->get_error_message()
+                            $known = array( 'invalid_url', 'invalid_file_type', 'ssrf_blocked' );
+                            $error_message = in_array( $attachment_id->get_error_code(), $known, true )
+                                ? $attachment_id->get_error_message()
+                                : sprintf( __( 'Failed to import text track from URL: %s.', 'ml-slider' ), esc_url( $slide['track_url'] ) );
+                            array_push( $errors[$index], $error_message );
+
+                            // Continue to next slide instead of aborting all
+                            continue;
+                        }
+                        
+                        $track = $this->maybe_unserialize( $slide['meta']['ml-slider_track'] );
+
+                        if ( ! empty( $track['original_id'] ) ) {
+                            // Assign text track id to 'id' key
+                            $track['id'] = $attachment_id;
+
+                            // Remove temporary key
+                            unset( $track['original_id'] );
+
+                            $slide['meta']['ml-slider_track'] = maybe_serialize( $track );
                         }
                     }
 
@@ -516,12 +576,10 @@ class MetaSlider_Slideshows
                             $attachment_id = $this->import_file_to_media_library( $slide[$export_key] );
 
                             if ( is_wp_error( $attachment_id ) ) {
-                                // Log and collect the error
-                                $error_message = sprintf(
-                                    __( 'Failed to import image from URL: %s. Error: %s', 'ml-slider' ),
-                                    esc_url( $slide[$export_key] ),
-                                    $attachment_id->get_error_message()
-                                );
+                                $known = array( 'invalid_url', 'invalid_file_type', 'ssrf_blocked' );
+                                $error_message = in_array( $attachment_id->get_error_code(), $known, true )
+                                    ? $attachment_id->get_error_message()
+                                    : sprintf( __( 'Failed to import image from URL: %s.', 'ml-slider' ), esc_url( $slide[$export_key] ) );
                                 array_push( $errors[$index], $error_message );
 
                                 // Continue to next slide instead of aborting all
@@ -565,7 +623,7 @@ class MetaSlider_Slideshows
                     wp_set_post_terms($new_slide_id, $term['term_id'], 'ml-slider', true);
 
                     // This will crop the image so it's ready (and not already cropped)
-                    $settings = maybe_unserialize($slideshow['meta']['ml-slider_settings']);
+                    $settings = $this->maybe_unserialize($slideshow['meta']['ml-slider_settings']);
                     if (isset($settings['width']) && isset($settings['height'])) {
                         $image_cropper = new MetaSliderImageHelper(
                             $new_slide_id,
@@ -1124,15 +1182,45 @@ class MetaSlider_Slideshows
     }
 
     /**
-     * Upload images from URL to Media Library
+     * Upload media files (image, video, text track) from URL to Media Library
      * 
      * @since 3.103
      * 
-     * @param string $image_url - The full URL of the image to import
+     * @param string $image_url - The full URL of the image or media file to import
      * 
      * @return int|WP_Error - Attachment ID on success, WP_Error on failure
      */
     public function import_file_to_media_library( $image_url ) {
+        $parsed = parse_url( $image_url );
+        $scheme = $parsed['scheme'] ?? '';
+        $host   = $parsed['host'] ?? '';
+        $path   = $parsed['path'] ?? '';
+
+        if ( ! in_array( $scheme, array( 'http', 'https' ), true ) ) {
+            return new WP_Error( 'invalid_url', __( 'Only http/https URLs are allowed.', 'ml-slider' ) );
+        }
+
+        $image_extensions = array();
+        foreach ( array_keys( array_filter( wp_get_mime_types(), function( $mime ) { return strpos( $mime, 'image/' ) === 0; } ) ) as $exts ) {
+            $image_extensions = array_merge( $image_extensions, explode( '|', $exts ) );
+        }
+        $allowed_extensions = array_merge( $image_extensions, array( 'mp4', 'mov', 'webm', 'vtt', 'txt' ) );
+        $ext = strtolower( pathinfo( $path, PATHINFO_EXTENSION ) );
+        if ( ! in_array( $ext, $allowed_extensions, true ) ) {
+            return new WP_Error( 'invalid_file_type', __( 'URL does not point to an allowed file type.', 'ml-slider' ) );
+        }
+
+        $site_host = parse_url( home_url(), PHP_URL_HOST );
+        if ( $host && $host !== $site_host ) {
+            $ip = gethostbyname( $host );
+            if (
+                filter_var( $ip, FILTER_VALIDATE_IP ) &&
+                filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE ) === false
+            ) {
+                return new WP_Error( 'ssrf_blocked', __( 'URL resolves to a disallowed address.', 'ml-slider' ) );
+            }
+        }
+
         require_once ABSPATH . 'wp-admin/includes/file.php';
         require_once ABSPATH . 'wp-admin/includes/media.php';
         require_once ABSPATH . 'wp-admin/includes/image.php';

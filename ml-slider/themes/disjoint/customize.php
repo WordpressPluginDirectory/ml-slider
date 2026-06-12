@@ -168,8 +168,8 @@ return array(
                 'css' => 'css_rules',
                 'css_rules' => array(
                     //'default' => '',
-                    'top' => '[ms_id] .flexslider .flex-direction-nav { bottom: unset; top: 0; } [ms_id] .flexslider .flex-direction-nav a { bottom: unset; top: [ms_field_value]px; }', // Take [ms_field_value] from arrows_vertical_position_offset
-                    'bottom' => '[ms_id] .flexslider .flex-direction-nav { bottom: 0; top: unset; } [ms_id] .flexslider .flex-direction-nav a { top: unset; bottom: [ms_field_value]px; }' // Take [ms_field_value] from arrows_vertical_position_offset
+                    'top' => '[ms_id] .flexslider:not(.filmstrip) .flex-direction-nav { bottom: unset; top: 0; } [ms_id] .flexslider:not(.filmstrip) .flex-direction-nav a { bottom: unset; top: [ms_field_value]px; }', // Take [ms_field_value] from arrows_vertical_position_offset
+                    'bottom' => '[ms_id] .flexslider:not(.filmstrip) .flex-direction-nav { bottom: 0; top: unset; } [ms_id] .flexslider:not(.filmstrip) .flex-direction-nav a { top: unset; bottom: [ms_field_value]px; }' // Take [ms_field_value] from arrows_vertical_position_offset
                 ),
                 'scope' => array(
                     'links' => array( 
@@ -637,6 +637,7 @@ return array(
             ),
             array(
                 'label' => esc_html__('Font Size', 'ml-slider'),
+                'info' => esc_html__("The Font Size uses rem units. The display is relative to your theme's CSS so the preview be different from the frontend display.", 'ml-slider'),
                 'name' => 'caption_font_size',
                 'type' => 'range',
                 'default' => 0.9,
@@ -648,6 +649,7 @@ return array(
             ),
             array(
                 'label' => esc_html__('Line Height', 'ml-slider'),
+                'info' => esc_html__("The Line Height uses em units. The display is relative to your theme's CSS so the preview be different from the frontend display.", 'ml-slider'),
                 'name' => 'caption_line_height',
                 'type' => 'range',
                 'default' => 1.4,

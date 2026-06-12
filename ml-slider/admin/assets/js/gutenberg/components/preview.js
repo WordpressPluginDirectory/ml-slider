@@ -139,13 +139,13 @@ class MetaSliderPreview extends React.Component {
                         previewIsLoading: false,
                         previewErrorMessage: error.responseJSON.data.message
                     })
-                    console.error('MetaSlider (Gutenberg): Slideshow not found:', error)
+                    console.error('MetaSlider Slideshow (Gutenberg): Slideshow not found:', error)
                 } else {
-                    console.error('MetaSlider (Gutenberg): Could not load the preview:', error)
+                    console.error('MetaSlider Slideshow (Gutenberg): Could not load the preview:', error)
                 }
             })
         } catch (error) {
-            console.error('MetaSlider (Gutenberg): A general error occured:', error)
+            console.error('MetaSlider Slideshow (Gutenberg): A general error occured:', error)
         }
     }
 
@@ -155,27 +155,29 @@ class MetaSliderPreview extends React.Component {
      * @return dom object
      */
     render() {
-        return <div className={this.props.className + (this.state.previewIsLoading ? '' : ' loading') + ' ms-preview'}>
-            <iframe
-                key="preview-iframe"
-                height={this.state.height}
-                srcDoc={this.state.html || ''}
-                onLoad={this.handleOnLoad}
-                ref={this.iframe}
-            />
-            <div key="trigger" className="ms-preview__trigger"></div>
-            {this.state.previewIsLoading && <Placeholder
-                key="ms-loader"
-                className="ms-loader"
-                label={[icon, ' MetaSlider']}>
-                <Spinner/> {__('Loading slideshow', 'ml-slider')}
-            </Placeholder>}
-            {(this.state.previewErrorMessage) && <Placeholder
-                key="ms-preview-empty"
-                className="ms-loader"
-                label={[icon, ' MetaSlider']}>
-                {this.state.previewErrorMessage}
-            </Placeholder>}
+        return <div {...this.props.blockProps}>
+            <div className={this.props.blockProps.className + (this.state.previewIsLoading ? '' : ' loading') + ' ms-preview'}>
+                <iframe
+                    key="preview-iframe"
+                    height={this.state.height}
+                    srcDoc={this.state.html || ''}
+                    onLoad={this.handleOnLoad}
+                    ref={this.iframe}
+                />
+                <div key="trigger" className="ms-preview__trigger"></div>
+                {this.state.previewIsLoading && <Placeholder
+                    key="ms-loader"
+                    className="ms-loader"
+                    label={[icon, ' MetaSlider']}>
+                    <Spinner/> {__('Loading slideshow', 'ml-slider')}
+                </Placeholder>}
+                {(this.state.previewErrorMessage) && <Placeholder
+                    key="ms-preview-empty"
+                    className="ms-loader"
+                    label={[icon, ' MetaSlider']}>
+                    {this.state.previewErrorMessage}
+                </Placeholder>}
+            </div>
         </div>
     } // end render()
 }

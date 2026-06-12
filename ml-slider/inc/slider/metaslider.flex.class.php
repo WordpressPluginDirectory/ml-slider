@@ -84,6 +84,7 @@ class MetaFlexSlider extends MetaSlider
                 $options["animation"] = "'slide'";
                 $options["direction"] = "'horizontal'";
                 $options["minItems"] = $this->get_setting('minItems');
+                $options["maxItems"] = $this->get_setting('maxItems');
                 $options["move"] = 1;
                 $options["itemMargin"] = apply_filters('metaslider_carousel_margin', $this->get_setting('carouselMargin'), $slider_id);
                 //activate infinite loop when carousel is set to 'continously' and 'autoplay'
@@ -403,7 +404,7 @@ class MetaFlexSlider extends MetaSlider
         $return_value .= "\n            <ul" . $aria_live . " class='slides'>";
 
         foreach ($this->slides as $slide) {
-            // backwards compatibility with older versions of MetaSlider Pro (< v2.0)
+            // backwards compatibility with older versions of MetaSlider Slideshow Pro (< v2.0)
             // MS Pro < 2.0 does not include the <li>
             // MS Pro 2.0+ returns the <li>
             if (strpos($slide, '<li') === 0) {
@@ -1092,7 +1093,7 @@ class MetaFlexSlider extends MetaSlider
             $options['init'] = isset( $options['init'] ) ? $options['init'] : array();
             $options['init'] = array_merge( $options['init'], array(
                 "var ms_target_width = function() {
-                    return $('{$fullWidthTarget}').width();
+                    return $('" . esc_js( $fullWidthTarget ) . "').width();
                 };
 
                 var ms_full_width_slideshow = function() {

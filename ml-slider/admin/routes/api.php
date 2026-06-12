@@ -347,7 +347,7 @@ class MetaSlider_Api
         $manifest       = array();
         $data           = $this->get_request_data($request, array('slideshow_id', 'theme', 'type'));
         $slideshow_id   = absint($data['slideshow_id']);
-        $folder         = sanitize_text_field($data['theme']);
+        $folder         = sanitize_key($data['theme']);
         $type           = sanitize_text_field($data['type']);
         $settings       = get_post_meta($slideshow_id, 'ml-slider_settings', true);
 
@@ -355,7 +355,7 @@ class MetaSlider_Api
         if ($type !== 'free') {
             /**
              * Check if we have extra themes/ folders added from external sources,
-             * including MetaSlider Pro 
+             * including MetaSlider Slideshow Pro 
              * 
              * e.g. 
              * array(
@@ -831,8 +831,7 @@ class MetaSlider_Api
             return wp_send_json_success('OK', 200);
         }
 
-        // This wont provide a useful return
-        update_post_meta($data['slideshow_id'], $data['setting_key'], $data['setting_value']);
+        // To save other data different to 'title' add the cases below...
 
         wp_send_json_success('OK', 200);
     }
@@ -997,7 +996,28 @@ class MetaSlider_Api
         }
 
         $data = $this->get_request_data($request, array('settings'));
-        $settings = json_decode($data['settings'], true);
+        $raw  = json_decode($data['settings'], true);
+
+        if (!is_array($raw)) {
+            wp_send_json_error('Invalid settings format.', 400);
+            return;
+        }
+
+        $settings = array(
+            'license'         => isset($raw['license'])         ? sanitize_text_field($raw['license'])  : '',
+            'adminBar'        => isset($raw['adminBar'])         ? (bool) $raw['adminBar']               : true,
+            'editLink'        => isset($raw['editLink'])         ? (bool) $raw['editLink']               : false,
+            'legacy'          => isset($raw['legacy'])           ? (bool) $raw['legacy']                 : true,
+            'newSlideOrder'   => isset($raw['newSlideOrder'])    ? sanitize_key($raw['newSlideOrder'])    : 'last',
+            'mobileSettings'  => isset($raw['mobileSettings'])  ? (bool) $raw['mobileSettings']         : true,
+            'legacyWidget'    => isset($raw['legacyWidget'])     ? (bool) $raw['legacyWidget']           : true,
+            'tinyMce'         => isset($raw['tinyMce'])          ? (bool) $raw['tinyMce']                : true,
+            'fixTouchSwipe'   => isset($raw['fixTouchSwipe'])    ? (bool) $raw['fixTouchSwipe']          : false,
+            'autoThemeConfig' => isset($raw['autoThemeConfig'])  ? (bool) $raw['autoThemeConfig']        : true,
+            'dashboardSort'   => isset($raw['dashboardSort'])    ? sanitize_key($raw['dashboardSort'])    : 'ID',
+            'dashboardOrder'  => isset($raw['dashboardOrder'])   ? sanitize_key($raw['dashboardOrder'])   : 'asc',
+            'dashboardItems'  => isset($raw['dashboardItems'])   ? absint($raw['dashboardItems'])         : 10,
+        );
 
         // TODO: validate the license if not ''
 
@@ -1022,12 +1042,20 @@ class MetaSlider_Api
 
         $data = $this->get_request_data($request, array('setting_key', 'setting_value'));
 
-        // Ensure the key is prefixed (ie only allow access to metaslider_ settings)
-        $key = $data['setting_key'];
-        $key = (0 === strpos($key, 'metaslider_')) ? $key : 'metaslider_' . $key;
+        $allowed = array(
+            'optin_via'   => 'sanitize_key',
+            'optin_email' => 'sanitize_email',
+        );
 
-        // This will not provide a useful return (reminder, key is prefixed)
-        update_option($key, $data['setting_value'], true);
+        $key = $data['setting_key'];
+
+        if (!array_key_exists($key, $allowed)) {
+            wp_send_json_error('Invalid setting key.', 400);
+            return;
+        }
+
+        $value = call_user_func($allowed[$key], $data['setting_value']);
+        update_option('metaslider_' . $key, $value, true);
 
         wp_send_json_success('OK', 200);
     }
@@ -1114,8 +1142,6 @@ class MetaSlider_Api
 
     /**
      * Import theme images
-     *
-     * @deprecated 3.106 - Use MetaSlider_Slideshows->import() instead
      * 
      * @param object $request The request
      */
@@ -1255,8 +1281,14 @@ class MetaSlider_Api
                 continue;
             }
 
-            // For now there's no reason to import anything but images
-            if (!strstr(mime_content_type($tmp_name), "image/")) {
+            // Verify is an actual image
+            $filetype = wp_check_filetype_and_ext( $tmp_name, $files['name'][$index] );
+            if ( ! $filetype['type'] || strpos( $filetype['type'], 'image/') !== 0 ) {
+                continue;
+            }
+
+            $image_info = @getimagesize( $tmp_name );
+            if ( $image_info === false ) {
                 continue;
             }
 

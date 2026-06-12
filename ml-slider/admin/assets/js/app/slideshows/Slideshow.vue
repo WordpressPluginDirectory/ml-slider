@@ -74,9 +74,16 @@ export default {
 			let slideshowId = data && data.hasOwnProperty('slideshowId') ? data.slideshowId : this.current.id
 			let themeId = data && data.hasOwnProperty('themeId') ? data.themeId : this.current.theme.folder
 
-			this.save().then(() => {
+			const tableSlides = document.getElementById("metaslider-slides-list");
+			const hasSlides = tableSlides && tableSlides.querySelector("tr") !== null;
+
+			if (hasSlides) {
+				this.save().then(() => {
+					this.preview(slideshowId, themeId)
+				})
+			} else {
 				this.preview(slideshowId, themeId)
-			})
+			}
 		})
 
 		EventManager.$on(['metaslider/creating-slides', 'metaslider/updating-slide'], () => {
@@ -122,7 +129,7 @@ export default {
 
 		window.addEventListener('load', () => {
 			setTimeout(() => {
-				this.notifyInfo('metaslider/app-loaded', this.__('MetaSlider dashboard loaded', 'ml-slider'))
+				this.notifyInfo('metaslider/app-loaded', this.__('MetaSlider Slideshow dashboard loaded', 'ml-slider'))
 			}, 1500)
 		})
 
@@ -332,7 +339,7 @@ export default {
 						slideshow_id: this.current.id,
 						nonce: nonce
 					})).then(response => {
-						console.log('MetaSlider:', response.data.data)
+						console.log('MetaSlider Slideshow:', response.data.data)
 					}).catch(error => {
 						let errorMessage = this.getErrorMessage(error.response)
 						this.notifyError('metaslider/delete-error', error)
