@@ -21,7 +21,7 @@ $demo_slideshows = apply_filters( 'metaslider_quickstart_options_data', $demo_sl
 
 	<?php 
 	if ( isset( $_GET['create-slideshow'] ) && ! empty( $_GET['slug'] ) ) : 
-		$slug = sanitize_text_field( $_GET['slug'] );
+		$slug = sanitize_text_field( $_GET['slug'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 		?>
 		<div>
 			<div class="quickstart_importing_loading">
@@ -146,9 +146,11 @@ $demo_slideshows = apply_filters( 'metaslider_quickstart_options_data', $demo_sl
 										<option value="vimeo"><?php echo esc_html( 'Vimeo' ) ?></option>
 										<option value="youtube"><?php echo esc_html( 'YouTube' ) ?></option>
 										<option value="tiktok"><?php echo esc_html( 'TikTok' ) ?></option>
+										<option value="livid"><?php echo esc_html( 'Livid' ) ?></option>
 										<option value="external"><?php esc_html_e( 'External Image', 'ml-slider' ) ?></option>
 										<option value="external_video"><?php esc_html_e( 'External Video', 'ml-slider' ) ?></option>
 										<option value="custom_html"><?php esc_html_e( 'Custom HTML', 'ml-slider' ) ?></option>
+										<option value="gradient"><?php esc_html_e( 'Background Color', 'ml-slider' ) ?></option>
 										<option value="woocommerce"><?php esc_html_e( 'WooCommerce', 'ml-slider' ) ?></option>
 										<option value="post_feed"><?php esc_html_e( 'Post Feed', 'ml-slider' ) ?></option>
 										<option value="html_overlay"><?php esc_html_e( 'Layer Slide', 'ml-slider' ) ?></option>

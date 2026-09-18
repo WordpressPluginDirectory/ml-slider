@@ -41,6 +41,18 @@ class MetaSlider_Admin_Pages extends MetaSliderPlugin
             $this->notices = new MetaSlider_Notices($this->plugin);
         });
         add_action('admin_enqueue_scripts', array($this, 'load_upgrade_page_assets'));
+        // @since 3.112 - Make sure CSS is loaded in all admin pages
+        add_action('admin_head', array($this, 'print_menu_icon_style'));
+    }
+
+    /**
+     * Keeps the admin menu icon at full size on every wp-admin page, not just ours
+     *
+     * @since 3.112
+     */
+    public function print_menu_icon_style()
+    {
+        echo '<style>#adminmenu .toplevel_page_metaslider .wp-menu-image.svg { background-size: 30px auto; }</style>';
     }
 
     /**
@@ -72,7 +84,7 @@ class MetaSlider_Admin_Pages extends MetaSliderPlugin
     {
         $global_settings = metaslider_global_settings();
 
-        if (! isset($global_settings['tinyMce']) 
+        if (! isset($global_settings['tinyMce'])
             || ( isset($global_settings['tinyMce'] ) && true == $global_settings['tinyMce'])
         ) {
             wp_enqueue_script(
@@ -81,11 +93,17 @@ class MetaSlider_Admin_Pages extends MetaSliderPlugin
                 array(),
                 METASLIDER_ASSETS_VERSION
             );
+
+            // Needed so the Add Icon dialog (rendered in the admin document, not the TinyMCE iframe) can display icon glyphs
+            wp_enqueue_style('metaslider-fontawesome', METASLIDER_ADMIN_ASSETS_URL . 'vendor/fontawesome/css/fontawesome.min.css', false, METASLIDER_ASSETS_VERSION);
+            wp_enqueue_style('metaslider-fontawesome-solid', METASLIDER_ADMIN_ASSETS_URL . 'vendor/fontawesome/css/solid.min.css', array('metaslider-fontawesome'), METASLIDER_ASSETS_VERSION);
         }
     }
 
     /**
      * Loads in custom javascript
+     *
+     * @since 3.112.0-beta.4 Localized unsplashImageQuality/pixabayImageQuality/pixabayVideoQuality (#2365)
      */
     public function load_javascript()
     {
@@ -172,6 +190,16 @@ class MetaSlider_Admin_Pages extends MetaSliderPlugin
             'hide_on_laptop'  => esc_html__('Hide on Laptop', 'ml-slider'),
             'hide_on_desktop' => esc_html__('Hide on Desktop', 'ml-slider'),
             'add_button' => esc_html__('Add Button', 'ml-slider'),
+            'add_image' => esc_html__('Add Image', 'ml-slider'),
+            'add_icon' => esc_html__('Add Icon', 'ml-slider'),
+            'search_icons' => esc_html__('Search icons...', 'ml-slider'),
+            'no_icons_found' => esc_html__('No icons found.', 'ml-slider'),
+            'clear_search' => esc_html__('Clear search', 'ml-slider'),
+            'fontawesome_icons_url' => esc_url(METASLIDER_ADMIN_ASSETS_URL . 'vendor/fontawesome/icons.json'),
+            'fontawesome_css_urls' => array(
+                esc_url(METASLIDER_ADMIN_ASSETS_URL . 'vendor/fontawesome/css/fontawesome.min.css'),
+                esc_url(METASLIDER_ADMIN_ASSETS_URL . 'vendor/fontawesome/css/solid.min.css'),
+            ),
             'close' => esc_html__('Close', 'ml-slider'),
             'insert' => esc_html__('Insert', 'ml-slider'),
             'url' => esc_html('URL' ),
@@ -209,6 +237,7 @@ class MetaSlider_Admin_Pages extends MetaSliderPlugin
             'ajaxurl' => admin_url('admin-ajax.php'),
             'proUser' => metaslider_pro_is_active(),
             'hoplink' => metaslider_get_upgrade_link(),
+            'gallery_convert_ad' => metaslider_gallery_convert_ad(),
             'privacy_link' => metaslider_get_privacy_link(),
             'metaslider_admin_assets' => METASLIDER_ADMIN_ASSETS_URL,
             'metaslider_page' => admin_url('admin.php?page=metaslider'),
@@ -222,6 +251,15 @@ class MetaSlider_Admin_Pages extends MetaSliderPlugin
             'autoThemeConfig' => ! isset( $global_settings['autoThemeConfig'] )
                 || (bool) $global_settings['autoThemeConfig'] ? 1 : 0,
             'theme_notice_dismissed' => get_user_option( 'metaslider_theme_notice_dismissed', get_current_user_id() ) ? 1 : 0,
+            // Exposed here (rather than fetched separately) so the Unsplash/Pixabay pickers -
+            // including MetaSlider Slideshow Pro's separately-bundled Pixabay Video picker, which
+            // reads this same shared window.metaslider_api object - can use it as their initial
+            // quality default without an extra AJAX round-trip (#2365)
+            'unsplashImageQuality' => isset( $global_settings['unsplashImageQuality'] ) ? $global_settings['unsplashImageQuality'] : 'optimized',
+            'pixabayImageQuality' => isset( $global_settings['pixabayImageQuality'] ) ? $global_settings['pixabayImageQuality'] : 'largeImageURL',
+            'pixabayVideoQuality' => isset( $global_settings['pixabayVideoQuality'] ) ? $global_settings['pixabayVideoQuality'] : 'medium',
+            'docs_link' => 'https://www.metaslider.com/docs/',
+            'support_link' => 'https://www.metaslider.com/support/',
         ));
         wp_enqueue_script('metaslider-admin-components');
     }
@@ -277,7 +315,7 @@ class MetaSlider_Admin_Pages extends MetaSliderPlugin
         $this->current_page = $slug;
         $capability = apply_filters('metaslider_capability', MetaSliderPlugin::DEFAULT_CAPABILITY_EDIT_SLIDES);
 
-        $dashboard_icon = 'data:image/svg+xml;base64,' . base64_encode(file_get_contents(dirname(__FILE__) . '/assets/metaslider.svg'));
+        $dashboard_icon = 'data:image/svg+xml;base64,' . base64_encode(file_get_contents(dirname(__FILE__) . '/assets/metaslider-white.svg'));
 
         $page = ('' == $parent) ? add_menu_page($title, $title, $capability, $slug, array($this, $method), $dashboard_icon) : add_submenu_page($parent, $title, $title, $capability, $slug, array($this, $method));
 

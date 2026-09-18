@@ -123,6 +123,14 @@
             </tr>
             <tr>
                 <td>
+                    <h4><?php esc_html_e('Add Background Color slides', 'ml-slider');?></h4>
+                    <p><?php esc_html_e('Create slides using a solid or gradient background color and text.', 'ml-slider');?></p>
+                </td>
+                <td><div class="dot unavailable"></div></td>
+                <td><div class="dot available"></div></td>
+            </tr>
+            <tr>
+                <td>
                     <h4><?php esc_html_e('Add Post Images slides', 'ml-slider');?></h4>
                     <p><?php esc_html_e('Extract images from the current post and displays them as slides.', 'ml-slider');?></p>
                 </td>

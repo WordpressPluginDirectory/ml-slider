@@ -14,6 +14,7 @@ return array(
         'settings' => array(
             array(
                 'label' => esc_html__('Background', 'ml-slider'),
+                'info' => esc_html__('The background color of the arrow buttons.', 'ml-slider'),
                 'type' => 'fields',
                 'fields' => array(
                     array(
@@ -40,6 +41,7 @@ return array(
             ),
             array(
                 'label' => esc_html__('Icon Colors', 'ml-slider'),
+                'info' => esc_html__('The color of the arrow icons.', 'ml-slider'),
                 'type' => 'fields',
                 'fields' => array(
                     array(
@@ -66,6 +68,7 @@ return array(
             ),
             array(
                 'label' => esc_html__('Icon Size', 'ml-slider'),
+                'info' => esc_html__('The size of the arrow icons.', 'ml-slider'),
                 'name' => 'arrows_icon_size',
                 'type' => 'range',
                 'default' => 20,
@@ -82,6 +85,7 @@ return array(
             ),
             array(
                 'label' => esc_html__('Border Color', 'ml-slider'),
+                'info' => esc_html__('The border color of the arrow buttons.', 'ml-slider'),
                 'type' => 'fields',
                 'fields' => array(
                     array(
@@ -109,6 +113,7 @@ return array(
             ),
             array(
                 'label' => esc_html__('Border Width', 'ml-slider'),
+                'info' => esc_html__('The thickness of the border around the arrow buttons.', 'ml-slider'),
                 'name' => 'arrows_border_width',
                 'type' => 'range',
                 'default' => 0,
@@ -125,6 +130,7 @@ return array(
             ),
             array(
                 'label' => esc_html__('Border Style', 'ml-slider'),
+                'info' => esc_html__('The line style of the border around the arrow buttons.', 'ml-slider'),
                 'name' => 'arrows_border_style',
                 'type' => 'select',
                 'default' => 'solid',
@@ -152,6 +158,7 @@ return array(
             ),
             array(
                 'label' => esc_html__('Distance from Edge', 'ml-slider'),
+                'info' => esc_html__('The distance between the arrows and the left/right edges of the slideshow.', 'ml-slider'),
                 'name' => 'arrows_distance_edge',
                 'type' => 'range',
                 'default' => 0,
@@ -171,6 +178,7 @@ return array(
             ),
             array(
                 'label' => esc_html__('Vertical Position', 'ml-slider'),
+                'info' => esc_html__('Whether the arrows are positioned nearer the top or bottom of the slideshow.', 'ml-slider'),
                 'name' => 'arrows_vertical_position',
                 'type' => 'select',
                 'default' => 'top',
@@ -198,7 +206,7 @@ return array(
             ),
             array(
                 'label' => esc_html__('Vertical Position Offset', 'ml-slider'),
-                'info' => esc_html__('Based on "Position".', 'ml-slider'),
+                'info' => esc_html__('How far the arrows sit from the top or bottom of the slideshow, depending on the "Vertical Position" setting.', 'ml-slider'),
                 'name' => 'arrows_vertical_position_offset',
                 'type' => 'range',
                 'default' => 50,
@@ -216,6 +224,7 @@ return array(
             ),
             /*array(
                 'label' => esc_html__('Width', 'ml-slider'),
+                'info' => esc_html__('The width of the arrow buttons.', 'ml-slider'),
                 'name' => 'arrows_width',
                 'type' => 'range',
                 'default' => 70,
@@ -226,6 +235,7 @@ return array(
             ),
             array(
                 'label' => esc_html__('Height', 'ml-slider'),
+                'info' => esc_html__('The height of the arrow buttons.', 'ml-slider'),
                 'name' => 'arrows_height',
                 'type' => 'range',
                 'default' => 40,
@@ -236,6 +246,7 @@ return array(
             ),*/
             array(
                 'label' => esc_html__('Border Radius', 'ml-slider'),
+                'info' => esc_html__('The roundness of the arrow buttons\' corners.', 'ml-slider'),
                 'name' => 'arrows_border_radius',
                 'type' => 'range',
                 'default' => 0,
@@ -252,6 +263,7 @@ return array(
             ),
             array(
                 'label' => esc_html__('Opacity (default)', 'ml-slider'),
+                'info' => esc_html__('The transparency of the arrow buttons when not hovered.', 'ml-slider'),
                 'name' => 'arrows_opacity',
                 'type' => 'range',
                 'default' => 1,
@@ -268,6 +280,7 @@ return array(
             ),
             array(
                 'label' => esc_html__('Opacity (hover)', 'ml-slider'),
+                'info' => esc_html__('The transparency of the arrow buttons when hovered.', 'ml-slider'),
                 'name' => 'arrows_opacity_hover',
                 'type' => 'range',
                 'default' => 1,
@@ -277,6 +290,54 @@ return array(
                 'css' => '[ms_id] .flexslider .flex-direction-nav li a:hover { opacity: [ms_value] !important }',
                 'scope' => array(
                     'links' => array( 
+                        'true',
+                        'onhover'
+                    )
+                )
+            ),
+            array(
+                'label' => esc_html__('Focus Outline Color', 'ml-slider'),
+                'info' => esc_html__('Use a high-contrast color. The outline color shows as a ring around the arrows when navigated to via keyboard. This improves accessibility for the arrows.', 'ml-slider'),
+                'name' => 'arrows_focus_outline_color',
+                'type' => 'color',
+                'default' => '#fff',
+                'css' => '[ms_id] .flexslider ul.flex-direction-nav li a:focus { outline-color: [ms_value] }',
+                'scope' => array(
+                    'links' => array(
+                        'true',
+                        'onhover'
+                    )
+                )
+            ),
+            array(
+                'label' => esc_html__('Focus Outline Width', 'ml-slider'),
+                'info' => esc_html__('The width of the outline shown around an arrow when it receives focus, for accessibility.', 'ml-slider'),
+                'name' => 'arrows_focus_outline_width',
+                'type' => 'range',
+                'default' => 2,
+                'metric' => 'px',
+                'min' => 0,
+                'max' => 10,
+                'css' => '[ms_id] .flexslider ul.flex-direction-nav li a:focus { outline-width: [ms_value]px }',
+                'scope' => array(
+                    'links' => array(
+                        'true',
+                        'onhover'
+                    )
+                )
+            ),
+            array(
+                'label' => esc_html__('Focus Outline Offset', 'ml-slider'),
+                'info' => esc_html__('The distance between the outline and the arrow when it receives focus, for accessibility.', 'ml-slider'),
+                'name' => 'arrows_focus_outline_offset',
+                'type' => 'range',
+                'default' => 2,
+                'metric' => 'px',
+                'min' => -10,
+                'max' => 20,
+                'css' => '[ms_id] .flexslider ul.flex-direction-nav li a:focus { outline-offset: [ms_value]px }',
+                'scope' => array(
+                    'links' => array(
                         'true',
                         'onhover'
                     )
@@ -292,6 +353,7 @@ return array(
         'settings' => array(
             array(
                 'label' => esc_html__('Background', 'ml-slider'),
+                'info' => esc_html__('The background color of the navigation dots.', 'ml-slider'),
                 'type' => 'fields',
                 'fields' => array(
                     array(
@@ -325,6 +387,7 @@ return array(
             ),
             array(
                 'label' => esc_html__('Border Color', 'ml-slider'),
+                'info' => esc_html__('The border color of the navigation dots.', 'ml-slider'),
                 'type' => 'fields',
                 'fields' => array(
                     array(
@@ -359,6 +422,7 @@ return array(
             ),
             array(
                 'label' => esc_html__('Border Width', 'ml-slider'),
+                'info' => esc_html__('The thickness of the border around the navigation dots.', 'ml-slider'),
                 'name' => 'navigation_border_width',
                 'type' => 'range',
                 'default' => 0,
@@ -375,6 +439,7 @@ return array(
             ),
             array(
                 'label' => esc_html__('Border Style', 'ml-slider'),
+                'info' => esc_html__('The line style of the border around the navigation dots.', 'ml-slider'),
                 'name' => 'navigation_border_style',
                 'type' => 'select',
                 'default' => 'solid',
@@ -402,6 +467,7 @@ return array(
             ),
             array(
                 'label' => esc_html__('Vertical Position', 'ml-slider'),
+                'info' => esc_html__('Whether the navigation is positioned nearer the top or bottom of the slideshow.', 'ml-slider'),
                 'name' => 'navigation_vertical_position',
                 'type' => 'select',
                 'default' => 'bottom',
@@ -429,7 +495,7 @@ return array(
             ),
             array(
                 'label' => esc_html__('Vertical Position Offset', 'ml-slider'),
-                'info' => esc_html__('Based on "Position".', 'ml-slider'),
+                'info' => esc_html__('How far the navigation dots sit from the top or bottom of the slideshow, depending on the "Vertical Position" setting.', 'ml-slider'),
                 'name' => 'navigation_vertical_position_offset',
                 'type' => 'range',
                 'default' => -27,
@@ -447,6 +513,7 @@ return array(
             ),
             array(
                 'label' => esc_html__('Alignment', 'ml-slider'),
+                'info' => esc_html__('The horizontal alignment of the navigation.', 'ml-slider'),
                 'name' => 'navigation_align',
                 'type' => 'select',
                 'default' => 'right',
@@ -474,6 +541,7 @@ return array(
             ),
             array(
                 'label' => esc_html__('Dots Border Radius', 'ml-slider'),
+                'info' => esc_html__('The roundness of the navigation dots\' corners.', 'ml-slider'),
                 'name' => 'navigation_border_radius',
                 'type' => 'range',
                 'default' => 10,
@@ -490,6 +558,7 @@ return array(
             ),
             array(
                 'label' => esc_html__('Dots Width', 'ml-slider'),
+                'info' => esc_html__('The width of each navigation dot.', 'ml-slider'),
                 'name' => 'navigation_width',
                 'type' => 'range',
                 'default' => 15,
@@ -506,6 +575,7 @@ return array(
             ),
             array(
                 'label' => esc_html__('Dots Height', 'ml-slider'),
+                'info' => esc_html__('The height of each navigation dot.', 'ml-slider'),
                 'name' => 'navigation_height',
                 'type' => 'range',
                 'default' => 15,
@@ -522,6 +592,7 @@ return array(
             ),
             array(
                 'label' => esc_html__('Distance Between Dots', 'ml-slider'),
+                'info' => esc_html__('The spacing between each navigation dot.', 'ml-slider'),
                 'name' => 'navigation_between',
                 'type' => 'range',
                 'default' => 5,
@@ -546,6 +617,7 @@ return array(
         'settings' => array(
             array(
                 'label' => esc_html__('Colors', 'ml-slider'),
+                'info' => esc_html__('The background, text, and link colors of the caption.', 'ml-slider'),
                 'type' => 'fields',
                 'fields' => array(
                     array(
@@ -573,6 +645,7 @@ return array(
             ),
             array(
                 'label' => esc_html__('Vertical Position', 'ml-slider'),
+                'info' => esc_html__('Whether the caption is positioned nearer the top or bottom of the slide.', 'ml-slider'),
                 'name' => 'caption_vertical_position',
                 'type' => 'select',
                 'default' => 'bottom',
@@ -600,7 +673,7 @@ return array(
             ),
             array(
                 'label' => esc_html__('Vertical Position Offset', 'ml-slider'),
-                'info' => esc_html__('Based on "Position".', 'ml-slider'),
+                'info' => esc_html__('How far the caption sits from the top or bottom of the slide, depending on the "Vertical Position" setting.', 'ml-slider'),
                 'name' => 'caption_vertical_position_offset',
                 'type' => 'range',
                 'default' => 0,
@@ -612,6 +685,7 @@ return array(
             ),
             array(
                 'label' => esc_html__('Horizontal Position', 'ml-slider'),
+                'info' => esc_html__('Whether the caption is positioned nearer the left or right of the slide.', 'ml-slider'),
                 'name' => 'caption_horizontal_position',
                 'type' => 'select',
                 'default' => 'left',
@@ -633,7 +707,7 @@ return array(
             ),
             array(
                 'label' => esc_html__('Horizontal Position Offset', 'ml-slider'),
-                'info' => esc_html__('Based on "Horizontal Position".', 'ml-slider'),
+                'info' => esc_html__('How far the caption sits from the left or right of the slide, depending on the "Horizontal Position" setting.', 'ml-slider'),
                 'name' => 'caption_horizontal_position_offset',
                 'type' => 'range',
                 'default' => 0,
@@ -645,6 +719,7 @@ return array(
             ),
             array(
                 'label' => esc_html__('Width', 'ml-slider'),
+                'info' => esc_html__('The width of the caption box, as a percentage of the slide width.', 'ml-slider'),
                 'name' => 'caption_width',
                 'type' => 'range',
                 'default' => 40,
@@ -679,6 +754,7 @@ return array(
             ),
             array(
                 'label' => esc_html__('Text Align', 'ml-slider'),
+                'info' => esc_html__('The horizontal alignment of the text inside the caption.', 'ml-slider'),
                 'name' => 'caption_text_align',
                 'type' => 'select',
                 'default' => 'left',
@@ -700,6 +776,7 @@ return array(
             ),
             array(
                 'label' => esc_html__('Opacity', 'ml-slider'),
+                'info' => esc_html__('The transparency of the caption background.', 'ml-slider'),
                 'name' => 'caption_opacity',
                 'type' => 'range',
                 'default' => 1,
@@ -718,6 +795,7 @@ return array(
         'settings' => array(
             array(
                 'label' => esc_html__('Background', 'ml-slider'),
+                'info' => esc_html__('The background color of the play/pause button.', 'ml-slider'),
                 'type' => 'fields', // Fields added through 'fields' array
                 'fields' => array(
                     array(
@@ -738,6 +816,7 @@ return array(
             ),
             array(
                 'label' => esc_html__('Icon Colors', 'ml-slider'),
+                'info' => esc_html__('The color of the play/pause icon.', 'ml-slider'),
                 'type' => 'fields', // Fields added through 'fields' array
                 'fields' => array(
                     array(
@@ -758,6 +837,7 @@ return array(
             ),
             array(
                 'label' => esc_html__('Border Radius', 'ml-slider'),
+                'info' => esc_html__('The roundness of the play/pause button\'s corners.', 'ml-slider'),
                 'name' => 'play_button_border_radius',
                 'type' => 'range',
                 'default' => 50,
@@ -768,6 +848,7 @@ return array(
             ),
             array(
                 'label' => esc_html__('Opacity (default)', 'ml-slider'),
+                'info' => esc_html__('The transparency of the play/pause button when not hovered.', 'ml-slider'),
                 'name' => 'play_button_opacity',
                 'type' => 'range',
                 'default' => 1,
@@ -778,6 +859,7 @@ return array(
             ),
             array(
                 'label' => esc_html__('Opacity (hover)', 'ml-slider'),
+                'info' => esc_html__('The transparency of the play/pause button when hovered.', 'ml-slider'),
                 'name' => 'play_button_opacity_hover',
                 'type' => 'range',
                 'default' => 1,
@@ -788,6 +870,7 @@ return array(
             ),
             array(
                 'label' => esc_html__('Vertical Position', 'ml-slider'),
+                'info' => esc_html__('Whether the play/pause button is positioned nearer the top or bottom of the slideshow.', 'ml-slider'),
                 'name' => 'play_button_vertical_position',
                 'type' => 'select',
                 'default' => 'bottom',
@@ -809,7 +892,7 @@ return array(
             ),
             array(
                 'label' => esc_html__('Vertical Position Offset', 'ml-slider'),
-                'info' => esc_html__('Based on "Position".', 'ml-slider'),
+                'info' => esc_html__('How far the play/pause button sits from the top or bottom of the slideshow, depending on the "Vertical Position" setting.', 'ml-slider'),
                 'name' => 'play_button_vertical_position_offset',
                 'type' => 'range',
                 'default' => -31,
@@ -821,6 +904,7 @@ return array(
             ),
             array(
                 'label' => esc_html__('Horizontal Position', 'ml-slider'),
+                'info' => esc_html__('Whether the play/pause button is positioned nearer the left or right of the slideshow.', 'ml-slider'),
                 'name' => 'play_button_horizontal_position',
                 'type' => 'select',
                 'default' => 'left',
@@ -842,7 +926,7 @@ return array(
             ),
             array(
                 'label' => esc_html__('Horizontal Position Offset', 'ml-slider'),
-                'info' => esc_html__('Based on "Horizontal Position".', 'ml-slider'),
+                'info' => esc_html__('How far the play/pause button sits from the left or right of the slideshow, depending on the "Horizontal Position" setting.', 'ml-slider'),
                 'name' => 'play_button_horizontal_position_offset',
                 'type' => 'range',
                 'default' => 0,

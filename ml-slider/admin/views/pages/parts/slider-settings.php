@@ -12,6 +12,33 @@ $breakpoints      = array(
     'desktop'    => isset( $default_settings['desktop'] ) ? (int) $default_settings['desktop'] : 1440
 );
 
+?>
+<div class="ms-settings-search">
+    <div class="ms-settings-search-field">
+        <span class="dashicons dashicons-search" aria-hidden="true"></span>
+        <input
+            type="search"
+            id="ms-settings-search"
+            class="ms-settings-search-input"
+            placeholder="<?php esc_attr_e('Search settings', 'ml-slider'); ?>"
+            aria-label="<?php esc_attr_e('Search settings', 'ml-slider'); ?>"
+        />
+        <button
+            type="button"
+            id="ms-settings-search-clear"
+            class="ms-settings-search-clear tipsy-tooltip-top"
+            title="<?php esc_attr_e('Clear search', 'ml-slider'); ?>"
+            aria-label="<?php esc_attr_e('Clear search', 'ml-slider'); ?>"
+            style="display:none;"
+        >
+            <span class="dashicons dashicons-no-alt" aria-hidden="true"></span>
+        </button>
+    </div>
+    <p class="ms-settings-search-empty" style="display:none;">
+        <?php esc_html_e('No settings found.', 'ml-slider'); ?>
+    </p>
+</div>
+<?php
 // Slider libraries
 $aFields = array(
     'type' => array(
@@ -434,9 +461,9 @@ echo $this->build_settings_rows($aFields);
             ?>
         </table>                                    
     </div>
-    <div class="ms-settings-box themeOptions ms-on">
+    <div class="ms-settings-box themeOptions ms-off">
         <div class="ms-highlight">
-            <?php esc_html_e( 'Theme', 'ml-slider' ) ?>
+            <?php esc_html_e( 'Theme Options', 'ml-slider' ) ?>
             <a href="#" class="ms-toggle-static">
                 <span class="dashicons"></span>
             </a>
@@ -452,7 +479,7 @@ echo $this->build_settings_rows($aFields);
             </tr>
         </table>
     </div>
-    <div class="ms-settings-box lightboxOptions ms-on">
+    <div class="ms-settings-box lightboxOptions ms-off">
         <div class="ms-highlight highlight">
             <?php esc_html_e( 'Gallery Options', 'ml-slider' ) ?>
             <a href="#" class="ms-toggle-static">
@@ -833,10 +860,6 @@ echo $this->build_settings_rows($aFields);
                             'when' => true // When carouselMode is true
                         ),
                         array(
-                            'show' => 'loop', // Show Loop
-                            'when' => false // When carouselMode is false
-                        ),
-                        array(
                             'show' => 'carouselMargin',
                             'when' => true
                         ),
@@ -846,6 +869,10 @@ echo $this->build_settings_rows($aFields);
                         ),
                         array(
                             'show' => 'maxItems', // Show Max Carousel items
+                            'when' => true // When carouselMode is true
+                        ),
+                        array(
+                            'show' => 'carouselItems_smartphone', // Show per-device carousel item counts
                             'when' => true // When carouselMode is true
                         ),
                         array(
@@ -926,6 +953,59 @@ echo $this->build_settings_rows($aFields);
                     ),
                     'after' => 'slides'
                 ),
+                'carouselItems' => array(
+                    'priority' => 42,
+                    'type' => 'mobile_number',
+                    'label' => __("Slides to Show per Device", "ml-slider"),
+                    'helptext' => __(
+                        "Set an exact number of slides to show for each device width. Leave a device at 0 to use the Display Minimum/Maximum settings instead.",
+                        "ml-slider"
+                    ),
+                    'options' => array(
+                        'smartphone' => array(
+                            'value' => $this->slider->get_setting('carouselItems_smartphone'),
+                            'helptext' => sprintf(
+                                __(
+                                    'Exact number of slides to show on screen widths less than %spx. Set to 0 to use Display Minimum/Maximum instead.',
+                                    'ml-slider'
+                                ),
+                                $breakpoints['tablet']
+                            )
+                        ),
+                        'tablet' => array(
+                            'value' => $this->slider->get_setting('carouselItems_tablet'),
+                            'helptext' => sprintf(
+                                __(
+                                    'Exact number of slides to show on screen widths of %1$spx to %2$spx. Set to 0 to use Display Minimum/Maximum instead.',
+                                    'ml-slider'
+                                ),
+                                $breakpoints['tablet'],
+                                $breakpoints['laptop'] - 1
+                            )
+                        ),
+                        'laptop' => array(
+                            'value' => $this->slider->get_setting('carouselItems_laptop'),
+                            'helptext' => sprintf(
+                                __(
+                                    'Exact number of slides to show on screen widths of %1$spx to %2$spx. Set to 0 to use Display Minimum/Maximum instead.',
+                                    'ml-slider'
+                                ),
+                                $breakpoints['laptop'],
+                                $breakpoints['desktop'] - 1
+                            )
+                        ),
+                        'desktop' => array(
+                            'value' => $this->slider->get_setting('carouselItems_desktop'),
+                            'helptext' => sprintf(
+                                __(
+                                    'Exact number of slides to show on screen widths equal to or greater than %spx. Set to 0 to use Display Minimum/Maximum instead.',
+                                    'ml-slider'
+                                ),
+                                $breakpoints['desktop']
+                            )
+                        ),
+                    )
+                ),
                 'navStep' => array(
                     'priority' => 45,
                     'type' => 'number',
@@ -956,6 +1036,11 @@ echo $this->build_settings_rows($aFields);
                     )
                 )
             );
+
+            // Device settings globally disabled - don't show the per-device slide count row at all.
+            if ( isset( $global_settings['mobileSettings'] ) && true != $global_settings['mobileSettings'] ) {
+                unset( $aFields['carouselItems'] );
+            }
 
             $aFields = apply_filters(
                 'metaslider_carousel_settings',
@@ -1083,9 +1168,27 @@ echo $this->build_settings_rows($aFields);
             ?>
         </table>
     </div>
+    <div class="ms-settings-box imageStylesOptions ms-off">
+        <div class="ms-highlight highlight">
+            <?php esc_html_e( 'Image Styles', 'ml-slider' ) ?>
+            <a href="#" class="ms-toggle-static">
+                <span class="dashicons"></span>
+            </a>
+        </div>
+        <table class="ms-settings-box-inner">
+            <?php
+            // Default image styles applied to every slide (overridable per slide
+            // on the slide's Image Styles tab). Fields are supplied by MetaSlider_Image_Styles.
+            $aFields = apply_filters('metaslider_image_styles_settings', array(), $this->slider);
+
+            // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+            echo $this->build_settings_rows($aFields);
+            ?>
+        </table>
+    </div>
     <div class="ms-settings-box advancedOptions ms-off">
         <div class="ms-highlight highlight">
-            <?php esc_html_e( 'Advanced Options', 'ml-slider' ) ?>
+            <?php esc_html_e( 'Layout Features', 'ml-slider' ) ?>
             <a href="#" class="ms-toggle-static">
                 <span class="dashicons"></span>
             </a>
@@ -1391,7 +1494,47 @@ echo $this->build_settings_rows($aFields);
             );
 
             $aFields = apply_filters('metaslider_container_settings', $aFields, $this->slider);
-            
+
+            // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+            echo $this->build_settings_rows($aFields);
+            ?>
+        </table>
+    </div>
+
+    <div class="ms-settings-box watermarkOptions ms-off">
+        <div class="ms-highlight highlight">
+            <?php esc_html_e( 'Watermark Options', 'ml-slider' ) ?>
+            <a href="#" class="ms-toggle-static">
+                <span class="dashicons"></span>
+            </a>
+        </div>
+        <table class="ms-settings-box-inner">
+            <?php
+            // Watermark options - the 'watermarkEnabled' field is fully replaced by
+            // MetaSlider Slideshow Pro (see modules/watermark/watermark.php) when the
+            // addon is active. This is the only pro ad for this feature.
+            $aFields = array(
+                'watermarkEnabled' => array(
+                    'priority' => 10,
+                    'type' => 'checkbox',
+                    'label' => esc_html__("Watermark", "ml-slider"),
+                    'class' => 'option flex nivo responsive disabled-checkbox',
+                    'checked' => $this->slider->get_setting(
+                        'watermarkEnabled'
+                    ) == 'true' ? 'checked' : '',
+                    'helptext' => esc_html__(
+                        "Overlay an image (e.g. a logo) on top of the slideshow.",
+                        "ml-slider"
+                    ),
+                    'addon_required' => true,
+                    'after' => metaslider_upgrade_pro_small_btn(
+                        __( 'This feature is available in MetaSlider Slideshow Pro', 'ml-slider' )
+                    )
+                )
+            );
+
+            $aFields = apply_filters('metaslider_watermark_settings', $aFields, $this->slider);
+
             // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
             echo $this->build_settings_rows($aFields);
             ?>
@@ -1564,7 +1707,7 @@ echo $this->build_settings_rows($aFields);
     $count = count(metaslider_has_trashed_slides($this->slider->id));
     if ( ! metaslider_viewing_trashed_slides( $this->slider->id ) ) { 
         ?>
-        <div class="ms-settings-box trasedSlidesOptions ms-off" style="<?php echo ! $count ? 'display: none;' : ''  ?>">
+        <div class="ms-settings-box trasedSlidesOptions ms-off<?php echo ! $count ? ' ms-hidden-by-default' : ''  ?>" style="<?php echo ! $count ? 'display: none;' : ''  ?>">
             <div class="ms-highlight">
                 <?php esc_html_e( 'Trashed Slides', 'ml-slider' ) ?>
                 <a href="#" class="ms-toggle-static">

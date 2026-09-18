@@ -174,7 +174,7 @@ return;
         }
 
         $child_footer = get_stylesheet_directory() . '/footer.php';
-        $parent_footer = TEMPLATEPATH . '/footer.php';
+        $parent_footer = TEMPLATEPATH . '/footer.php'; // phpcs:ignore WordPress.WP.DiscouragedConstants.TEMPLATEPATHUsageFound
         $theme_type = 'parent';
 
         if (file_exists($child_footer)) {

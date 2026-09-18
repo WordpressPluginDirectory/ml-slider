@@ -14,7 +14,8 @@ class MetaSlider_Admin_Table extends WP_List_table
         // Check if we filter by theme
         $nonce_valid = isset($_REQUEST['search_wpnonce']) && wp_verify_nonce(sanitize_key($_REQUEST['search_wpnonce']), 'metaslider_search_slideshows');
         if ($nonce_valid && isset($_POST['metaslider_theme'])) {
-            $theme_param = sanitize_text_field($_POST['metaslider_theme']);
+            $theme_param = sanitize_text_field($_POST['metaslider_theme']); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash
+            // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- only used as the base URL for add_query_arg()/remove_query_arg() below, which handle escaping.
             $current_uri = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
             if ($theme_param !== '') {
                 $_GET['metaslider_theme'] = $theme_param;
@@ -30,7 +31,7 @@ class MetaSlider_Admin_Table extends WP_List_table
         $this->_column_headers = array($columns, $hidden, $sortable);
 
         if (isset($_REQUEST['s'])) {
-            $table_data = $this->table_data(sanitize_text_field($_REQUEST['s']));
+            $table_data = $this->table_data(sanitize_text_field(wp_unslash($_REQUEST['s'])));
         } else {
             $table_data = $this->table_data();
         }
@@ -55,9 +56,11 @@ class MetaSlider_Admin_Table extends WP_List_table
         $columns = ['slides', 'post_title', 'post_date', 'slide_count', 'slideshow_type', 'slideshow_theme'];
         $global_settings = get_option( 'metaslider_global_settings' );
 
+        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- validated against the $columns allow-list on the next line.
         $orderBy = $_GET['orderby'] ?? $global_settings['dashboardSort'] ?? 'ID';
         $orderBy = in_array($orderBy, $columns, true) ? $orderBy : 'ID';
 
+        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- only ever compared against the literal 'asc' below.
         $order = $_GET['order'] ?? $global_settings['dashboardOrder'] ?? 'asc';
 
         $status = isset($_GET['post_status']) && 'trash' === $_GET['post_status'] ? 'trash' : 'publish';
@@ -81,7 +84,7 @@ class MetaSlider_Admin_Table extends WP_List_table
             $each_slide['slide_count'] = count($slideshow_slides);
         }
 
-        $theme_filter = isset($_REQUEST['metaslider_theme']) ? sanitize_text_field($_REQUEST['metaslider_theme']) : '';
+        $theme_filter = isset($_REQUEST['metaslider_theme']) ? sanitize_text_field($_REQUEST['metaslider_theme']) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash
         if ($theme_filter !== '') {
             $query_results = array_values(array_filter($query_results, function ($slide) use ($theme_filter) {
                 return $theme_filter === '__none__'
@@ -141,27 +144,37 @@ class MetaSlider_Admin_Table extends WP_List_table
         
         $views = [];
         $parameters = ['action', 'slideshows', 'post_status', '_wpnonce', 'paged'];
+        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- only ever compared against fixed status strings below.
         $current = $_REQUEST['post_status'] ?? 'all';
         $base_url = remove_query_arg($parameters);
     
-        // Helper function to generate view links
-        $generate_view_link = function ($status, $label) use ($base_url, $current) {
-            $count = $this->slideshow_count($status);
-            if ($count == 0 && $status === 'trash') {
-                return null;
-            }
-            $url = ($status === 'all') ? $base_url : add_query_arg('post_status', $status, $base_url);
-            $class = ($current === $status) ? ' class="current"' : '';
-            return "<a href='" . esc_url($url) . "' {$class}>" . esc_html__($label, 'ml-slider') . " ({$count})</a>";
-        };
-    
-        $views['all'] = $generate_view_link('all', 'Published');
+        $views['all'] = $this->generate_view_link($base_url, $current, 'all', 'Published');
         
-        if ($trash_link = $generate_view_link('trash', 'Trash')) {
+        if ($trash_link = $this->generate_view_link($base_url, $current, 'trash', 'Trash')) {
             $views['trash'] = $trash_link;
         }
     
         return $views;
+    }
+
+    /**
+     * Generate a status filter link for the slideshow table.
+     *
+     * @param string $base_url Base admin URL.
+     * @param string $current Current status filter.
+     * @param string $status Status represented by the link.
+     * @param string $label Link label.
+     * @return string|null
+     */
+    private function generate_view_link($base_url, $current, $status, $label)
+    {
+        $count = $this->slideshow_count($status);
+        if ($count == 0 && $status === 'trash') {
+            return null;
+        }
+        $url = ($status === 'all') ? $base_url : add_query_arg('post_status', $status, $base_url);
+        $class = ($current === $status) ? ' class="current"' : '';
+        return "<a href='" . esc_url($url) . "' {$class}>" . esc_html__($label, 'ml-slider') . " ({$count})</a>";
     }
     
     private function slideshow_count($status = 'all')
@@ -202,6 +215,7 @@ class MetaSlider_Admin_Table extends WP_List_table
             'ID' => esc_html__('Shortcode', 'ml-slider')
         );
 
+        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- only ever compared against the literal 'trash' below.
         $status = $_REQUEST['post_status'] ?? 'publish';
         if ($status !== 'trash') {
             $columns['used_on'] = __('Usage', 'ml-slider');
@@ -251,8 +265,10 @@ class MetaSlider_Admin_Table extends WP_List_table
             $params[] = '%' . $wpdb->esc_like($search) . '%';
         }
 
-        $prepared_query = $wpdb->prepare($query, $params); // WPCS: unprepared SQL OK.
-        return $wpdb->get_results($prepared_query, ARRAY_A); // WPCS: unprepared SQL OK.
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Query fragments are fixed SQL above, with all dynamic values passed through $wpdb->prepare().
+        $prepared_query = $wpdb->prepare($query, $params);
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $prepared_query is prepared immediately above.
+        return $wpdb->get_results($prepared_query, ARRAY_A);
     }
 
     public function get_slides($slideshowId, $status)
@@ -265,6 +281,7 @@ class MetaSlider_Admin_Table extends WP_List_table
             'order' => 'ASC',
             'lang' => '',
             'suppress_filters' => 1,
+            // phpcs:ignore WordPressVIPMinimum.Performance.NoPaging.posts_per_page_posts_per_page
             'posts_per_page' => -1,
             'tax_query' => array(
                 array(
@@ -474,6 +491,7 @@ class MetaSlider_Admin_Table extends WP_List_table
     public function extra_tablenav( $which )
     {
         if ( $which == "top" ) {
+            // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- output through esc_attr() below.
             echo '<input type="hidden" name="page" value="' . esc_attr($_REQUEST['page'] ?? 'metaslider') . '">';
             $this->render_filters();
             if (isset($_REQUEST['post_status']) && $_REQUEST['post_status'] == "trash") {
@@ -511,7 +529,7 @@ class MetaSlider_Admin_Table extends WP_List_table
 
         asort($themes);
 
-        $current = isset($_REQUEST['metaslider_theme']) ? sanitize_text_field($_REQUEST['metaslider_theme']) : '';
+        $current = isset($_REQUEST['metaslider_theme']) ? sanitize_text_field($_REQUEST['metaslider_theme']) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 
         echo '<div class="alignleft actions">';
         echo '<select name="metaslider_theme" id="metaslider-theme-filter">';
@@ -574,12 +592,14 @@ class MetaSlider_Admin_Table extends WP_List_table
                 if(is_array($_REQUEST['slideshows'])) {
                     $slideshows = array_map('intval', $_REQUEST['slideshows']);
                 } else {
+                    // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- intval() cast on the next line.
                     $toArray = array($_REQUEST['slideshows']);
                     $slideshows = array_map('intval', $toArray);
                 }
             } else {
                 //single slider
                 if(isset($_REQUEST['id'])) {
+                    // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- intval() cast on the next line.
                     $toArray = array($_REQUEST['id']);
                     $slideshows = array_map('intval', $toArray);
                 }

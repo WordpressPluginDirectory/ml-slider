@@ -75,6 +75,7 @@ class HTMLPurifier_URIScheme_data extends HTMLPurifier_URIScheme
         }
         $data = rawurldecode($data);
         if ($is_base64) {
+            // Legitimate data: image URI validation requires decoding the payload before MIME checks.
             $raw_data = base64_decode($data);
         } else {
             $raw_data = $data;

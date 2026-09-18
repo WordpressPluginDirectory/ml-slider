@@ -17,6 +17,10 @@ class MetaSlider
     public $slides = array(); // slides belonging to this slider
     public $settings = array(); // slider settings
 
+    // Memoized result of get_javascript_parameters() - some of its filters remove
+    // themselves after running, so a second call would silently lose their output.
+    private $javascript_parameters = null;
+
     /**
      * Constructor
      *
@@ -56,12 +60,60 @@ class MetaSlider
         if (
             is_array($settings) &&
             isset($settings['type']) &&
-            in_array($settings['type'], array( 'flex', 'coin', 'nivo', 'responsive' )) 
+            in_array($settings['type'], array( 'flex', 'coin', 'nivo', 'responsive' ))
         ) {
-            return $settings;
+            // Only trust keys we actually recognise
+            $trusted = array_intersect_key($settings, $this->get_default_parameters());
+
+            /* theme_customize doesn't have a fixed scalar default like the other
+             * parameters above (its valid keys come from each theme's own
+             * customize.php manifest), so it can't live in get_default_parameters().
+             * Validate each value against its own field's declared type (color/
+             * select/range/font) from that manifest before it can reach render. */
+            if (isset($settings['theme_customize']) && is_array($settings['theme_customize'])) {
+                $trusted['theme_customize'] = $this->sanitize_theme_customize($settings['theme_customize']);
+            }
+
+            return $trusted;
         } else {
             return $this->get_default_parameters();
         }
+    }
+
+    /**
+     * Validate a slideshow's theme_customize values against the active theme's own
+     * customize.php manifest (color/select/range/font types), dropping anything
+     * unrecognized or out of bounds before it can reach inline CSS output.
+     *
+     * @since 3.111.2
+     * 
+     * @param array $stored Raw theme_customize values from postmeta
+     * @return array
+     */
+    private function sanitize_theme_customize($stored)
+    {
+        if (!class_exists('MetaSlider_Themes')) {
+            return array();
+        }
+
+        $themes_class   = MetaSlider_Themes::get_instance();
+        $theme_settings = get_post_meta($this->id, 'metaslider_slideshow_theme', true);
+
+        /* The 'theme' key inside ml-slider_settings is deliberately blanked to ''
+         * for regular (non-custom) themes - see MetaSlider_Themes::set(). The real
+         * slug lives in the 'metaslider_slideshow_theme' postmeta's 'folder' key. */
+        $theme = isset($theme_settings['folder']) ? $theme_settings['folder'] : '';
+        $type  = isset($theme_settings['type']) ? $theme_settings['type'] : 'free';
+
+        /* For a v2 custom theme (folder starting with '_theme_v2'), this slug won't
+         * match any real theme folder, so the manifest - and therefore the validated
+         * result below - comes back empty. That's fine: v2 custom themes never read
+         * this 'theme_customize' array for CSS output anyway (ms-theme-base.php's
+         * theme_customize_css() pulls their data from the 'metaslider-themes' option
+         * instead), so there's nothing here for them to lose. */
+        $manifest = $themes_class->get_theme_manifest($theme, $type);
+
+        return $themes_class->validate_theme_stored($manifest, $stored);
     }
 
     /**
@@ -76,7 +128,15 @@ class MetaSlider
             $defaults = $this->get_default_parameters();
 
             if (isset($defaults[$name])) {
-                return $defaults[$name] ? $defaults[$name] : 'false';
+                // Make sure to return a string, even if the default is boolean
+                if (gettype($defaults[$name]) == 'boolean') {
+                    return $defaults[$name] ? 'true' : 'false';
+                }
+
+                // strlen(), not a truthy check - a legitimate zero default
+                // (e.g. corner_radius, border_width) is falsy in PHP and
+                // would otherwise collapse to the string 'false'.
+                return strlen($defaults[$name]) > 0 ? $defaults[$name] : 'false';
             }
         } else {
             if (strlen($this->settings[$name]) > 0) {
@@ -102,6 +162,7 @@ class MetaSlider
     public function get_default_parameters()
     {
         $params = array(
+            'title' => __('New Slideshow', 'ml-slider'),
             'type' => 'flex',
             'random' => false,
             'cssClass' => '',
@@ -139,9 +200,17 @@ class MetaSlider
             'cropMultiply' => 1,
             'smoothHeight' => false,
             'carouselMode' => false,
+            'infiniteLoop' => false,
             'carouselMargin' => 5,
             'minItems' => 2,
             'maxItems' => 0,
+            'carouselItems_smartphone' => 0,
+            'carouselItems_tablet' => 0,
+            'carouselItems_laptop' => 0,
+            'carouselItems_desktop' => 0,
+            // @since 3.111.2 - MetaSlider Pro - Layer slide type
+            // @TODO - Remove 'layer_scaling' as was added through Pro plugin's own 'metaslider_default_parameters' filter at 2.60
+            'layer_scaling' => 'up_and_down',
             'forceHeight' => false,
             'firstSlideFadeIn' => false,
             'easing' => 'linear',
@@ -176,6 +245,7 @@ class MetaSlider
             'tabIndex' => false,
             'pausePlay' => false,
             'ariaCurrent' => false,
+            'progressBar' => false,
             'showPlayText' => false,
             'playText' => '',
             'pauseText' => '',
@@ -189,7 +259,25 @@ class MetaSlider
             'containerPadding_left' => 10,
             'containerMargin_top' => 10,
             'containerMargin_bottom' => 30,
-            'navStep' => 1
+            'navStep' => 1,
+            // @since 3.111.2 - Responsive breakpoints
+            'smartphone' => 480,
+            'tablet' => 768,
+            'laptop' => 1024,
+            'desktop' => 1440,
+            // @since 3.111.2 - MetaSlider Lightbox addon
+            // @TODO - Handle through Gallery Free plugin 'metaslider_default_parameters' filter
+            'lightbox' => false,
+            'lightbox_captions' => 'global',
+            'lightbox_navigation' => 'global',
+            'lightbox_open_with' => 'global',
+            // @since 3.111.2 - MetaSlider Lightbox Pro addon
+            // @TODO - Handle through Gallery Pro plugin 'metaslider_default_parameters' filter
+            'lightbox_pro_zoom' => 'global',
+            'lightbox_pro_fullscreen' => 'global',
+            'lightbox_pro_autoplay' => 'global',
+            'lightbox_pro_autoplay_interval' => 4000,
+            'lightbox_pro_pager' => 'global'
         );
         return apply_filters('metaslider_default_parameters', $params);
     }
@@ -212,6 +300,7 @@ class MetaSlider
             'post_status' => array('inherit', 'publish'),
             'lang' => '', // polylang, ingore language filter
             'suppress_filters' => 1, // wpml, ignore language filter
+            // phpcs:ignore WordPressVIPMinimum.Performance.NoPaging.posts_per_page_posts_per_page
             'posts_per_page' => -1,
             'tax_query' => array(
                 array(
@@ -644,12 +733,36 @@ class MetaSlider
     }
 
     /**
+     * Coerce a setting into a JS-safe integer token, without turning an empty/disabled
+     * setting (e.g. an unset width/height, normalised by get_setting() to the string
+     * 'false') into 0. Anything that's neither numeric nor the 'true'/'false' sentinel
+     * is untrusted and is coerced to 0 rather than ever being output raw.
+     *
+     * @since 3.111.1
+     * 
+     * @param mixed $val
+     * @return int|string
+     */
+    protected function to_js_int($val)
+    {
+        if (is_numeric($val)) {
+            return (int) $val;
+        }
+
+        return ($val === 'true' || $val === 'false') ? $val : 0;
+    }
+
+    /**
      * Build the javascript parameter arguments for the slider.
      *
      * @return string parameters
      */
     private function get_javascript_parameters()
     {
+        if (null !== $this->javascript_parameters) {
+            return $this->javascript_parameters;
+        }
+
         $options = array();
 
         // construct an array of all parameters
@@ -657,7 +770,9 @@ class MetaSlider
             if ($param = $this->get_param($name)) {
                 $val = $this->get_setting($name);
 
-                if (gettype($default) == 'integer' || $val == 'true' || $val == 'false') {
+                if (is_int($default)) {
+                    $options[$param] = $this->to_js_int($val);
+                } elseif ($val === 'true' || $val === 'false') {
                     $options[$param] = $val;
                 } else {
                     $options[$param] = '"' . esc_js($val) . '"';
@@ -681,7 +796,9 @@ class MetaSlider
             }
         }
 
-        return implode(",\n                ", $pairs);
+        $this->javascript_parameters = implode(",\n                ", $pairs);
+
+        return $this->javascript_parameters;
     }
 
 
@@ -838,6 +955,28 @@ class MetaSlider
     }
 
     /**
+     * Check if any of this slideshow's slides have a Font Awesome icon in their caption,
+     * so the icon stylesheet is only loaded on the front end when it's actually needed.
+     *
+     * Note: the inserted <i class="fa-solid"> markup only survives to the front end because
+     * the default `metaslider_html_purifier_config` permits the `class` attribute on inline
+     * elements (see metaslider_filter_unsafe_html() / inc/slide/metaslide.image.class.php).
+     * A site that narrows that filter to strip `class` would silently lose icon rendering.
+     *
+     * @since 3.111
+     */
+    public function has_font_awesome_icons()
+    {
+        $slides = $this->get_slides()->posts;
+        foreach ($slides as $slide) {
+            if (false !== strpos($slide->post_excerpt, 'fa-solid')) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Include slider assets, JS and CSS paths are specified by child classes.
      */
     public function enqueue_scripts()
@@ -851,6 +990,11 @@ class MetaSlider
         if (filter_var($this->get_setting('printCss'), FILTER_VALIDATE_BOOLEAN)) {
             wp_enqueue_style('metaslider-' . $this->get_setting('type') . '-slider', METASLIDER_ASSETS_URL . $this->css_path, false, METASLIDER_ASSETS_VERSION);
             wp_enqueue_style('metaslider-public', METASLIDER_ASSETS_URL . 'metaslider/public.css', false, METASLIDER_ASSETS_VERSION);
+
+            if ($this->has_font_awesome_icons()) {
+                wp_enqueue_style('metaslider-fontawesome', METASLIDER_ADMIN_ASSETS_URL . 'vendor/fontawesome/css/fontawesome.min.css', false, METASLIDER_ASSETS_VERSION);
+                wp_enqueue_style('metaslider-fontawesome-solid', METASLIDER_ADMIN_ASSETS_URL . 'vendor/fontawesome/css/solid.min.css', array('metaslider-fontawesome'), METASLIDER_ASSETS_VERSION);
+            }
 
             $extra_css = apply_filters("metaslider_css", "", $this->settings, $this->id);
             $extra_css .= apply_filters("metaslider_theme_css", "", $this->settings, $this->id);

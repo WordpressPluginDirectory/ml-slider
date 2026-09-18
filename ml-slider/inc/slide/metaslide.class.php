@@ -270,6 +270,10 @@ class MetaSlide
      */
     public function build_anchor_tag($attributes, $content)
     {
+        // Preview is a srcdoc iframe - force new tab so links don't navigate it away.
+        if (isset($attributes['target']) && isset($_REQUEST['action']) && 'ms_get_preview' == $_REQUEST['action']) {
+            $attributes['target'] = '_blank';
+        }
 
         $html = "<a";
 
@@ -381,7 +385,14 @@ class MetaSlide
 
             $selected = $pos == 0 ? "class='selected " . esc_attr($add_class) . "' style='" . esc_attr($hide) . "'" : "class='" . esc_attr($add_class) . "' style='" . esc_attr($hide) . "'";
 
-            $return .= "<li {$selected} ><a tabindex='0' href='#' data-tab_id='tab-" . esc_attr($pos) . "'>" . esc_html($tab['title']) . "</a></li>";
+            $pro_btn = '';
+            $tab_link_class = '';
+            if (!empty($tab['pro'])) {
+                $pro_btn = ' <span class="dashicons dashicons-lock is-pro-setting tipsy-tooltip-top" original-title="' . esc_attr($tab['pro']) . '" data-href="' . esc_url('https://www.metaslider.com/upgrade?utm_source=lite&utm_medium=banner&utm_campaign=pro') . '"></span>';
+                $tab_link_class = " class='has-pro-ad'";
+            }
+
+            $return .= "<li {$selected} ><a tabindex='0' href='#' data-tab_id='tab-" . esc_attr($pos) . "'{$tab_link_class}>" . esc_html($tab['title']) . "{$pro_btn}</a></li>";
         }
 
         $return .= "</ul>";
@@ -504,7 +515,7 @@ class MetaSlide
             $menu_order = $query->post->menu_order;
         }
 
-        wp_reset_query();
+        wp_reset_query(); // phpcs:ignore WordPress.WP.DiscouragedFunctions.wp_reset_query_wp_reset_query
 
         // increment
         $menu_order = $menu_order + 1;
@@ -879,5 +890,48 @@ class MetaSlide
     public function image_cropped_size( $side )
     {
         return metaslider_image_cropped_size(  $side, $this->settings );
+    }
+
+    /**
+     * Append the Schedule and Advanced tabs, which every slide type offers as an
+     * upgrade prompt while Pro is inactive. Pro replaces both through the
+     * metaslider_slide_tabs filter, so these are only ever the free view.
+     *
+     * @since 3.113.0
+     *
+     * @param array $tabs                Tabs built so far
+     * @param array $unsupported_advanced Advanced rows Pro cannot apply to this
+     *                                    slide type ('delay', 'repeat', 'first_loop',
+     *                                    'thumbnail', 'classes'), left out rather than
+     *                                    advertised
+     *
+     * @return array
+     */
+    protected function add_pro_upsell_tabs($tabs, $unsupported_advanced = array())
+    {
+        ob_start();
+        include METASLIDER_PATH . 'admin/views/slides/tabs/schedule.php';
+        $schedule_tab = ob_get_clean();
+
+        $tabs['schedule'] = array(
+            'title' => __('Schedule', 'ml-slider'),
+            'content' => $schedule_tab,
+            'pro' => __('Schedule is available in MetaSlider Slideshow Pro', 'ml-slider')
+        );
+
+        // Read by advanced.php to skip the rows this slide type can't use
+        $unsupported_advanced_rows = $unsupported_advanced;
+
+        ob_start();
+        include METASLIDER_PATH . 'admin/views/slides/tabs/advanced.php';
+        $advanced_tab = ob_get_clean();
+
+        $tabs['advanced'] = array(
+            'title' => __('Advanced', 'ml-slider'),
+            'content' => $advanced_tab,
+            'pro' => __('Advanced settings are available in MetaSlider Slideshow Pro', 'ml-slider')
+        );
+
+        return $tabs;
     }
 }

@@ -5,7 +5,7 @@
  * Plugin Name: MetaSlider Slideshow
  * Plugin URI:  https://www.metaslider.com
  * Description: MetaSlider gives you the power to create a beautiful slideshow, carousel, or gallery on your WordPress site.
- * Version:     3.110.0
+ * Version:     3.113.0
  * Author:      MetaSlider
  * Author URI:  https://www.metaslider.com
  * License:     GPL-2.0+
@@ -44,7 +44,7 @@ if (! class_exists('MetaSliderPlugin')) {
          *
          * @var string
          */
-        public $version = '3.110.0';
+        public $version = '3.113.0';
 
         /**
          * Pro installed version number
@@ -175,7 +175,7 @@ if (! class_exists('MetaSliderPlugin')) {
             if (! defined('METASLIDER_VERSION')) {
                 $assets_version = defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ? uniqid() : $this->version;
 
-                define('METASLIDER_VERSION', $this->version);
+                define('METASLIDER_VERSION', '3.113.0');
                 define('METASLIDER_ASSETS_VERSION', $assets_version);
                 define('METASLIDER_BASE_URL', plugin_dir_url(metaslider_plugin_is_installed('ml-slider')));
                 define('METASLIDER_ASSETS_URL', METASLIDER_BASE_URL . 'assets/');
@@ -200,6 +200,8 @@ if (! class_exists('MetaSliderPlugin')) {
                 'metaresponsiveslider' => METASLIDER_PATH . 'inc/slider/metaslider.responsive.class.php',
                 'metaslide' => METASLIDER_PATH . 'inc/slide/metaslide.class.php',
                 'metaimageslide' => METASLIDER_PATH . 'inc/slide/metaslide.image.class.php',
+                'metalividslide' => METASLIDER_PATH . 'inc/slide/metaslide.livid.class.php',
+                'metaslider_image_styles' => METASLIDER_PATH . 'inc/metaslider.imagestyles.class.php',
                 'metasliderimagehelper' => METASLIDER_PATH . 'inc/metaslider.imagehelper.class.php',
                 'metaslidersystemcheck' => METASLIDER_PATH . 'inc/metaslider.systemcheck.class.php',
                 'metaslider_widget' => METASLIDER_PATH . 'inc/metaslider.widget.class.php',
@@ -213,7 +215,10 @@ if (! class_exists('MetaSliderPlugin')) {
                 'metaslider_themes' => METASLIDER_PATH . 'admin/Slideshows/Themes.php',
                 'metaslider_image' => METASLIDER_PATH . 'admin/Slideshows/Image.php',
                 'metaslider_gutenberg' => METASLIDER_PATH . 'admin/Gutenberg.php',
+                'metaslider_email_collection' => METASLIDER_PATH . 'admin/support/EmailCollection.php',
                 'metasliderquickstart' => METASLIDER_PATH . 'inc/metaslider.quickstart.class.php',
+                'metavideohelper' => METASLIDER_PATH . 'modules/local_video/helper.php',
+                'metalocalvideoslide' => METASLIDER_PATH . 'modules/local_video/slide.php',
             );
         }
 
@@ -310,6 +315,9 @@ if (! class_exists('MetaSliderPlugin')) {
          */
         private function setup_actions()
         {
+            // Per-slide image styles (filter, corners, border, shadow, opacity, transform).
+            new MetaSlider_Image_Styles();
+
             add_action('admin_head', array($this, 'filter_admin_notices'));
             add_action('admin_head', array($this, 'upgrade_menu_page_css'));
             add_action('admin_menu', array($this, 'register_admin_pages'), 9553);
@@ -333,13 +341,13 @@ if (! class_exists('MetaSliderPlugin')) {
             add_action('media_upload_post_feed', array($this, 'upgrade_to_pro_tab_post_feed'));
             add_action('media_upload_layer', array($this, 'upgrade_to_pro_tab_layer'));
             add_action('media_upload_external_url', array($this, 'upgrade_to_pro_tab_external_url'));
-            add_action('media_upload_local_video', array($this, 'upgrade_to_pro_tab_local_video'));
             add_action('media_upload_external_video', array($this, 'upgrade_to_pro_tab_external_video'));
             add_action('media_upload_custom_html', array($this, 'upgrade_to_pro_tab_custom_html'));
             add_action('media_upload_tiktok', array($this, 'upgrade_to_pro_tab_tiktok'));
             add_action('media_upload_folder', array($this, 'upgrade_to_pro_tab_folder'));
             add_action('media_upload_post_images', array($this, 'upgrade_to_pro_tab_post_images'));
             add_action('media_upload_woocommerce', array($this, 'upgrade_to_pro_tab_woocommerce'));
+            add_action('media_upload_background_color', array($this, 'upgrade_to_pro_tab_background_color'));
 
             // TODO: Refactor to Slide class object
             add_action('wp_ajax_delete_slide', array($this, 'ajax_delete_slide'));
@@ -445,6 +453,20 @@ if (! class_exists('MetaSliderPlugin')) {
                 $show_ui = true;
             }
 
+            $capabilities = array(
+                'edit_posts' => $capability,
+                'edit_others_posts' => $capability,
+                'edit_private_posts' => $capability,
+                'edit_published_posts' => $capability,
+                'publish_posts' => $capability,
+                'read_private_posts' => $capability,
+                'delete_posts' => $capability,
+                'delete_private_posts' => $capability,
+                'delete_published_posts' => $capability,
+                'delete_others_posts' => $capability,
+                'create_posts' => $capability,
+            );
+
             register_post_type(
                 'ml-slider',
                 array(
@@ -455,6 +477,9 @@ if (! class_exists('MetaSliderPlugin')) {
                     'publicly_queryable' => false,
                     'show_in_nav_menus' => false,
                     'show_ui' => $show_ui,
+                    'capability_type' => 'ml-slider',
+                    'map_meta_cap' => true,
+                    'capabilities' => $capabilities,
                     'labels' => array(
                         'name' => 'MetaSlider'
                     )
@@ -472,9 +497,27 @@ if (! class_exists('MetaSliderPlugin')) {
                     'show_in_nav_menus' => false,
                     'show_ui' => $show_ui,
                     'supports' => array('title', 'editor', 'author', 'thumbnail', 'excerpt'),
+                    'capability_type' => 'ml-slide',
+                    'map_meta_cap' => true,
+                    'capabilities' => $capabilities,
                     'labels' => array(
                         'name' => 'Meta Slides'
                     )
+                )
+            );
+
+            // @since 3.111.1 - Defense in depth: even if a lower-privileged user somehow owns an
+            // ml-slider post, restrict edit settings to users with the correct capability
+            register_post_meta(
+                'ml-slider',
+                'ml-slider_settings',
+                array(
+                    'single' => true,
+                    'type' => 'array',
+                    'show_in_rest' => false,
+                    'auth_callback' => function ($allowed, $meta_key, $post_id) {
+                        return current_user_can('edit_post', $post_id);
+                    },
                 )
             );
         }
@@ -516,6 +559,8 @@ if (! class_exists('MetaSliderPlugin')) {
         private function register_slide_types()
         {
             $image = new MetaImageSlide();
+            $livid = new MetaLividSlide();
+            $local_video = new MetaLocalVideoSlide();
         }
 
         /**
@@ -560,7 +605,9 @@ if (! class_exists('MetaSliderPlugin')) {
                 $target = '_self';
             }
 
-            $logo = '<div id="metaslider-main-menu-icon" class="ab-item svg" style="background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPHN2ZyBmaWxsPSIjZmZmIiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IiB2aWV3Qm94PSIwIDAgMjU1LjggMjU1LjgiIHN0eWxlPSJmaWxsOiNmZmYiIHhtbDpzcGFjZT0icHJlc2VydmUiPjxnPjxwYXRoIGQ9Ik0xMjcuOSwwQzU3LjMsMCwwLDU3LjMsMCwxMjcuOWMwLDcwLjYsNTcuMywxMjcuOSwxMjcuOSwxMjcuOWM3MC42LDAsMTI3LjktNTcuMywxMjcuOS0xMjcuOUMyNTUuOCw1Ny4zLDE5OC41LDAsMTI3LjksMHogTTE2LjQsMTc3LjFsOTIuNS0xMTcuNUwxMjQuMiw3OWwtNzcuMyw5OC4xSDE2LjR6IE0xNzAuNSwxNzcuMWwtMzguOS00OS40bDE1LjUtMTkuNmw1NC40LDY5SDE3MC41eiBNMjA4LjUsMTc3LjFMMTQ2LjksOTkgbC02MS42LDc4LjJoLTMxbDkyLjUtMTE3LjVsOTIuNSwxMTcuNUgyMDguNXoiLz48L2c+PC9zdmc+Cg==);"></div>';
+            // @since 3.112
+            $menu_icon_data_uri = 'data:image/svg+xml;base64,' . base64_encode(file_get_contents(METASLIDER_PATH . 'admin/assets/metaslider-white.svg'));
+            $logo = '<div id="metaslider-main-menu-icon" class="ab-item svg" style="background-image: url(' . esc_url($menu_icon_data_uri, array( 'data' )) . ');"></div>';
 
             $admin_bar->add_menu( array(
                 'id'    => 'ms-main-menu',
@@ -669,24 +716,79 @@ if (! class_exists('MetaSliderPlugin')) {
                 return "<!-- MetaSlider {$atts['id']} not found -->";
             }
 
-            /* @since 3.94 - Check if we're using a custom theme with v2 version 
-             * in order to load it's base theme (aka core theme) */
-            $theme = get_post_meta($id, 'metaslider_slideshow_theme', true);
+            /* @since 3.94 - Check if we're using a custom theme with v2 version
+             * in order to load it's base theme (aka core theme).
+             * Resolve against the theme actually being requested for this render (an explicit
+             * 'theme' attribute, e.g. from a preview override) rather than always the slideshow's
+             * saved theme, or previewing a different theme than the one assigned would be ignored. */
+            $requested_theme_id = $atts['theme'];
 
-            if (isset($theme['folder']) && '_theme' === substr($theme['folder'], 0, 6)) {
+            if (is_null($requested_theme_id)) {
+                $saved_theme = get_post_meta($id, 'metaslider_slideshow_theme', true);
+                $requested_theme_id = isset($saved_theme['folder']) ? $saved_theme['folder'] : null;
+            }
+
+            if ($requested_theme_id && '_theme' === substr($requested_theme_id, 0, 6)) {
                 $custom_themes = get_option('metaslider-themes');
 
-                if (isset($custom_themes[$theme['folder']]['version']) 
-                    && $custom_themes[$theme['folder']]['version'] == 'v2') {
-                    $atts['theme'] = $custom_themes[$theme['folder']]['base'];
+                if (isset($custom_themes[$requested_theme_id]['version'])
+                    && $custom_themes[$requested_theme_id]['version'] == 'v2') {
+                    $atts['theme'] = $custom_themes[$requested_theme_id]['base'];
                 }
             }
-            
+
             // Set up the slideshow and load the slideshow theme
             $this->set_slider($id, $atts);
             MetaSlider_Themes::get_instance()->load_theme($id, $atts['theme']);
+
             $this->slider->enqueue_scripts();
-            return $this->slider->render_public_slides();
+            $slides_html = $this->slider->render_public_slides();
+
+            // Run one page-wide force-print pass on wp_footer instead of per-call (see #2333, metaslider-pro#1448).
+            static $registered = false;
+            if (!$registered) {
+                $registered = true;
+                if (did_action('wp_footer')) {
+                    // Already mid/post wp_footer - a hook added now could be skipped or never fire, so print now.
+                    $this->force_print_pending_metaslider_assets();
+                } else {
+                    add_action('wp_footer', array($this, 'force_print_pending_metaslider_assets'), -9999);
+                }
+            }
+
+            return $slides_html;
+        }
+
+        /**
+         * Force-print any still-pending metaslider-family style/script handle.
+         *
+         * Runs once, as early into `wp_footer` as possible (see the shortcode
+         * registration above), so it has the best chance of landing before
+         * anything else can interfere with that later print pass.
+         *
+         * @since 3.113.0
+         */
+        public function force_print_pending_metaslider_assets()
+        {
+            $is_metaslider_handle = function ($handle) {
+                return 0 === strpos($handle, 'metaslider');
+            };
+
+            $pending_styles = array_values(array_filter(wp_styles()->queue, $is_metaslider_handle));
+            $pending_scripts = array_values(array_filter(wp_scripts()->queue, $is_metaslider_handle));
+
+            // Engine handles carry an inline init script that can call into a slide-type library (e.g. video.js) - print those last.
+            usort($pending_scripts, function ($a, $b) {
+                return preg_match('/-slider$/', $a) - preg_match('/-slider$/', $b);
+            });
+
+            // do_items() directly, not wp_print_scripts(), to avoid re-firing the 'wp_print_scripts' action on every page.
+            if ($pending_styles) {
+                wp_styles()->do_items($pending_styles);
+            }
+            if ($pending_scripts) {
+                wp_scripts()->do_items($pending_scripts);
+            }
         }
 
         /**
@@ -774,7 +876,7 @@ if (! class_exists('MetaSliderPlugin')) {
          */
         public function custom_media_upload_tab_name($tabs)
         {
-            $metaslider_tabs = array('post_feed', 'layer', 'youtube', 'vimeo', 'external_url', 'local_video', 'external_video', 'custom_html', 'tiktok', 'folder', 'post_images', 'woocommerce');
+            $metaslider_tabs = array('post_feed', 'layer', 'youtube', 'vimeo', 'external_url', 'local_video', 'external_video', 'custom_html', 'tiktok', 'folder', 'post_images', 'woocommerce', 'background_color');
 
             // restrict our tab changes to the MetaSlider plugin page
             if ((isset($_GET['page']) && $_GET['page'] == 'metaslider') || (isset($_GET['tab']) && in_array(
@@ -791,12 +893,12 @@ if (! class_exists('MetaSliderPlugin')) {
                         'external_url' => __("External Image", "ml-slider"),
                         'external_video' => __("External Video", "ml-slider"),
                         'custom_html' => __("Custom HTML", "ml-slider"),
+                        'background_color' => __("Background Color", "ml-slider"),
                         'folder' => __("Image Folder", "ml-slider"),
                         'post_images' => __("Post Images", "ml-slider"),
                         'woocommerce' => __("WooCommerce", "ml-slider"),
                         'post_feed' => __("Post Feed", "ml-slider"),
                         'layer' => __("Layer Slide", "ml-slider"),
-                        'local_video' => __("Local Video", "ml-slider"),
                     );
                 }
 
@@ -1209,7 +1311,7 @@ if (! class_exists('MetaSliderPlugin')) {
                 return $the_query->post->ID;
             }
 
-            wp_reset_query();
+            wp_reset_query(); // phpcs:ignore WordPress.WP.DiscouragedFunctions.wp_reset_query_wp_reset_query
 
             return false;
         }
@@ -1233,6 +1335,7 @@ if (! class_exists('MetaSliderPlugin')) {
                 'orderby' => $sort_key,
                 'suppress_filters' => 1, // wpml, ignore language filter
                 'order' => 'ASC',
+                // phpcs:ignore WordPressVIPMinimum.Performance.NoPaging.posts_per_page_posts_per_page
                 'posts_per_page' => -1
             );
 
@@ -1578,6 +1681,21 @@ if (! class_exists('MetaSliderPlugin')) {
                         $output .= $after;
                         $output .= '</td></tr>';
                         break;
+
+                    //mobile settings icons, number input instead of checkbox
+                    case 'mobile_number':
+                        $output .= '<tr class="' . esc_attr($row["type"]) .'">
+                            <td class="tipsy-tooltip" title="' . esc_attr($helptext) . '">' . esc_html( $row["label"]) . '</td>
+                            <td>';
+                        foreach ($row['options'] as $option_name => $option_value) {
+                            $output .= '<span class="mobile-number-wrap">';
+                            $output .= '<span class="dashicons ' . esc_attr( 'dashicons-' . $option_name ) . ' tipsy-tooltip-top" title="' . esc_attr($option_value["helptext"]) . '"></span>';
+                            $output .= '<input type="number" min="0" step="1" name="settings[' . esc_attr($id) . '_' . esc_attr($option_name) . ']" value="' . esc_attr($option_value["value"]) . '" class="mobile-number tipsy-tooltip-top" title="' . esc_attr($option_value["helptext"]) . '" />';
+                            $output .= '</span>';
+                        }
+                        $output .= $after;
+                        $output .= '</td></tr>';
+                        break;
                     case 'cssprops':
                         if (!$hide_legacy) {
                             $output .= '<tr class="' . esc_attr(
@@ -1619,11 +1737,11 @@ if (! class_exists('MetaSliderPlugin')) {
                     case 'html':
                         $output .= '<tr class="' . esc_attr(
                                 $row["type"]
-                            ) . '" id="' . esc_attr(
+                            ) . ( ! $row["visible"] ? ' ms-hidden-by-default' : '' ) . '" id="' . esc_attr(
                                 $row["id"]
-                            ) . '" style="' . ( 
-                                ! $row["visible"] ? 'display:none' : '' 
-                            ) . '"><td colspan="2">' . 
+                            ) . '" style="' . (
+                                ! $row["visible"] ? 'display:none' : ''
+                            ) . '"><td colspan="2">' .
                             $row["content"] . '</td></tr>';
                         break;
                 }
@@ -1758,7 +1876,18 @@ if (! class_exists('MetaSliderPlugin')) {
                         echo esc_attr(json_encode($slider_settings)); ?>'
                         tour-status="<?php
                         echo $tour_position ? esc_attr($tour_position) : false ?>"
-                        show-opt-in=""
+                        show-opt-in="<?php
+                        echo esc_attr(
+                            // Off by default. Force it on to re-test the opt-in
+                            // popup regardless of dismissal/opt-in state, e.g.
+                            // from wp-config.php:
+                            // add_filter('metaslider_always_show_optin_notice', '__return_true');
+                            apply_filters('metaslider_always_show_optin_notice', false) || (
+                                ! MetaSlider_Email_Collection::site_is_optin() && ! get_user_option(
+                                    'metaslider_analytics_onboarding_status'
+                                )
+                            ) ? 1 : ''
+                        ); ?>"
                         inline-template>
                 <span>
                 <form @submit.prevent="" @keydown.enter.prevent="" autocomplete="off" id="ms-form-settings"
@@ -2213,49 +2342,6 @@ if (! class_exists('MetaSliderPlugin')) {
             );
         }
 
-        /**
-         * Return the MetaSlider pro upgrade iFrame
-         */
-        public function upgrade_to_pro_tab_local_video()
-        {
-            if (function_exists('is_plugin_active') && ! is_plugin_active('ml-slider-pro/ml-slider-pro.php')) {
-                return wp_iframe(array($this, 'upgrade_to_pro_iframe_local_video'));
-            }
-        }
-
-        /**
-         * Media Manager iframe HTML - Local video
-         */
-        public function upgrade_to_pro_iframe_local_video()
-        {
-            $link = apply_filters('metaslider_hoplink', 'https://www.metaslider.com/upgrade/');
-            $link .= '?utm_source=lite&amp;utm_medium=more-slide-types-video&amp;utm_campaign=pro';
-            $this->upgrade_to_pro_iframe(
-                array(
-                    '<div class="left"><img src="' . esc_url(METASLIDER_ADMIN_URL . 'images/upgrade/local-video.png') . '" alt="" /></div>',
-                    "<div ><h2>" . esc_html__(
-                        'Create slideshows with videos in your media library',
-                        'ml-slider'
-                    ) . "</h2>",
-                    "<p>" . esc_html__(
-                        'With Local Video slides, you can build beautiful slideshows with videos in your WordPress media library.',
-                        'ml-slider'
-                    ) . "</p>",
-                    "<p>" . esc_html__(
-                        'Local Video slides will display your MP4, WebM, and MOV videos with cover images, auto play, mute, lazy load, the ability to hide controls, and much more.',
-                        'ml-slider'
-                    ) . "</p>",
-                    '<a class="probutton button button-primary button-hero" href="' . esc_url(
-                        $link
-                    ) . '" target="_blank">' . esc_html__(
-                        "Find out more about MetaSlider Slideshow Pro",
-                        "ml-slider"
-                    ) . '<span class="dashicons dashicons-external"></span></a>',
-                    "</div>"
-                )
-            );
-        }
-
          /**
          * Return the MetaSlider pro upgrade iFrame
          */
@@ -2325,6 +2411,49 @@ if (! class_exists('MetaSliderPlugin')) {
                     ) . "</h2>",
                     "<p>" . esc_html__(
                         'With Custom HTML slides, you can design slides using images, HTML and CSS. This gives you complete control over the layout and styling.',
+                        'ml-slider'
+                    ) . "</p>",
+                    '<a class="probutton button button-primary button-hero" href="' . esc_url(
+                        $link
+                    ) . '" target="_blank">' . esc_html__(
+                        "Find out more about MetaSlider Slideshow Pro",
+                        "ml-slider"
+                    ) . '<span class="dashicons dashicons-external"></span></a>',
+                    "</div>"
+                )
+            );
+        }
+
+        /**
+         * Return the MetaSlider pro upgrade Background color
+         * 
+         * @since 3.111
+         */
+        public function upgrade_to_pro_tab_background_color()
+        {
+            if (function_exists('is_plugin_active') && ! is_plugin_active('ml-slider-pro/ml-slider-pro.php')) {
+                return wp_iframe(array($this, 'upgrade_to_pro_iframe_background_color'));
+            }
+        }
+
+        /**
+         * Media Manager iframe HTML - Background Color
+         * 
+         * @since 3.111
+         */
+        public function upgrade_to_pro_iframe_background_color()
+        {
+            $link = apply_filters('metaslider_hoplink', 'https://www.metaslider.com/upgrade/');
+            $link .= '?utm_source=lite&amp;utm_medium=more-slide-types-background-color&amp;utm_campaign=pro';
+            $this->upgrade_to_pro_iframe(
+                array(
+                    '<div class="left"><img src="' . esc_url(METASLIDER_ADMIN_URL . 'images/upgrade/background-color.png') . '" alt="" /></div>',
+                    "<div ><h2>" . esc_html__(
+                        'Create slides with background colors and text',
+                        'ml-slider'
+                    ) . "</h2>",
+                    "<p>" . esc_html__(
+                        'With Background Color slides, you can create slides using a solid or gradient background color. Perfect for text-only slides, calls to action or quick banners.',
                         'ml-slider'
                     ) . "</p>",
                     '<a class="probutton button button-primary button-hero" href="' . esc_url(
@@ -2557,7 +2686,7 @@ if (! class_exists('MetaSliderPlugin')) {
                             'MetaSlider Slideshow Pro',
                             'ml-slider'
                         ) . "</a>";
-                    $meta[] = "<a href='https://wordpress.org/support/plugin/ml-slider/' target='_blank'>" . esc_html__(
+                    $meta[] = "<a href='https://www.metaslider.com/support/' target='_blank'>" . esc_html__(
                             'Support',
                             'ml-slider'
                         ) . "</a>";
@@ -2751,6 +2880,7 @@ if (! class_exists('MetaSliderPlugin')) {
                 );
             }
 
+            // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- each element is (int) cast below.
             $images = $_POST['images'];
             $slideshow_id = MetaSlider_Slideshows::create();
             $slide = new MetaImageSlide();
@@ -2792,6 +2922,7 @@ if (! class_exists('MetaSliderPlugin')) {
                 ), 400 );
             }
 
+            // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- only used after an exact-match lookup against quickstart_options()'s own known slugs below.
             $slug = $_GET['slug'];
             $price = null;
             $file = null;
@@ -2801,7 +2932,7 @@ if (! class_exists('MetaSliderPlugin')) {
 
                 foreach ( $msQuickstart->quickstart_options() as $option ) {
                     if ( isset( $option['slug'] ) && $option['slug'] === $slug ) {
-                        $price = $option['price'] ?? null;
+                        $price = isset( $option['price'] ) ? $option['price'] : null;
                         break;
                     }
                 }
@@ -2868,6 +2999,7 @@ if (! class_exists('MetaSliderPlugin')) {
                     400
                 );
             }
+            // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- validated by wp_handle_upload() below.
             $file = $_FILES['async-upload'];
             $wp_upload_dir = wp_upload_dir();
             $uploaded = wp_handle_upload($file, array('test_form'=> false, 'action' => 'quickstart_upload'));

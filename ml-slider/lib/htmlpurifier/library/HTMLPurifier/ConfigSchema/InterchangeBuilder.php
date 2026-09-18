@@ -139,11 +139,11 @@ class HTMLPurifier_ConfigSchema_InterchangeBuilder
         }
 
         if (isset($hash['ALLOWED'])) {
-            $directive->allowed = $this->lookup($this->evalArray($hash->offsetGet('ALLOWED')));
+            $directive->allowed = $this->lookup($this->parseArrayLiteral($hash->offsetGet('ALLOWED')));
         }
 
         if (isset($hash['VALUE-ALIASES'])) {
-            $directive->valueAliases = $this->evalArray($hash->offsetGet('VALUE-ALIASES'));
+            $directive->valueAliases = $this->parseArrayLiteral($hash->offsetGet('VALUE-ALIASES'));
         }
 
         if (isset($hash['ALIASES'])) {
@@ -174,12 +174,22 @@ class HTMLPurifier_ConfigSchema_InterchangeBuilder
     }
 
     /**
-     * Evaluates an array PHP code string without array() wrapper
+     * Parses an array PHP literal string without array() wrapper
      * @param string $contents
+     * @return array
+     * @throws HTMLPurifier_ConfigSchema_Exception
      */
-    protected function evalArray($contents)
+    protected function parseArrayLiteral($contents)
     {
-        return eval('return array(' . $contents . ');');
+        try {
+            $array = HTMLPurifier_VarParser_Native::parseLiteral('array(' . $contents . ')');
+        } catch (HTMLPurifier_VarParserException $e) {
+            throw new HTMLPurifier_ConfigSchema_Exception($e->getMessage());
+        }
+        if (!is_array($array)) {
+            throw new HTMLPurifier_ConfigSchema_Exception('Expected array literal');
+        }
+        return $array;
     }
 
     /**

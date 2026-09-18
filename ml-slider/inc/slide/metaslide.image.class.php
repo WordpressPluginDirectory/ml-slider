@@ -165,7 +165,8 @@ class MetaImageSlide extends MetaSlide
 
         $slides = $this->create_slides(
             $slider_id,
-            array_map(array($this, 'make_image_slide_data'), $_POST['selection']) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+            // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- each element is absint()'d inside make_image_slide_data().
+            array_map(array($this, 'make_image_slide_data'), $_POST['selection'])
         );
 
         if (is_wp_error($slides)) {
@@ -308,7 +309,7 @@ class MetaImageSlide extends MetaSlide
         $result = update_post_meta(
             absint($_POST['slide_id']), 
             'ml-slider_crop_position', 
-            sanitize_text_field($_POST['crop_position'])
+            sanitize_text_field($_POST['crop_position']) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash
         );
 
         if (is_wp_error($result)) {
@@ -596,27 +597,7 @@ class MetaImageSlide extends MetaSlide
             );
         }
 
-        // Adds schedule tab
-        ob_start();
-        include METASLIDER_PATH . 'admin/views/slides/tabs/schedule.php';
-        $schedule_tab = ob_get_contents();
-        ob_end_clean();
-
-        $tabs['schedule'] = array(
-            'title' => __('Schedule', 'ml-slider'),
-            'content' => $schedule_tab
-        );
-
-        // Adds Advanced tab
-        ob_start();
-        include METASLIDER_PATH . 'admin/views/slides/tabs/advanced.php';
-        $advanced_tab = ob_get_contents();
-        ob_end_clean();
-
-        $tabs['advanced'] = array(
-            'title' => __('Advanced', 'ml-slider'),
-            'content' => $advanced_tab
-        );
+        $tabs = $this->add_pro_upsell_tabs($tabs);
 
         return apply_filters("metaslider_image_slide_tabs", $tabs, $this->slide, $this->slider, $this->settings);
     }

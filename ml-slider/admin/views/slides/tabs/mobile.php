@@ -28,6 +28,8 @@
     if (isset($settings['type']) && $settings['type'] == 'flex') {
         $hide_css = 'display: block';
     }
+    // Slide types with no caption of their own (e.g. Livid video) set this to false
+    $show_hide_caption = !isset($show_hide_caption) || $show_hide_caption;
 ?>
 <div class="row flex-setting" style="<?php echo esc_attr($hide_css); ?>">
     <label style="margin-right: 20px;"><?php esc_html_e("Hide slide on:", "ml-slider"); ?></label>
@@ -68,6 +70,7 @@
             </span>
     <?php } ?>
 </div>
+<?php if ($show_hide_caption) { ?>
 <div class="row">
     <label style="margin-right: 4px;"><?php esc_html_e("Hide caption on:", "ml-slider"); ?></label>
     <?php
@@ -107,3 +110,4 @@
             </span>
     <?php } ?>
 </div>
+<?php } ?>
